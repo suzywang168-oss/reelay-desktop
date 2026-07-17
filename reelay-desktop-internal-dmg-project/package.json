@@ -1,0 +1,40 @@
+{
+  "name": "reelay-desktop",
+  "version": "0.1.0",
+  "description": "Reelay AI canvas desktop prototype",
+  "main": "main.js",
+  "author": "Suzy Wang",
+  "license": "UNLICENSED",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "dist:mac": "electron-builder --mac dmg --universal"
+  },
+  "devDependencies": {
+    "electron": "43.1.1",
+    "electron-builder": "26.15.3"
+  },
+  "build": {
+    "appId": "com.reelay.desktop",
+    "productName": "Reelay",
+    "asar": true,
+    "files": [
+      "main.js",
+      "app/**/*",
+      "package.json"
+    ],
+    "directories": {
+      "output": "dist"
+    },
+    "mac": {
+      "category": "public.app-category.graphics-design",
+      "identity": null,
+      "hardenedRuntime": false,
+      "gatekeeperAssess": false
+    },
+    "dmg": {
+      "title": "Reelay ${version}",
+      "artifactName": "Reelay-${version}-${arch}.${ext}"
+    }
+  }
+}
