@@ -2,9 +2,9 @@
 
 Cross-platform desktop clients for three Suzy Laboratory products:
 
-- Jetsen Partner Portal
-- Jetsen Admin Portal
-- Reelay Workspace
+- Dip Production Portal
+- Dip Admin Portal
+- Painter Workspace
 
 GitHub Actions builds separate installers for every product:
 
