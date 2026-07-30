@@ -1,0 +1,1500 @@
+  <div class="comment-delete-dialog">
+    <h4>确认删除评论</h4>
+    <p>删除后，该评论及其全部回复将无法恢复。</p>
+    <div class="comment-delete-actions">
+      <button id="cancelCommentDelete">取消</button>
+      <button class="danger" id="confirmCommentDelete">确认删除</button>
+    </div>
+  </div>
+</div>
+
+<div class="comment-compose" id="commentCompose">
+      <textarea id="commentInput" placeholder="输入评论内容"></textarea>
+      <div class="reply-row">
+        <button id="cancelCommentBtn">取消</button>
+        <button class="primary" id="saveCommentBtn">发布评论</button>
+      </div>
+    </div>
+
+    <div class="reference-picker-mask" id="referencePickerMask">
+      <div class="reference-picker-dialog">
+        <div class="reference-picker-head"><div><h3 id="referencePickerTitle">选择调用图片</h3><p>可选择一张或多张图片作为节点参考</p></div><button id="closeReferencePicker">×</button></div>
+        <div class="reference-picker-toolbar"><span id="referenceSelectedCount">已选择 0 张</span><button id="toggleAllReferences">全选</button></div>
+        <div class="reference-picker-grid" id="referencePickerGrid"></div>
+        <div class="reference-picker-actions"><button id="cancelReferencePicker">取消</button><button class="primary" id="confirmReferencePicker">调用所选图片</button></div>
+      </div>
+    </div>
+
+
+    <div class="asset-modal-mask" id="assetModalMask">
+      <div class="asset-modal">
+        <div class="asset-modal-head">
+          <h3 id="assetModalTitle">添加资产</h3>
+          <div class="asset-modal-window-actions"><button id="toggleAssetModalSize" type="button" title="放大编辑窗口">□</button><button id="closeAssetModal" type="button" title="关闭">×</button></div>
+        </div>
+        <div class="asset-modal-body">
+          <div class="asset-form-grid">
+            <div class="asset-multi-upload">
+              <div class="asset-upload-preview" id="assetPreview">
+                <img id="assetPreviewImg" alt="">
+                <div class="asset-upload-placeholder" id="assetUploadHint">点击上传多张角色参考图<br>支持 JPG / PNG / WEBP</div>
+                <input id="assetFileInput" type="file" accept="image/*" multiple>
+              </div>
+              <div class="asset-gallery-head"><span>参考图片</span><b id="assetImageCount">0 张</b></div>
+              <div class="asset-image-gallery" id="assetImageGallery"></div>
+            </div>
+            <div class="asset-form">
+              <div class="field"><label>资产类型</label>
+                <select id="assetTypeInput"><option value="portrait">角色卡</option><option value="scene">场景卡</option><option value="video">视频</option><option value="audio">音频</option></select>
+              </div>
+              <div class="field"><label>资产名称</label><input id="assetNameInput" placeholder="输入资产名称"></div>
+              <div class="field"><label>描述</label><textarea id="assetDescInput" placeholder="描述资产内容"></textarea></div>
+              <div class="field"><label>提示词 / 调用参数</label><textarea id="assetPromptInput" placeholder="调用资产时自动写入节点"></textarea></div>
+              <div class="field"><label>标签</label><input id="assetTagsInput" placeholder="人物、都市、夜景"></div>
+              <div class="character-audio-fields" id="characterAudioFields">
+                <div class="character-audio-head"><b>角色音频参数</b><span>仅角色卡使用</span></div>
+                <label class="character-audio-upload">
+                  <span class="character-audio-icon">♫</span>
+                  <span class="character-audio-copy"><b id="characterAudioFileName">上传角色音频</b><small>支持 MP3 / WAV / M4A / AAC，建议 5–60 秒</small></span>
+                  <input id="characterAudioInput" type="file" accept="audio/*,.mp3,.wav,.m4a,.aac">
+                </label>
+                <div class="character-audio-preview" id="characterAudioPreview"><audio id="characterAudioPlayer" controls preload="metadata"></audio><button id="removeCharacterAudio" type="button" title="移除音频">×</button></div>
+                <div class="character-audio-params">
+                  <div class="character-audio-param-row">
+                    <div class="field"><label>音频用途</label><select id="characterAudioPurpose"><option>音色参考</option><option>角色台词样音</option><option>情绪表演参考</option><option>口型同步参考</option></select></div>
+                    <div class="field"><label>语言</label><select id="characterAudioLanguage"><option>中文（普通话）</option><option>中文（粤语）</option><option>英语</option><option>日语</option><option>韩语</option><option>其他</option></select></div>
+                  </div>
+                  <div class="character-audio-param-row">
+                    <div class="field"><label>情绪</label><select id="characterAudioEmotion"><option>自然</option><option>温柔</option><option>冷静</option><option>开心</option><option>悲伤</option><option>愤怒</option><option>紧张</option></select></div>
+                    <div class="field"><label>语速</label><div class="character-speed-row"><input id="characterAudioSpeed" type="range" min="0.5" max="2" step="0.1" value="1"><output id="characterAudioSpeedValue">1.0×</output></div></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="asset-modal-foot">
+          <button id="cancelAssetModal">取消</button>
+          <button class="primary" id="saveAssetBtn">保存资产</button>
+        </div>
+      </div>
+    </div>
+
+    <section class="canvas-chat" id="canvasChat" aria-label="画布对话框">
+      <div class="canvas-chat-head">
+        <div class="canvas-chat-title"><i></i><div><b>创作对话</b><span>发送后自动识别并创建画布节点</span></div></div>
+        <button class="canvas-chat-close" id="canvasChatClose" title="收起对话框">×</button>
+      </div>
+      <div class="canvas-chat-messages" id="canvasChatMessages"></div>
+      <div class="canvas-chat-input">
+        <textarea id="canvasChatInput" placeholder="描述画面、镜头或创作想法…"></textarea>
+        <div class="canvas-chat-input-foot"><span>Enter 发送 · Shift + Enter 换行</span><button class="canvas-chat-send" id="canvasChatSend">发送</button></div>
+      </div>
+    </section>
+    <button class="canvas-chat-launcher" id="canvasChatLauncher" title="打开创作对话">✦</button>
+
+    <div class="toast" id="toast"></div>
+  </main>
+</div>
+
+<script>
+const workspace=document.getElementById('workspace'),viewport=document.getElementById('viewport'),stage=document.getElementById('stage'),
+svg=document.getElementById('lines'),picker=document.getElementById('picker'),toast=document.getElementById('toast'),
+elementPanel=document.getElementById('elementPanel'),elementList=document.getElementById('elementList'),
+elementSearch=document.getElementById('elementSearch'),elementCount=document.getElementById('elementCount'),
+sharePanel=document.getElementById('sharePanel'),shareBtn=document.getElementById('shareBtn'),shareSideBtn=document.getElementById('shareSideBtn'),
+memberList=document.getElementById('memberList'),inviteInput=document.getElementById('inviteInput'),
+commentBtn=document.getElementById('commentBtn'),commentCompose=document.getElementById('commentCompose'),
+commentInput=document.getElementById('commentInput'),commentModeTip=null,
+commentCursorDot=document.getElementById('commentCursorDot'),commentDeleteMask=document.getElementById('commentDeleteMask'),
+assetPanel=document.getElementById('assetPanel'),assetGrid=document.getElementById('assetGrid'),
+assetSearch=document.getElementById('assetSearch'),assetCount=document.getElementById('assetCount'),assetBtn=document.getElementById('assetBtn'),
+assetModalMask=document.getElementById('assetModalMask'),assetPreviewImg=document.getElementById('assetPreviewImg'),
+assetFileInput=document.getElementById('assetFileInput'),assetTypeInput=document.getElementById('assetTypeInput'),
+assetNameInput=document.getElementById('assetNameInput'),assetDescInput=document.getElementById('assetDescInput'),
+assetPromptInput=document.getElementById('assetPromptInput'),assetTagsInput=document.getElementById('assetTagsInput');
+
+let nodes=[],links=[],groups=[],seq=1,groupSeq=1,canvasLayerZ=10,scale=1,temp=null,pickerPos={x:180,y:140},panX=0,panY=0,filter='all';
+let spaceDown=false,marqueeMode=false,shareOn=false,remoteTimer=null,commentMode=false,commentDraftPos=null,commentDeleteId=null,selectedCommentId=null,commentSeq=1,comments=[],assetFilter='all',editingAssetId=null,assetImageData='',assetImageList=[];
+let characterAudioData=null;
+const currentUserId='owner';
+workspace.classList.add('tool-pan');
+
+/* 导演台：将画布节点编排为镜头序列 */
+const directorBtn=document.getElementById('directorBtn'),directorPanel=document.getElementById('directorPanel'),directorShotList=document.getElementById('directorShotList'),directorPreview=document.getElementById('directorPreview');
+let directorOrder=[],directorDurations={},directorActiveId=null,directorTimer=null,directorPlayingIndex=-1;
+function directorNodeName(n){return n.el.querySelector('.title-text')?.textContent||'未命名节点'}
+function directorTypeName(type){return type==='image'?'图片':type==='audio'?'音频':'视频'}
+function syncDirectorNodes(){
+ const ids=nodes.map(n=>n.id);directorOrder=directorOrder.filter(id=>ids.includes(id));ids.forEach(id=>{if(!directorOrder.includes(id))directorOrder.push(id)});
+ directorOrder.forEach(id=>{if(!directorDurations[id]){const n=nodes.find(x=>x.id===id),raw=n?.el.querySelector('.a')?.value||'';directorDurations[id]=parseInt(raw)|| (n?.type==='image'?3:5)}});
+ if(directorActiveId&&!ids.includes(directorActiveId))directorActiveId=null;renderDirector();
+}
+function renderDirector(){
+ const shots=directorOrder.map(id=>nodes.find(n=>n.id===id)).filter(Boolean),total=shots.reduce((sum,n)=>sum+(directorDurations[n.id]||5),0),ready=shots.filter(n=>n.status==='已完成'||n.status==='审核通过').length;
+ document.getElementById('directorShotCount').textContent=shots.length;document.getElementById('directorDuration').textContent=total+'s';document.getElementById('directorReady').textContent=(shots.length?Math.round(ready/shots.length*100):0)+'%';
+ directorShotList.innerHTML=shots.length?shots.map((n,i)=>`<article class="director-shot ${n.id===directorActiveId?'active':''}" data-shot-id="${n.id}"><div class="director-shot-index">SHOT ${String(i+1).padStart(2,'0')}</div><div class="director-shot-name">${directorNodeName(n)}</div><div class="director-shot-meta">${directorTypeName(n.type)} · ${n.status||'待生成'}</div><div class="director-shot-controls"><button data-dir="prev" title="前移">←</button><button data-dir="next" title="后移">→</button><input data-dir="duration" type="number" min="1" max="120" value="${directorDurations[n.id]||5}" title="镜头时长（秒）"><span style="font-size:7px;color:#737b87">秒</span></div></article>`).join(''):'<div class="director-empty">画布内暂无节点<br>创建节点后点击“同步画布节点”即可开始编排</div>';
+ if(directorActiveId){const n=nodes.find(x=>x.id===directorActiveId);if(n)directorPreview.innerHTML=`<div><b>${directorNodeName(n)}</b>${directorTypeName(n.type)}镜头 · ${directorDurations[n.id]||5} 秒<br>${n.status||'待生成'}</div>`}
+}
+function selectDirectorShot(id,locate=true){directorActiveId=id;renderDirector();if(locate)locateNode(id)}
+function stopDirectorPlayback(){clearTimeout(directorTimer);directorTimer=null;directorPlayingIndex=-1;document.getElementById('directorPlay').textContent='▶ 播放';document.getElementById('directorProgress').textContent='播放已停止'}
+function playDirectorShot(index){
+ if(index>=directorOrder.length){stopDirectorPlayback();document.getElementById('directorProgress').textContent='播放完成';return}
+ directorPlayingIndex=index;const id=directorOrder[index],n=nodes.find(x=>x.id===id);if(!n){playDirectorShot(index+1);return}
+ selectDirectorShot(id,true);document.getElementById('directorPlay').textContent='❚❚ 暂停';document.getElementById('directorProgress').textContent=`播放中 · ${index+1}/${directorOrder.length} · ${directorNodeName(n)}`;
+ directorTimer=setTimeout(()=>playDirectorShot(index+1),(directorDurations[id]||5)*1000);
+}
+directorBtn.onclick=e=>{e.stopPropagation();const opening=!directorPanel.classList.contains('show');directorPanel.classList.toggle('show',opening);directorBtn.classList.toggle('active',opening);if(opening)syncDirectorNodes();else stopDirectorPlayback()};
+document.getElementById('directorClose').onclick=()=>{directorPanel.classList.remove('show');directorBtn.classList.remove('active');stopDirectorPlayback()};
+document.getElementById('directorSync').onclick=()=>{syncDirectorNodes();pop('已同步画布节点到导演台')};
+document.getElementById('directorPlay').onclick=()=>{if(directorTimer){stopDirectorPlayback();return}if(!directorOrder.length){pop('请先创建画布节点');return}playDirectorShot(Math.max(0,directorPlayingIndex))};
+document.getElementById('directorStop').onclick=stopDirectorPlayback;
+directorShotList.onclick=e=>{const card=e.target.closest('.director-shot');if(!card)return;const id=card.dataset.shotId,action=e.target.closest('button')?.dataset.dir,index=directorOrder.indexOf(id);if(action){e.stopPropagation();const target=action==='prev'?index-1:index+1;if(target>=0&&target<directorOrder.length){[directorOrder[index],directorOrder[target]]=[directorOrder[target],directorOrder[index]];renderDirector()}return}selectDirectorShot(id,true)};
+directorShotList.onchange=e=>{if(e.target.dataset.dir!=='duration')return;const id=e.target.closest('.director-shot').dataset.shotId;directorDurations[id]=Math.max(1,Math.min(120,Number(e.target.value)||1));renderDirector()};
+document.getElementById('directorExport').onclick=()=>{syncDirectorNodes();if(!directorOrder.length){pop('暂无可导出的镜头');return}const rows=directorOrder.map((id,i)=>{const n=nodes.find(x=>x.id===id);return `${i+1}. ${directorNodeName(n)}｜${directorTypeName(n.type)}｜${directorDurations[id]}秒｜${n.status}\n   ${n.el.querySelector('.prompt')?.value||'未填写提示词'}`});const blob=new Blob([`Reelay 导演台分镜清单\n生成时间：${new Date().toLocaleString()}\n\n${rows.join('\n\n')}`],{type:'text/plain;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='Reelay-导演台分镜清单.txt';a.click();setTimeout(()=>URL.revokeObjectURL(url),500);pop('分镜清单已导出')};
+
+/* 画布固定对话框：对话内容可直接转为节点 */
+const canvasChat=document.getElementById('canvasChat'),canvasChatLauncher=document.getElementById('canvasChatLauncher'),
+canvasChatMessages=document.getElementById('canvasChatMessages'),canvasChatInput=document.getElementById('canvasChatInput');
+let canvasChatHistory=[
+ {role:'assistant',text:'你好，我是创作助手。你可以在这里讨论角色、场景或镜头；每条对话都能直接生成图片或视频节点。'},
+ {role:'user',text:'雨夜霓虹街道上，女主撑着透明伞回头看向镜头。'},
+ {role:'assistant',text:'可以采用中近景，冷蓝环境光搭配暖色霓虹轮廓光，加入雨滴浅景深和轻微手持镜头感。'}
+];
+function escapeChatText(value){return String(value).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]))}
+function renderCanvasChat(){
+ canvasChatMessages.innerHTML=canvasChatHistory.map((msg,index)=>`<div class="canvas-chat-msg ${msg.role}">
+  <div class="canvas-chat-bubble">${escapeChatText(msg.text)}</div>
+  <div class="canvas-chat-node-actions"><button data-chat-node="image" data-chat-index="${index}">＋ 图片节点</button><button data-chat-node="video" data-chat-index="${index}">＋ 视频节点</button></div>
+ </div>`).join('');
+ canvasChatMessages.querySelectorAll('[data-chat-node]').forEach(btn=>btn.onclick=()=>createNodeFromChat(btn.dataset.chatNode,Number(btn.dataset.chatIndex)));
+ canvasChatMessages.scrollTop=canvasChatMessages.scrollHeight;
+}
+function createNodeFromChat(type,index){
+ const msg=canvasChatHistory[index];if(!msg)return;
+ const vr=viewport.getBoundingClientRect(),x=(vr.width*.5-panX)/scale-150,y=(vr.height*.46-panY)/scale-120;
+ const n=createNode(type,x+nodes.length%3*26,y+nodes.length%3*26);
+ n.el.querySelector('.prompt').value=msg.text;
+ n.el.querySelector('.node-name').value=(type==='image'?'对话图片':'对话视频')+' '+(index+1);
+ syncNode(n);renderElementList();locateNode(n.id);pop('已从对话生成'+(type==='image'?'图片':'视频')+'节点');
+}
+function toggleCanvasChat(force){
+ const open=typeof force==='boolean'?force:!canvasChat.classList.contains('show');
+ canvasChat.classList.toggle('show',open);canvasChatLauncher.classList.toggle('has-panel',open);canvasChatLauncher.textContent=open?'×':'✦';
+ if(open){renderCanvasChat();setTimeout(()=>canvasChatInput.focus(),0)}
+}
+function inferChatNodePlan(text){
+ const plans=[],rules=[
+  {type:'image',label:'图片',regex:/图片|图像|画面|海报|封面|角色图|场景图|概念图|插画|立绘|分镜图/i},
+  {type:'video',label:'视频',regex:/视频|动画|镜头|运镜|短片|片段|动态|图生视频/i},
+  {type:'audio',label:'音频',regex:/音频|配音|旁白|音乐|音效|声音|对白|语音/i}
+ ];
+ if(/短剧|故事|剧情|剧本|完整|一集|成片/i.test(text))return[
+  {type:'image',label:'角色',name:'主要角色设定',index:1,count:1},
+  {type:'image',label:'场景',name:'核心场景设定',index:1,count:1},
+  {type:'video',label:'视频',name:'开场镜头',index:1,count:3},
+  {type:'video',label:'视频',name:'冲突镜头',index:2,count:3},
+  {type:'video',label:'视频',name:'结局镜头',index:3,count:3},
+  {type:'audio',label:'声音',name:'配音与音乐',index:1,count:1}
+ ];
+ rules.forEach(rule=>{
+  if(!rule.regex.test(text))return;
+  const countMatch=text.match(new RegExp('(\\d+)\\s*(?:个|张|段|条)?(?:'+(rule.type==='image'?'图片|图像|画面|海报|插画|立绘':rule.type==='video'?'视频|动画|镜头|短片|片段':'音频|配音|旁白|音乐|音效')+')','i'));
+  const count=Math.max(1,Math.min(6,countMatch?Number(countMatch[1]):1));
+  for(let i=0;i<count;i++)plans.push({...rule,index:i+1,count,name:`${rule.label}节点${count>1?' '+(i+1):''}`});
+ });
+ if(!plans.length)plans.push({type:'image',label:'图片',name:'核心画面',index:1,count:1},{type:'video',label:'视频',name:'动态镜头',index:1,count:1});
+ return plans.slice(0,8);
+}
+const waitChatStep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+let chatAutoGenerating=false;
+async function autoCreateNodesFromChat(text,onProgress){
+ const plans=inferChatNodePlan(text),vr=viewport.getBoundingClientRect(),baseX=(vr.width*.5-panX)/scale-500,baseY=(vr.height*.34-panY)/scale-170,created=[];
+ for(let index=0;index<plans.length;index++){
+  const plan=plans[index],col=index%3,row=Math.floor(index/3);
+  onProgress?.(`正在生成第 ${index+1}/${plans.length} 步：${plan.name}`);
+  await waitChatStep(index===0?420:520);
+  const n=createNode(plan.type,baseX+col*345,baseY+row*395);
+  n.el.querySelector('.node-name').value=plan.name||('对话生成'+plan.label);
+  n.el.querySelector('.prompt').value=text;syncNode(n);created.push(n);
+  if(created.length>1&&!links.some(l=>l.from===created[created.length-2].id&&l.to===n.id))links.push({from:created[created.length-2].id,to:n.id});
+  refresh();
+ }
+ if(created.length>1&&typeof createGroup==='function'){
+  nodes.forEach(n=>n.el.classList.remove('selected'));created.forEach(n=>n.el.classList.add('selected'));createGroup();
+  const group=groups[groups.length-1];if(group){group.name='对话自动生成';const input=group.el.querySelector('.node-group-name');if(input)input.value=group.name}
+ }
+ if(created[0])locateNode(created[0].id);return created;
+}
+async function sendCanvasChat(){
+ const text=canvasChatInput.value.trim();if(!text)return pop('请输入对话内容');
+ if(chatAutoGenerating)return pop('正在生成节点，请稍候');
+ chatAutoGenerating=true;document.getElementById('canvasChatSend').disabled=true;
+ canvasChatHistory.push({role:'user',text});canvasChatInput.value='';renderCanvasChat();
+ const progress={role:'assistant',text:'正在分析你的内容并规划所需节点…'};canvasChatHistory.push(progress);renderCanvasChat();
+ try{
+  const created=await autoCreateNodesFromChat(text,message=>{progress.text=message;renderCanvasChat()}),summary=created.map(n=>n.type==='image'?'图片':n.type==='video'?'视频':'音频').join('、');
+  progress.text=`全部完成：已分步创建 ${created.length} 个节点（${summary}），并自动排列和连接。`;renderCanvasChat();pop(`已完成 ${created.length} 个节点`);
+ }finally{chatAutoGenerating=false;document.getElementById('canvasChatSend').disabled=false}
+}
+canvasChatLauncher.onclick=()=>toggleCanvasChat();
+document.getElementById('canvasChatClose').onclick=()=>toggleCanvasChat(false);
+document.getElementById('canvasChatSend').onclick=sendCanvasChat;
+canvasChatInput.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendCanvasChat()}});
+renderCanvasChat();
+
+let collaborators=[
+ {id:'owner',name:'Suzy',email:'suzy@demo.com',role:'admin',owner:true,color:'#f0d18a',status:'正在编辑'},
+ {id:'u1',name:'Mia',email:'mia@demo.com',role:'member',owner:false,color:'#7db2ff',status:'正在浏览'},
+ {id:'u2',name:'Leo',email:'leo@demo.com',role:'member',owner:false,color:'#ff9d7d',status:'正在查看节点'},
+ {id:'u3',name:'Nora',email:'nora@demo.com',role:'admin',owner:false,color:'#8ee0b0',status:'在线'}
+];
+
+function isCurrentUserAdmin(){return collaborators.find(x=>x.id===currentUserId)?.role==='admin'}
+function pop(msg){toast.textContent=msg;toast.classList.add('show');clearTimeout(pop.t);pop.t=setTimeout(()=>toast.classList.remove('show'),1300)}
+function applyTransform(){stage.style.transform=`translate(${panX}px,${panY}px) scale(${scale})`;draw()}
+const canvasStyleRegistry={};
+let currentCanvasStyle='电影写实';
+function canvasStyleKey(projectId,canvasName){return `${projectId||'default'}::${canvasName||'主画布'}`}
+function updateCanvasStylePill(){const value=document.getElementById('canvasStylePillValue');if(value)value.textContent=currentCanvasStyle||'电影写实'}
+
+function createNode(type,x,y){
+ const id='n'+seq++, image=type==='image',audio=type==='audio',typeName=image?'图片':audio?'音频':'视频',el=document.createElement('div');
+ el.className='node '+type;el.dataset.id=id;el.style.left=x+'px';el.style.top=y+'px';
+ el.innerHTML=`<div class="node-head">
+  <div class="node-title"><span class="dot"></span><span class="title-text">${typeName}节点 ${seq-1}</span></div>
+  <div class="node-tools"><button class="download-node" title="下载此节点内容">⇩</button><button class="copy" title="复制节点">⧉</button><button class="del" title="删除节点">×</button></div>
+ </div>
+ <div class="media">
+   <div class="media-placeholder"><span class="big">${image?'▧':audio?'▥':'<svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M10 8l6 4-6 4z"/></svg>'}</span><span>${typeName}预览</span></div>
+   <div class="media-badge">${image?'1:1 · HD':audio?'30s · Stereo':'5s · 24fps'}</div>
+   <div class="status-badge">待生成</div>
+ </div>
+ <div class="summary"><div class="prompt-summary">尚未填写提示词</div><button class="expand">参数⌄</button></div>
+ <div class="params">
+  <div class="field"><label>节点名称</label><input class="node-name" value="${typeName}节点 ${seq-1}"></div>
+  <div class="field"><label>模型</label><select class="model">${image?'<option>Image Gen</option><option>Image Edit</option><option>Upscale</option>':audio?'<option>Audio Gen</option><option>Music Gen</option><option>Sound Effect</option><option>Voice Design</option>':'<option>Video Gen</option><option>Image to Video</option><option>Video Edit</option>'}</select></div>
+  <div class="field"><label>画布默认风格</label><div class="canvas-style-value">${currentCanvasStyle}</div></div>
+  <div class="field"><label>提示词</label><textarea class="prompt" placeholder="描述你想要的结果"></textarea></div>
+  <div class="row">
+   <div class="field"><label>${image?'比例':'时长'}</label><select class="a">${image?'<option>1:1</option><option>16:9</option><option>9:16</option>':audio?'<option>15s</option><option selected>30s</option><option>60s</option><option>120s</option>':'<option>5s</option><option>10s</option><option>15s</option>'}</select></div>
+   <div class="field"><label>${image?'质量':audio?'声道':'帧率'}</label><select class="b">${image?'<option>HD</option><option>2K</option><option>4K</option>':audio?'<option>Stereo</option><option>Mono</option><option>Spatial</option>':'<option>24fps</option><option>30fps</option><option>60fps</option>'}</select></div>
+  </div>
+  <div class="row">
+   <div class="field"><label>生成数量</label><select class="count"><option>1</option><option>2</option><option>4</option></select></div>
+   <div class="field"><label>随机种子</label><input class="seed" type="number" value="2026"></div>
+  </div>
+  <div class="field"><label>参考内容</label><div class="reference">未连接上一节点</div></div>
+  ${image?`<div class="human-review-setting">
+    <div class="review-setting-head"><span>真人内容审核</span><span class="review-required">生成后审核</span></div>
+    <select class="human-review"><option value="auto">自动识别真人内容</option><option value="human">包含真人</option><option value="nonhuman">不包含真人</option></select>
+    <div class="review-policy">检测到真人或真实人脸时，图片生成后需通过内容审核才能完成。</div>
+  </div>`:''}
+  <div class="schedule-setting">
+    <div class="schedule-head"><span>◷ 定时任务</span><label class="schedule-switch"><input class="schedule-enabled" type="checkbox">启用</label></div>
+    <div class="schedule-fields">
+      <div class="field"><label>首次执行时间</label><input class="schedule-time" type="datetime-local"></div>
+      <div class="field"><label>重复周期</label><select class="schedule-repeat"><option value="once">仅执行一次</option><option value="daily">每天</option><option value="weekly">每周</option><option value="monthly">每月</option></select></div>
+      <button type="button" class="schedule-save">保存定时任务</button>
+    </div>
+    <div class="schedule-status">未启用，将在启用后按计划自动生成</div>
+  </div>
+  <div class="generate-wrap">
+    <button class="generate-btn">✦ 生成</button>
+    <button class="node-save-asset" disabled>▣ 保存为资产</button>
+    <div class="progress"><span></span></div>
+  </div>
+ </div>
+ <div class="footer"><div class="port-group"><span class="port input"></span>输入</div><div class="port-group">输出<span class="port output"></span></div></div>`;
+ stage.appendChild(el);
+ el.dataset.canvasStyle=currentCanvasStyle;
+ const n={id,type,el,status:'待生成',canvasStyle:currentCanvasStyle,schedule:{enabled:false,time:'',repeat:'once'}};nodes.push(n);bind(n);refresh();return n;
+}
+
+function updateNodeSchedule(n,notify=false){
+ const box=n.el.querySelector('.schedule-setting'),enabled=box.querySelector('.schedule-enabled').checked,time=box.querySelector('.schedule-time').value,repeat=box.querySelector('.schedule-repeat').value;
+ n.schedule={enabled,time,repeat};box.classList.toggle('enabled',enabled);
+ const repeatText={once:'仅一次',daily:'每天',weekly:'每周',monthly:'每月'}[repeat];
+ box.querySelector('.schedule-status').textContent=enabled?(time?'已计划：'+new Date(time).toLocaleString()+' · '+repeatText:'请选择首次执行时间'):'未启用，将在启用后按计划自动生成';
+ if(notify)pop(enabled?(time?'定时任务已保存':'请先选择执行时间'):'定时任务已关闭');
+}
+
+function bind(n){
+ const el=n.el,head=el.querySelector('.node-head');
+ head.onmousedown=e=>{
+  if(e.target.tagName==='BUTTON')return;
+  e.stopPropagation();
+  if(!el.classList.contains('selected'))selectNode(n.id,e.shiftKey);
+  let sx=e.clientX,sy=e.clientY;
+  const moving=nodes.filter(x=>x.el.classList.contains('selected'));
+  const starts=moving.map(x=>({n:x,x:parseFloat(x.el.style.left),y:parseFloat(x.el.style.top)}));
+  const mm=v=>{const dx=(v.clientX-sx)/scale,dy=(v.clientY-sy)/scale;starts.forEach(s=>{s.n.el.style.left=s.x+dx+'px';s.n.el.style.top=s.y+dy+'px'});updateAllGroups();draw()};
+  const up=()=>{updateAllGroups();document.removeEventListener('mousemove',mm);document.removeEventListener('mouseup',up)};
+  document.addEventListener('mousemove',mm);document.addEventListener('mouseup',up)
+ };
+ el.onmousedown=e=>{e.stopPropagation();selectNode(n.id,e.shiftKey||e.metaKey||e.ctrlKey)};
+ el.querySelector('.expand').onclick=()=>{el.classList.toggle('open');el.querySelector('.expand').textContent=el.classList.contains('open')?'参数⌃':'参数⌄';requestAnimationFrame(()=>{updateAllGroups();draw()})};
+ el.querySelector('.del').onclick=()=>{el.remove();nodes=nodes.filter(x=>x.id!==n.id);links=links.filter(x=>x.from!==n.id&&x.to!==n.id);groups.forEach(g=>g.nodeIds=g.nodeIds.filter(id=>id!==n.id));groups.filter(g=>g.nodeIds.length<2).forEach(g=>removeGroup(g));updateAllGroups();refresh()};
+ el.querySelector('.copy').onclick=()=>{let nn=createNode(n.type,parseFloat(el.style.left)+28,parseFloat(el.style.top)+28);nn.el.querySelector('.prompt').value=el.querySelector('.prompt').value;syncNode(nn);pop('已复制节点')};
+ el.querySelector('.download-node').onclick=e=>{e.stopPropagation();downloadNodeContent(n)};
+ el.querySelectorAll('select,textarea,input').forEach(x=>x.oninput=()=>{syncNode(n);updateRefs();renderElementList()});
+ el.querySelector('.schedule-enabled').onchange=()=>updateNodeSchedule(n);
+ el.querySelector('.schedule-save').onclick=()=>updateNodeSchedule(n,true);
+ el.querySelector('.generate-btn').onclick=()=>runGenerate(n);
+ el.querySelector('.node-save-asset').onclick=()=>saveNodeAsAsset(n);
+ el.querySelector('.output').onmousedown=e=>{
+  e.stopPropagation();temp={from:n.id,x:e.clientX,y:e.clientY};
+  const mm=v=>{temp.x=v.clientX;temp.y=v.clientY;draw()};
+  const up=v=>{
+    let t=document.elementFromPoint(v.clientX,v.clientY);
+    if(t&&t.classList.contains('input')){
+      let target=nodes.find(x=>x.el===t.closest('.node'));
+      if(target&&target.id!==n.id&&!links.some(l=>l.from===n.id&&l.to===target.id)){links.push({from:n.id,to:target.id});pop('已引用上一节点')}
+    }
+    temp=null;document.removeEventListener('mousemove',mm);document.removeEventListener('mouseup',up);refresh()
+  };
+  document.addEventListener('mousemove',mm);document.addEventListener('mouseup',up)
+ };
+}
+
+function runGenerate(n){
+ const el=n.el,btn=el.querySelector('.generate-btn'),bar=el.querySelector('.progress span'),status=el.querySelector('.status-badge');
+ if(!el.querySelector('.prompt').value.trim()){el.classList.add('open');el.querySelector('.expand').textContent='参数⌃';pop('请先输入提示词');draw();return}
+ n.generationPrompt=`${el.querySelector('.prompt').value.trim()}\n默认画布风格：${n.canvasStyle||currentCanvasStyle}`;
+ el.querySelector('.node-save-asset').disabled=true;
+ n.status='生成中';renderElementList();btn.disabled=true;btn.textContent='生成中…';el.classList.add('running');status.textContent='生成中';status.className='status-badge running';bar.style.width='0%';
+ let p=0;const timer=setInterval(()=>{p+=Math.floor(Math.random()*18)+8;if(p>=100){p=100;clearInterval(timer);setTimeout(()=>{
+   el.classList.remove('running');
+   const prompt=el.querySelector('.prompt').value.toLowerCase();
+   const reviewMode=el.querySelector('.human-review')?.value;
+   const humanKeywords=/真人|真实人脸|人物肖像|摄影人像|写实人物|real person|portrait|human/;
+   const needsHumanReview=n.type==='image'&&(reviewMode==='human'||(reviewMode==='auto'&&humanKeywords.test(prompt)));
+   if(needsHumanReview){
+     n.status='审核中';renderElementList();btn.disabled=true;btn.textContent='真人内容审核中…';status.textContent='审核中';status.className='status-badge reviewing';
+     el.querySelector('.media-placeholder').innerHTML='<span class="big">◷</span><span>图片已生成 · 真人内容审核中</span>';pop('检测到真人内容，已进入审核');
+     setTimeout(()=>{n.status='审核通过';renderElementList();btn.disabled=false;btn.textContent='↻ 重新生成';status.textContent='审核通过';status.className='status-badge approved';el.querySelector('.media-placeholder').innerHTML='<span class="big">✓</span><span>真人图片审核通过</span>';el.querySelector('.node-save-asset').disabled=false;pop('真人图片审核通过')},1300);
+   }else{
+     n.status='已完成';renderElementList();btn.disabled=false;btn.textContent='↻ 重新生成';status.textContent='已完成';status.className='status-badge done';
+     el.querySelector('.media-placeholder').innerHTML=n.type==='image'?'<span class="big">✓</span><span>图片已生成</span>':n.type==='audio'?'<div class="node-audio-preview"><span>▥</span><b>音频已生成</b><small>可试听与调用</small></div>':'<span class="big"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M10 8l6 4-6 4z"/></svg></span><span>视频已生成</span>';pop('生成完成');
+     el.querySelector('.node-save-asset').disabled=false;
+   }
+ },180)}bar.style.width=p+'%'},180)
+}
+
+function syncNode(n){
+ const e=n.el,p=e.querySelector('.prompt').value.trim(),a=e.querySelector('.a').value,b=e.querySelector('.b').value,name=e.querySelector('.node-name').value.trim()||'未命名节点';
+ e.querySelector('.title-text').textContent=name;e.querySelector('.prompt-summary').textContent=p||'尚未填写提示词';e.querySelector('.media-badge').textContent=a+' · '+b;
+}
+function center(n,p){
+ const r=n.el.querySelector('.'+p).getBoundingClientRect(),s=stage.getBoundingClientRect();
+ return{x:(r.left+r.width/2-s.left)/scale,y:(r.top+r.height/2-s.top)/scale}
+}
+function curve(a,b){let d=Math.max(70,Math.abs(b.x-a.x)*.42);return`M${a.x},${a.y} C${a.x+d},${a.y} ${b.x-d},${b.y} ${b.x},${b.y}`}
+function draw(){
+ svg.innerHTML='';
+ links.forEach(l=>{let a=nodes.find(n=>n.id===l.from),b=nodes.find(n=>n.id===l.to);if(!a||!b)return;let p=document.createElementNS('http://www.w3.org/2000/svg','path');p.setAttribute('class','link');p.setAttribute('d',curve(center(a,'output'),center(b,'input')));svg.appendChild(p)});
+ if(temp){let a=nodes.find(n=>n.id===temp.from),s=stage.getBoundingClientRect(),b={x:(temp.x-s.left)/scale,y:(temp.y-s.top)/scale},p=document.createElementNS('http://www.w3.org/2000/svg','path');p.setAttribute('class','temp');p.setAttribute('d',curve(center(a,'output'),b));svg.appendChild(p)}
+}
+function data(n){return{type:n.type,model:n.el.querySelector('.model').value,prompt:n.el.querySelector('.prompt').value||'未填写提示词',canvasStyle:n.canvasStyle||currentCanvasStyle,a:n.el.querySelector('.a').value,b:n.el.querySelector('.b').value}}
+function safeDownloadName(value){return String(value||'未命名节点').trim().replace(/[\\/:*?"<>|]+/g,'-').slice(0,60)||'未命名节点'}
+function nodeDownloadData(n){
+ const el=n.el;
+ return{
+  id:n.id,
+  name:el.querySelector('.node-name').value.trim()||el.querySelector('.title-text').textContent,
+  type:n.type,
+  status:n.status,
+  model:el.querySelector('.model').value,
+  prompt:el.querySelector('.prompt').value||'',
+  canvasStyle:n.canvasStyle||currentCanvasStyle,
+  parameters:{primary:el.querySelector('.a').value,secondary:el.querySelector('.b').value,count:Number(el.querySelector('.count').value),seed:Number(el.querySelector('.seed').value)},
+  schedule:n.schedule||null,
+  upstreamNodeIds:links.filter(link=>link.to===n.id).map(link=>link.from),
+  exportedAt:new Date().toISOString()
+ };
+}
+function saveJsonFile(payload,filename){
+ const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');
+ a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),500);
+}
+const zipCrcTable=(()=>{const table=new Uint32Array(256);for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=(c&1)?0xedb88320^(c>>>1):c>>>1;table[n]=c>>>0}return table})();
+function zipCrc32(bytes){let c=0xffffffff;for(const byte of bytes)c=zipCrcTable[(c^byte)&255]^(c>>>8);return(c^0xffffffff)>>>0}
+function zipU16(n){return new Uint8Array([n&255,(n>>>8)&255])}
+function zipU32(n){return new Uint8Array([n&255,(n>>>8)&255,(n>>>16)&255,(n>>>24)&255])}
+function zipConcat(parts){const size=parts.reduce((sum,p)=>sum+p.length,0),out=new Uint8Array(size);let offset=0;parts.forEach(p=>{out.set(p,offset);offset+=p.length});return out}
+function createZipBlob(files){
+ const encoder=new TextEncoder(),locals=[],centrals=[];let offset=0;
+ files.forEach(file=>{
+  const name=encoder.encode(file.name),body=typeof file.content==='string'?encoder.encode(file.content):file.content,crc=zipCrc32(body),flags=0x0800;
+  const local=zipConcat([zipU32(0x04034b50),zipU16(20),zipU16(flags),zipU16(0),zipU16(0),zipU16(0),zipU32(crc),zipU32(body.length),zipU32(body.length),zipU16(name.length),zipU16(0),name,body]);
+  const central=zipConcat([zipU32(0x02014b50),zipU16(20),zipU16(20),zipU16(flags),zipU16(0),zipU16(0),zipU16(0),zipU32(crc),zipU32(body.length),zipU32(body.length),zipU16(name.length),zipU16(0),zipU16(0),zipU16(0),zipU16(0),zipU32(0),zipU32(offset),name]);
+  locals.push(local);centrals.push(central);offset+=local.length;
+ });
+ const centralSize=centrals.reduce((sum,p)=>sum+p.length,0),end=zipConcat([zipU32(0x06054b50),zipU16(0),zipU16(0),zipU16(files.length),zipU16(files.length),zipU32(centralSize),zipU32(offset),zipU16(0)]);
+ return new Blob([...locals,...centrals,end],{type:'application/zip'});
+}
+function saveBlobFile(blob,filename){const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),800)}
+function downloadNodeContent(n){
+ const content=nodeDownloadData(n);saveJsonFile(content,`Reelay-${safeDownloadName(content.name)}.json`);pop(`已下载节点：${content.name}`);
+}
+function downloadSelectedNodes(){
+ const selected=nodes.filter(n=>n.el.classList.contains('selected'));
+ if(!selected.length)return pop('请先选择需要下载的节点');
+ if(selected.length===1){downloadNodeContent(selected[0]);return}
+ const used=new Map(),files=selected.map(n=>{const content=nodeDownloadData(n),base=safeDownloadName(content.name),index=(used.get(base)||0)+1;used.set(base,index);return{name:`${base}${index>1?'-'+index:''}.json`,content:JSON.stringify(content,null,2)}});
+ files.push({name:'manifest.json',content:JSON.stringify({format:'Reelay node collection',nodeCount:selected.length,exportedAt:new Date().toISOString(),files:files.map(file=>file.name)},null,2)});
+ saveBlobFile(createZipBlob(files),`Reelay-批量节点-${selected.length}个-${new Date().toISOString().slice(0,10)}.zip`);pop(`已将 ${selected.length} 个节点打包为 ZIP`);
+}
+function updateSelectionBatchAction(){
+ const selected=nodes.filter(n=>n.el.classList.contains('selected')),button=document.getElementById('selectionBatchDownload'),badge=document.getElementById('selectionBatchCount');
+ if(!button||!badge)return;
+ if(selected.length<2){button.classList.remove('show');return}
+ const wr=workspace.getBoundingClientRect(),rects=selected.map(n=>n.el.getBoundingClientRect()),left=Math.min(...rects.map(r=>r.left)),right=Math.max(...rects.map(r=>r.right)),top=Math.min(...rects.map(r=>r.top));
+ badge.textContent=String(selected.length);button.classList.add('show');
+ const width=button.offsetWidth||106,x=Math.max(12,Math.min(wr.width-width-12,right-wr.left-width)),y=Math.max(58,top-wr.top-42);
+ button.style.left=x+'px';button.style.top=y+'px';button.title=`批量下载圈选的 ${selected.length} 个节点（ZIP）`;
+}
+function updateRefs(){
+ nodes.forEach(n=>{let ins=links.filter(l=>l.to===n.id),box=n.el.querySelector('.reference'),port=n.el.querySelector('.input');port.classList.toggle('connected',ins.length>0);
+ box.innerHTML=ins.length?ins.map(l=>{let u=nodes.find(x=>x.id===l.from),d=data(u);return`<b>${d.type==='image'?'图片':d.type==='audio'?'音频':'视频'}节点</b><br>${d.model} · ${d.a} · ${d.b}<br>${d.prompt}`}).join('<br><br>'):'未连接上一节点'});
+ draw()
+}
+function groupBounds(group){
+ const members=group.nodeIds.map(id=>nodes.find(n=>n.id===id)).filter(Boolean);
+ if(!members.length)return null;
+ const xs=members.map(n=>parseFloat(n.el.style.left)),ys=members.map(n=>parseFloat(n.el.style.top));
+ const rights=members.map(n=>parseFloat(n.el.style.left)+n.el.offsetWidth),bottoms=members.map(n=>parseFloat(n.el.style.top)+n.el.offsetHeight);
+ return{x:Math.min(...xs)-34,y:Math.min(...ys)-52,w:Math.max(...rights)-Math.min(...xs)+68,h:Math.max(...bottoms)-Math.min(...ys)+86};
+}
+function updateGroup(group){const b=groupBounds(group);if(!b)return;Object.assign(group.el.style,{left:b.x+'px',top:b.y+'px',width:b.w+'px',height:b.h+'px'})}
+function updateAllGroups(){groups.forEach(updateGroup)}
+function bringGroupToFront(group){
+ const groupZ=canvasLayerZ+=2;group.el.style.zIndex=String(groupZ);
+ group.nodeIds.forEach(id=>{const n=nodes.find(n=>n.id===id);if(n)n.el.style.zIndex=String(groupZ+1)});
+}
+function removeGroup(group){if(!group)return;group.el.remove();groups=groups.filter(g=>g!==group);group.nodeIds.forEach(id=>{const n=nodes.find(n=>n.id===id);if(n){n.el.removeAttribute('data-group-id');n.el.style.zIndex=''}})}
+function bindGroup(group){
+ const head=group.el.querySelector('.node-group-head'),nameInput=group.el.querySelector('.node-group-name');
+ head.onmousedown=e=>{
+  if(e.target.closest('button,input'))return;e.preventDefault();e.stopPropagation();
+  bringGroupToFront(group);
+  const members=group.nodeIds.map(id=>nodes.find(n=>n.id===id)).filter(Boolean),sx=e.clientX,sy=e.clientY;
+  const starts=members.map(n=>({n,x:parseFloat(n.el.style.left),y:parseFloat(n.el.style.top)}));
+  const mm=v=>{const dx=(v.clientX-sx)/scale,dy=(v.clientY-sy)/scale;starts.forEach(s=>{s.n.el.style.left=s.x+dx+'px';s.n.el.style.top=s.y+dy+'px'});updateGroup(group);draw()};
+  const up=()=>{document.removeEventListener('mousemove',mm);document.removeEventListener('mouseup',up)};document.addEventListener('mousemove',mm);document.addEventListener('mouseup',up);
+ };
+ nameInput.onfocus=()=>{nameInput.dataset.original=group.name;nameInput.dataset.cancelled='false';nameInput.select()};
+ nameInput.oninput=()=>{group.name=nameInput.value.trim()||nameInput.dataset.original||group.name};
+ nameInput.onblur=()=>{nameInput.value=nameInput.value.trim()||nameInput.dataset.original||group.name;group.name=nameInput.value;if(nameInput.dataset.cancelled!=='true')pop('分组名称已保存')};
+ nameInput.onkeydown=e=>{e.stopPropagation();if(e.key==='Enter'){e.preventDefault();nameInput.blur()}else if(e.key==='Escape'){nameInput.dataset.cancelled='true';nameInput.value=nameInput.dataset.original||group.name;group.name=nameInput.value;nameInput.blur()}};
+ group.el.querySelector('.node-group-close').onclick=e=>{e.stopPropagation();removeGroup(group);pop('分组已解散')};
+}
+function createGroup(){
+ const selected=nodes.filter(n=>n.el.classList.contains('selected'));if(selected.length<2)return pop('请按住 Shift 选择至少 2 个节点');
+ const existing=groups.filter(g=>g.nodeIds.some(id=>selected.some(n=>n.id===id)));existing.forEach(removeGroup);
+ const el=document.createElement('section');el.className='node-group';el.innerHTML=`<div class="node-group-head"><span class="node-group-grip">⠿</span><input class="node-group-name" value="节点分组 ${groupSeq}" maxlength="30" aria-label="分组名称"><span class="node-group-count">${selected.length} 个节点</span><button class="node-group-close" title="解散分组">×</button></div>`;stage.insertBefore(el,svg.nextSibling);
+ const group={id:'g'+groupSeq,name:'节点分组 '+groupSeq++,nodeIds:selected.map(n=>n.id),el};groups.push(group);selected.forEach(n=>n.el.dataset.groupId=group.id);bindGroup(group);updateGroup(group);bringGroupToFront(group);pop('已创建节点分组');
+}
+function ungroupSelected(){const ids=new Set(nodes.filter(n=>n.el.classList.contains('selected')).map(n=>n.dataset?.groupId||n.el.dataset.groupId).filter(Boolean));if(!ids.size)return pop('选中的节点不在分组中');groups.filter(g=>ids.has(g.id)).forEach(removeGroup);pop('分组已解散')}
+function refresh(){nodes.forEach(syncNode);updateRefs();renderElementList();updateSelectionBatchAction();requestAnimationFrame(()=>{updateAllGroups();draw();updateSelectionBatchAction()})}
+
+function selectNode(id,multi=false){
+ const n=nodes.find(x=>x.id===id);if(!multi)document.querySelectorAll('.node').forEach(x=>x.classList.remove('selected'));
+ if(n){if(multi)n.el.classList.toggle('selected');else n.el.classList.add('selected')}
+ document.querySelectorAll('.element-item').forEach(x=>x.classList.toggle('active',x.dataset.id===id))
+ updateSelectionBatchAction();
+}
+function locateNode(id){
+ const n=nodes.find(x=>x.id===id);if(!n)return;
+ const vr=viewport.getBoundingClientRect(),x=parseFloat(n.el.style.left),y=parseFloat(n.el.style.top),w=n.el.offsetWidth,h=n.el.offsetHeight;
+ panX=vr.width/2-(x+w/2)*scale;panY=vr.height/2-(y+h/2)*scale;
+ applyTransform();selectNode(id);n.el.classList.remove('flash');void n.el.offsetWidth;n.el.classList.add('flash');pop('已定位到 '+n.el.querySelector('.title-text').textContent)
+}
+function renderElementList(){
+ const q=elementSearch.value.trim().toLowerCase();
+ const list=nodes.filter(n=>{
+  const name=n.el.querySelector('.title-text').textContent.toLowerCase(),prompt=n.el.querySelector('.prompt').value.toLowerCase();
+  return (filter==='all'||n.type===filter)&&(!q||name.includes(q)||prompt.includes(q))
+ });
+ elementCount.textContent=nodes.length+' 个节点';
+ elementList.innerHTML=list.length?list.map(n=>{
+  const name=n.el.querySelector('.title-text').textContent,prompt=n.el.querySelector('.prompt').value.trim()||'未填写提示词';
+  return `<div class="element-item" data-id="${n.id}">
+    <div class="element-icon">${n.type==='image'?'<svg class="icon" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14" rx="2"/><path d="M7 15l3-3 3 3 3-4 2 3"/></svg>':n.type==='audio'?'<svg class="icon" viewBox="0 0 24 24"><path d="M5 10v4M9 7v10M13 5v14M17 8v8M21 10v4"/></svg>':'<svg class="icon" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14" rx="2"/><path d="M10 9l5 3-5 3z"/></svg>'}</div>
+    <div class="element-main"><div class="element-name">${name}</div><div class="element-meta">${prompt}</div></div>
+    <div class="element-status">${n.status}</div>
+  </div>`
+ }).join(''):'<div class="empty">没有匹配的节点</div>';
+ elementList.querySelectorAll('.element-item').forEach(item=>item.onclick=()=>locateNode(item.dataset.id))
+}
+
+function showPicker(clientX,clientY){
+ const wr=workspace.getBoundingClientRect();
+ picker.style.left=(clientX-wr.left)+'px';picker.style.top=(clientY-wr.top)+'px';picker.classList.add('show');
+ pickerPos={x:(clientX-wr.left-panX)/scale,y:(clientY-wr.top-panY)/scale}
+}
+
+/* 明确区分拖动画布与框选节点两种工具模式 */
+workspace.addEventListener('mousedown',e=>{
+ if(e.target.closest('.node')||e.target.closest('.node-group-head')||e.target.closest('.node-picker')||e.target.closest('.element-panel')||e.target.closest('.director-panel')||e.target.closest('.share-panel')||e.target.closest('.asset-panel')||e.target.closest('.asset-modal-mask')||e.target.closest('.points-panel')||e.target.closest('.message-panel')||e.target.closest('.permission-panel')||e.target.closest('.ai-workflow-panel')||e.target.closest('.canvas-chat')||e.target.closest('.canvas-chat-launcher')||e.target.closest('.canvas-quick-tools')||e.target.closest('.selection-batch-action')||e.target.closest('.topbar'))return;
+ const editingField=document.activeElement;
+ if(editingField?.matches('.node-name,.node-group-name'))editingField.blur();
+ if(commentMode)return;
+ const wantsMarquee=marqueeMode;
+ if(spaceDown||e.button===1||(e.button===0&&!wantsMarquee)){
+  e.preventDefault();workspace.classList.add('panning');
+  const sx=e.clientX,sy=e.clientY,ox=panX,oy=panY;
+  const mm=v=>{panX=ox+(v.clientX-sx);panY=oy+(v.clientY-sy);applyTransform()};
+  const up=()=>{workspace.classList.remove('panning');document.removeEventListener('mousemove',mm);document.removeEventListener('mouseup',up)};
+  document.addEventListener('mousemove',mm);document.addEventListener('mouseup',up);return;
+ }
+ if(e.button!==0)return;
+ e.preventDefault();
+ const marquee=document.getElementById('marqueeSelection'),wr=workspace.getBoundingClientRect(),sx=e.clientX,sy=e.clientY,append=e.shiftKey||e.ctrlKey||e.metaKey;
+ if(!append)nodes.forEach(n=>n.el.classList.remove('selected'));
+ marquee.style.left=sx-wr.left+'px';marquee.style.top=sy-wr.top+'px';marquee.style.width='0px';marquee.style.height='0px';marquee.classList.add('show');
+ const mm=v=>{
+  const left=Math.min(sx,v.clientX),top=Math.min(sy,v.clientY),right=Math.max(sx,v.clientX),bottom=Math.max(sy,v.clientY);
+  Object.assign(marquee.style,{left:left-wr.left+'px',top:top-wr.top+'px',width:right-left+'px',height:bottom-top+'px'});
+  nodes.forEach(n=>{const r=n.el.getBoundingClientRect(),hit=!(r.right<left||r.left>right||r.bottom<top||r.top>bottom);n.el.classList.toggle('marquee-hit',hit)});
+ };
+ const up=v=>{
+  mm(v);nodes.forEach(n=>{if(n.el.classList.contains('marquee-hit'))n.el.classList.add('selected');n.el.classList.remove('marquee-hit')});
+  marquee.classList.remove('show');document.removeEventListener('mousemove',mm);document.removeEventListener('mouseup',up);
+  const count=nodes.filter(n=>n.el.classList.contains('selected')).length;updateSelectionBatchAction();if(count>1)pop(`已选中 ${count} 个节点，可直接批量下载`);
+ };
+ document.addEventListener('mousemove',mm);document.addEventListener('mouseup',up)
+});
+document.addEventListener('keydown',e=>{if(e.code==='Space'){spaceDown=true;e.preventDefault()}});
+document.addEventListener('keyup',e=>{if(e.code==='Space')spaceDown=false});
+function deleteSelectedVideoNodes(videoNodes){
+ const ids=new Set(videoNodes.map(n=>n.id));
+ videoNodes.forEach(n=>{if(n.uploadedVideo?.url)URL.revokeObjectURL(n.uploadedVideo.url);n.el.remove()});
+ nodes=nodes.filter(n=>!ids.has(n.id));links=links.filter(link=>!ids.has(link.from)&&!ids.has(link.to));
+ groups.forEach(group=>group.nodeIds=group.nodeIds.filter(id=>!ids.has(id)));groups.filter(group=>group.nodeIds.length<2).forEach(removeGroup);
+ updateAllGroups();refresh();pop(`已删除 ${videoNodes.length} 个视频节点`);
+}
+document.addEventListener('keydown',event=>{
+ if(event.repeat||event.key!=='Backspace')return;
+ const target=event.target;if(target?.matches?.('input,textarea,select')||target?.isContentEditable)return;
+ if(selectedCommentId){event.preventDefault();event.stopPropagation();commentDeleteId=selectedCommentId;commentDeleteMask.classList.add('show');return}
+ const selectedVideos=nodes.filter(n=>n.type==='video'&&n.el.classList.contains('selected'));
+ if(!selectedVideos.length)return;
+ event.preventDefault();event.stopPropagation();
+ requestDeleteConfirm('删除视频节点',`确定删除圈选的 ${selectedVideos.length} 个视频节点吗？相关连线也会一并删除，且无法恢复。`,()=>deleteSelectedVideoNodes(selectedVideos));
+});
+
+workspace.addEventListener('dblclick',e=>{if(e.target.closest('.node')||e.target.closest('.node-picker')||e.target.closest('.element-panel')||e.target.closest('.director-panel')||e.target.closest('.share-panel')||e.target.closest('.asset-panel')||e.target.closest('.asset-modal-mask')||e.target.closest('.canvas-chat')||e.target.closest('.canvas-chat-launcher'))return;showPicker(e.clientX,e.clientY)});
+workspace.addEventListener('mousedown',e=>{if(!e.target.closest('.node-picker')&&!e.target.closest('#addBtn'))picker.classList.remove('show')});
+document.getElementById('addBtn').onclick=e=>{
+ e.stopPropagation();
+ if(picker.classList.contains('show')){picker.classList.remove('show');return}
+ const r=workspace.getBoundingClientRect();showPicker(r.left+18,r.top+64);
+};
+const elementsButton=document.getElementById('elementsBtn');
+let elementsButtonClickTimer=null;
+function closeElementPanel(){
+ if(elementsButtonClickTimer){clearTimeout(elementsButtonClickTimer);elementsButtonClickTimer=null}
+ elementPanel.classList.remove('show','panel-collapsed','is-moving','is-resizing');
+ elementPanel.style.display='none';
+ elementsButton.classList.remove('active');elementsButton.setAttribute('aria-expanded','false');
+}
+function toggleElementPanel(){
+ if(elementPanel.classList.contains('show')){closeElementPanel();return}
+ elementPanel.classList.remove('panel-collapsed');
+ elementPanel.style.display='flex';elementPanel.classList.add('show');elementsButton.classList.add('active');elementsButton.setAttribute('aria-expanded','true');renderElementList();
+}
+elementsButton.onclick=e=>{
+ e.stopPropagation();
+ if(elementsButtonClickTimer)clearTimeout(elementsButtonClickTimer);
+ elementsButtonClickTimer=setTimeout(()=>{elementsButtonClickTimer=null;toggleElementPanel()},220);
+};
+elementsButton.ondblclick=e=>{
+ e.preventDefault();e.stopPropagation();
+ closeElementPanel();
+};
+picker.querySelectorAll('button[data-type]').forEach(btn=>btn.onclick=()=>{createNode(btn.dataset.type,pickerPos.x,pickerPos.y);picker.classList.remove('show')});
+document.getElementById('clearBtn').onclick=()=>{links=[];refresh();pop('已清除连线')};
+function setCanvasTool(tool){
+ marqueeMode=tool==='marquee';workspace.classList.toggle('tool-pan',!marqueeMode);workspace.classList.toggle('tool-marquee',marqueeMode);
+ document.getElementById('panModeBtn').classList.toggle('active',!marqueeMode);document.getElementById('marqueeModeBtn').classList.toggle('active',marqueeMode);
+ pop(marqueeMode?'框选节点模式':'拖动画布模式');
+}
+document.getElementById('panModeBtn').onclick=()=>setCanvasTool('pan');
+document.getElementById('marqueeModeBtn').onclick=()=>setCanvasTool('marquee');
+document.getElementById('groupNodesBtn').onclick=createGroup;
+document.getElementById('ungroupNodesBtn').onclick=ungroupSelected;
+document.getElementById('layoutBtn').onclick=()=>{nodes.forEach((n,i)=>{n.el.style.left=130+(i%3)*360+'px';n.el.style.top=140+Math.floor(i/3)*410+'px'});updateAllGroups();draw()};
+document.getElementById('batchDownloadNodesBtn').onclick=downloadSelectedNodes;
+document.getElementById('selectionBatchDownload').onmousedown=e=>e.stopPropagation();
+document.getElementById('selectionBatchDownload').onclick=e=>{e.preventDefault();e.stopPropagation();downloadSelectedNodes()};
+const aiWorkflowPanel=document.getElementById('aiWorkflowPanel'),aiWorkflowBody=document.getElementById('aiWorkflowBody');
+let aiWorkflowMode='film';
+function renderAiWorkflow(mode){
+ aiWorkflowMode=mode;const titles={film:['一键拉片','自动拆解视频并生成完整节点画布'],replace:['一键替换','批量替换角色、商品、场景或声音'],global:['一键出海','完成翻译、配音、字幕与平台规格适配']},copy=titles[mode];
+ document.getElementById('aiWorkflowTitle').textContent=copy[0];document.getElementById('aiWorkflowSubtitle').textContent=copy[1];
+ document.getElementById('filmAnalysisBtn').classList.toggle('active',mode==='film');document.getElementById('smartReplaceBtn').classList.toggle('active',mode==='replace');document.getElementById('globalLaunchBtn').classList.toggle('active',mode==='global');
+ if(mode==='film')aiWorkflowBody.innerHTML=`<div class="ai-workflow-note">上传本地视频后，系统会自动识别镜头、关键帧、运镜、对白、音轨和视觉风格。</div><div class="ai-workflow-field"><label>上传视频</label><input id="workflowVideoFile" type="file" accept="video/*"></div><div class="ai-workflow-field"><label>视频链接（可选）</label><input id="workflowSource" placeholder="也可以粘贴视频链接"></div><div class="ai-workflow-field"><label>拆解精度</label><select id="workflowOption"><option>标准拉片 · 镜头级</option><option>精细拉片 · 帧级</option><option>快速拉片 · 段落级</option></select></div><button class="ai-workflow-run" id="runAiWorkflow">开始一键拉片</button>`;
+ if(mode==='replace')aiWorkflowBody.innerHTML=`<div class="ai-workflow-note">对当前画布内容进行统一识别，在保持构图、动作和镜头节奏的前提下完成批量替换。</div><div class="ai-workflow-field"><label>替换对象</label><select id="workflowSource"><option>角色 / 主角</option><option>商品 / 道具</option><option>场景 / 背景</option><option>台词 / 音色</option></select></div><div class="ai-workflow-field"><label>新素材或描述</label><input id="workflowOption" placeholder="选择资产或输入新对象描述"></div><button class="ai-workflow-run" id="runAiWorkflow">开始一键替换</button>`;
+ if(mode==='global')aiWorkflowBody.innerHTML=`<div class="ai-workflow-note">自动生成翻译字幕、本地化配音、海外封面和平台规格视频。</div><div class="ai-workflow-field"><label>目标市场</label><select id="workflowSource"><option>北美 · 英语</option><option>日本 · 日语</option><option>东南亚 · 多语言</option><option>拉美 · 西班牙语</option></select></div><div class="ai-workflow-field"><label>发布平台</label><select id="workflowOption"><option>YouTube Shorts</option><option>TikTok</option><option>Instagram Reels</option><option>多平台同步</option></select></div><button class="ai-workflow-run" id="runAiWorkflow">开始一键出海</button>`;
+ document.getElementById('runAiWorkflow').onclick=runAiWorkflow;
+}
+function openAiWorkflow(mode){renderAiWorkflow(mode);aiWorkflowPanel.classList.add('show')}
+function closeAiWorkflow(){aiWorkflowPanel.classList.remove('show');['filmAnalysisBtn','smartReplaceBtn','globalLaunchBtn'].forEach(id=>document.getElementById(id).classList.remove('active'))}
+function runAiWorkflow(){
+ const source=document.getElementById('workflowSource').value.trim(),option=document.getElementById('workflowOption').value.trim(),videoFile=aiWorkflowMode==='film'?document.getElementById('workflowVideoFile')?.files?.[0]:null,sourceLabel=videoFile?.name||source;
+ if(aiWorkflowMode==='film'&&!sourceLabel)return pop('请先上传视频或填写视频链接');if(aiWorkflowMode==='replace'&&!option)return pop('请选择素材或填写替换描述');
+ const plans={film:[['image','关键帧与场景拆解'],['video','镜头与运镜分析'],['audio','对白与音轨识别'],['image','视觉风格总结']],replace:[['image','原对象智能识别'],['image','新素材一致性适配'],['video','镜头与动作重建'],['audio','声音与台词同步']],global:[['video','多语言视频适配'],['audio','本地化配音'],['image','海外封面与字幕'],['video','平台规格导出']]},items=plans[aiWorkflowMode];
+ const labels={film:'拉片',replace:'替换',global:'出海'},prompt=`${labels[aiWorkflowMode]}任务：${sourceLabel}；${option}`;
+ const vr=viewport.getBoundingClientRect(),baseX=(vr.width*.5-panX)/scale-520,baseY=(vr.height*.34-panY)/scale-120,created=[];nodes.forEach(n=>n.el.classList.remove('selected'));
+ items.forEach((item,index)=>{const n=createNode(item[0],baseX+(index%2)*360,baseY+Math.floor(index/2)*410);n.el.querySelector('.node-name').value=item[1];n.el.querySelector('.prompt').value=prompt;if(videoFile&&item[0]==='video'){const url=URL.createObjectURL(videoFile),media=n.el.querySelector('.media');media.innerHTML=`<video controls preload="metadata" src="${url}" style="width:100%;height:100%;object-fit:cover"></video><div class="media-badge">上传视频 · ${(videoFile.size/1024/1024).toFixed(1)} MB</div><div class="status-badge done">已上传</div>`;n.uploadedVideo={name:videoFile.name,size:videoFile.size,type:videoFile.type,url};n.status='已上传'}syncNode(n);n.el.classList.add('selected');created.push(n);if(index)links.push({from:created[index-1].id,to:n.id})});
+ refresh();createGroup();const group=groups[groups.length-1];if(group){group.name=`一键${labels[aiWorkflowMode]}结果`;group.el.querySelector('.node-group-name').value=group.name}closeAiWorkflow();if(created[0])locateNode(created[0].id);pop(`一键${labels[aiWorkflowMode]}画布已生成`);
+}
+document.getElementById('filmAnalysisBtn').onclick=()=>openAiWorkflow('film');document.getElementById('smartReplaceBtn').onclick=()=>openAiWorkflow('replace');document.getElementById('globalLaunchBtn').onclick=()=>openAiWorkflow('global');document.getElementById('closeAiWorkflow').onclick=closeAiWorkflow;
+document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));t.classList.add('active');filter=t.dataset.filter;renderElementList()});
+elementSearch.oninput=renderElementList;
+function setZoom(v){scale=Math.max(.7,Math.min(1.3,v));document.getElementById('zoom').textContent=Math.round(scale*100)+'%';applyTransform()}
+document.getElementById('minus').onclick=()=>setZoom(scale-.1);document.getElementById('plus').onclick=()=>setZoom(scale+.1);
+
+/* 分享权限与成员管理 */
+function renderMembers(){
+ const admin=isCurrentUserAdmin();
+ document.getElementById('inviteSection').style.display=admin?'block':'none';
+ memberList.innerHTML=collaborators.map(c=>`
+ <div class="member" data-id="${c.id}">
+  <div class="avatar" style="background:${c.color}">${c.name[0]}</div>
+  <div class="member-info">
+    <div class="member-name">${c.name}${c.id===currentUserId?'（我）':''}</div>
+    <div class="member-state">${c.email} · ${c.status}</div>
+  </div>
+  <div class="member-actions">
+    ${c.owner?'<span class="owner-badge">所有者</span>':
+      admin?`<select class="role-select" data-role-id="${c.id}">
+        <option value="member" ${c.role==='member'?'selected':''}>普通成员</option>
+        <option value="admin" ${c.role==='admin'?'selected':''}>管理员</option>
+      </select><button class="remove-btn" data-remove-id="${c.id}">×</button>`:
+      `<span class="owner-badge">${c.role==='admin'?'管理员':'普通成员'}</span>`}
+  </div>
+ </div>`).join('');
+
+ memberList.querySelectorAll('[data-role-id]').forEach(sel=>sel.onchange=()=>{
+   if(!isCurrentUserAdmin())return pop('仅管理员可调整权限');
+   const member=collaborators.find(x=>x.id===sel.dataset.roleId);
+   member.role=sel.value;
+   pop(member.name+' 已调整为'+(member.role==='admin'?'管理员':'普通成员'));
+   renderMembers()
+ });
+ memberList.querySelectorAll('[data-remove-id]').forEach(btn=>btn.onclick=()=>{
+   if(!isCurrentUserAdmin())return pop('仅管理员可移除共享人');
+   const id=btn.dataset.removeId,member=collaborators.find(x=>x.id===id);
+   collaborators=collaborators.filter(x=>x.id!==id);
+   document.getElementById('cursor-'+id)?.remove();
+   pop('已移除 '+member.name);
+   renderMembers()
+ })
+}
+
+document.getElementById('copyLinkBtn').onclick=async()=>{
+ const input=document.getElementById('shareLink');
+ try{await navigator.clipboard.writeText(input.value);pop('画布链接已复制')}
+ catch{input.select();document.execCommand('copy');pop('画布链接已复制')}
+};
+
+document.getElementById('inviteBtn').onclick=()=>{
+ if(!isCurrentUserAdmin())return pop('仅管理员可添加共享人');
+ const value=inviteInput.value.trim();
+ if(!value)return pop('请输入姓名或邮箱');
+ const name=value.includes('@')?value.split('@')[0]:value;
+ const id='u'+Date.now();
+ const colors=['#c9a7ff','#ffd277','#89d7d0','#f197b6'];
+ collaborators.push({id,name,email:value.includes('@')?value:name.toLowerCase()+'@demo.com',role:'member',owner:false,color:colors[collaborators.length%colors.length],status:'已邀请'});
+ inviteInput.value='';
+ renderMembers();
+ if(shareOn)createRemoteCursor(collaborators[collaborators.length-1]);
+ pop('已添加 '+name)
+};
+
+function createRemoteCursor(c){
+ if(c.id===currentUserId||document.getElementById('cursor-'+c.id))return;
+ let cur=document.createElement('div');cur.className='remote-cursor';cur.id='cursor-'+c.id;cur.style.setProperty('--cursor',c.color);
+ cur.innerHTML=`<div class="remote-halo"></div><div class="remote-pointer"></div><div class="remote-label">${c.name}</div>`;
+ workspace.appendChild(cur)
+}
+function enableShare(){
+ shareOn=true;shareBtn.classList.add('active');shareSideBtn?.classList.add('active');sharePanel.classList.add('show');
+ collaborators.filter(c=>c.id!==currentUserId).forEach(createRemoteCursor);
+ renderMembers();moveCollaborators();remoteTimer=setInterval(moveCollaborators,1800);pop('共享模式已开启')
+}
+function disableShare(){
+ shareOn=false;shareBtn.classList.remove('active');shareSideBtn?.classList.remove('active');sharePanel.classList.remove('show');
+ clearInterval(remoteTimer);document.querySelectorAll('.remote-cursor').forEach(x=>x.remove());document.querySelectorAll('.node').forEach(x=>x.classList.remove('remote-hover'));pop('共享模式已关闭')
+}
+function moveCollaborators(){
+ if(!shareOn)return;
+ document.querySelectorAll('.node').forEach(x=>x.classList.remove('remote-hover'));
+ collaborators.filter(c=>c.id!==currentUserId).forEach((c,i)=>{
+   const choose=nodes[(Math.floor(Math.random()*nodes.length)+i)%nodes.length];
+   c.target=choose?.id||null;
+   if(choose){
+     const r=choose.el.getBoundingClientRect(),wr=workspace.getBoundingClientRect();
+     c.x=r.left-wr.left+r.width*(.25+.5*Math.random());
+     c.y=r.top-wr.top+r.height*(.18+.55*Math.random());
+     if(i===1)choose.el.classList.add('remote-hover')
+   }else{c.x=200+Math.random()*800;c.y=140+Math.random()*500}
+   const cur=document.getElementById('cursor-'+c.id);if(cur){cur.style.left=c.x+'px';cur.style.top=c.y+'px'}
+   c.status=i===1&&choose?'正在查看 '+choose.el.querySelector('.title-text').textContent:'正在浏览'
+ });
+ renderMembers()
+}
+function toggleShare(){shareOn?disableShare():enableShare()}
+shareBtn.onclick=toggleShare;if(shareSideBtn)shareSideBtn.onclick=toggleShare;
+
+
+
+
+/* 项目管理 */
+let project={name:'AI短剧项目',canvases:[
+{id:'cv1',name:'角色设计',state:null},
+{id:'cv2',name:'第一幕分镜',state:null},
+{id:'cv3',name:'视频生成',state:null}
+]};
+let activeCanvasId='cv1';
+let databaseSyncTimer=null,databaseSyncBusy=false,databaseHydrated=false;
+function serializeCurrentCanvas(){
+ return {panX,panY,scale,links:links.map(l=>({...l})),nodes:nodes.map(n=>({
+  id:n.id,type:n.type,x:parseFloat(n.el.style.left)||0,y:parseFloat(n.el.style.top)||0,status:n.status,
+  name:n.el.querySelector('.node-name').value,prompt:n.el.querySelector('.prompt').value,model:n.el.querySelector('.model').value,
+  a:n.el.querySelector('.a').value,b:n.el.querySelector('.b').value,count:n.el.querySelector('.count').value,seed:n.el.querySelector('.seed').value,
+  humanReview:n.el.querySelector('.human-review')?.value||'',schedule:{...(n.schedule||{enabled:false,time:'',repeat:'once'})}
+ }))};
+}
+function saveCurrentCanvas(){const canvas=project.canvases.find(c=>c.id===activeCanvasId);if(canvas)canvas.state=serializeCurrentCanvas();scheduleDatabaseSync()}
+function scheduleDatabaseSync(){
+ if(!databaseHydrated)return;
+ clearTimeout(databaseSyncTimer);
+ databaseSyncTimer=setTimeout(syncWorkspaceToDatabase,900);
+}
+async function syncWorkspaceToDatabase(){
+ if(databaseSyncBusy||!databaseHydrated)return;
+ databaseSyncBusy=true;
+ try{
+  const current=project.canvases.find(c=>c.id===activeCanvasId);
+  if(current)current.state=serializeCurrentCanvas();
+  const response=await fetch('/api/workspace',{method:'PUT',headers:{'content-type':'application/json'},body:JSON.stringify({
+   projectName:project.name,activeCanvasId,payload:{project}
+  })});
+  if(!response.ok)throw new Error('database save failed');
+ }catch(error){console.warn('Reelay database sync failed',error)}
+ finally{databaseSyncBusy=false}
+}
+async function loadWorkspaceFromDatabase(){
+ try{
+  const response=await fetch('/api/workspace',{cache:'no-store'});
+  if(!response.ok)throw new Error('database load failed');
+  const data=await response.json();
+  if(data.workspace?.payload?.project){
+   project=data.workspace.payload.project;
+   activeCanvasId=data.workspace.activeCanvasId||project.canvases?.[0]?.id||'cv1';
+   const current=project.canvases.find(c=>c.id===activeCanvasId)||project.canvases[0];
+   if(current){activeCanvasId=current.id;restoreCanvasState(current.state)}
+   renderProject();
+   pop('云端工作区已同步');
+  }
+ }catch(error){console.warn('Reelay database load failed',error)}
+ finally{databaseHydrated=true;scheduleDatabaseSync()}
+}
+window.loadWorkspaceFromDatabase=loadWorkspaceFromDatabase;
+window.syncWorkspaceToDatabase=syncWorkspaceToDatabase;
+function clearCanvasStage(){nodes.forEach(n=>n.el.remove());nodes=[];links=[];temp=null;directorOrder=[];directorActiveId=null;svg.innerHTML=''}
+function restoreCanvasState(state){
+ clearCanvasStage();
+ if(!state){panX=0;panY=0;scale=1;applyTransform();refresh();return}
+ const idMap={};
+ (state.nodes||[]).forEach(saved=>{
+  const n=createNode(saved.type,saved.x,saved.y);idMap[saved.id]=n.id;n.status=saved.status||'待生成';
+  const values={'.node-name':saved.name,'.prompt':saved.prompt,'.model':saved.model,'.a':saved.a,'.b':saved.b,'.count':saved.count,'.seed':saved.seed,'.human-review':saved.humanReview};
+  Object.entries(values).forEach(([selector,value])=>{const input=n.el.querySelector(selector);if(input&&value!==undefined)input.value=value});
+  n.schedule={...(saved.schedule||{enabled:false,time:'',repeat:'once'})};
+  n.el.querySelector('.schedule-enabled').checked=!!n.schedule.enabled;n.el.querySelector('.schedule-time').value=n.schedule.time||'';n.el.querySelector('.schedule-repeat').value=n.schedule.repeat||'once';updateNodeSchedule(n);
+  const badge=n.el.querySelector('.status-badge');badge.textContent=n.status;badge.className='status-badge '+(n.status==='已完成'?'done':n.status==='生成中'?'running':'');syncNode(n);
+ });
+ links=(state.links||[]).map(l=>({from:idMap[l.from],to:idMap[l.to]})).filter(l=>l.from&&l.to);
+ panX=state.panX||0;panY=state.panY||0;scale=state.scale||1;applyTransform();refresh();
+}
+function switchCanvas(canvasId){
+ if(canvasId===activeCanvasId){pop('当前已在此画布');return}
+ const target=project.canvases.find(c=>c.id===canvasId);if(!target)return;
+ saveCurrentCanvas();activeCanvasId=canvasId;currentCanvasStyle=target.style||'电影写实';updateCanvasStylePill();restoreCanvasState(target.state);renderProject();pop(`已切换到：${target.name} · ${currentCanvasStyle}风格`);
+}
+function renderProject(){
+document.getElementById('projectName').value=project.name;
+canvasList.innerHTML=project.canvases.map((c,i)=>`
+<div class="canvas-item ${c.id===activeCanvasId?'current-canvas':''}">
+<div class="canvas-title">
+<input value="${c.name}" data-id="${c.id}" class="canvasName">
+<button data-open="${c.id}">${c.id===activeCanvasId?'当前':'切换'}</button>
+<button class="canvas-panel-delete" data-panel-delete="${c.id}" title="删除画布">删除</button>
+</div>
+<div class="canvas-meta">${c.id===activeCanvasId?nodes.length:(c.state?.nodes?.length||0)} 个节点 · ${c.style||'电影写实'} ${c.id===activeCanvasId?'· <span class="canvas-current-badge">当前画布</span>':''}</div>
+</div>`).join('');
+document.querySelectorAll('.canvasName').forEach(inp=>inp.onchange=()=>{
+let cv=project.canvases.find(x=>x.id===inp.dataset.id);cv.name=inp.value;});
+canvasList.querySelectorAll('[data-open]').forEach(btn=>btn.onclick=()=>switchCanvas(btn.dataset.open));
+canvasList.querySelectorAll('[data-panel-delete]').forEach(btn=>btn.onclick=e=>{
+  e.stopPropagation();
+  const canvas=project.canvases.find(x=>x.id===btn.dataset.panelDelete);if(!canvas)return;
+  if(project.canvases.length===1){pop('至少保留一张画布');return}
+  requestDeleteConfirm('删除画布','确定删除画布「'+canvas.name+'」吗？删除后无法恢复。',()=>{
+    project.canvases=project.canvases.filter(x=>x.id!==canvas.id);
+    if(activeCanvasId===canvas.id){activeCanvasId=project.canvases[0].id;restoreCanvasState(project.canvases[0].state)}
+    renderProject();pop('画布已删除');
+  });
+});
+}
+projectBtn.onclick=()=>{
+projectPanel.classList.toggle('show');
+projectBtn.classList.toggle('active');
+renderProject();
+};
+document.getElementById('renameProjectBtn').onclick=()=>{
+project.name=document.getElementById('projectName').value.trim()||'未命名项目';
+renderProject();pop('项目名称已保存');
+};
+document.getElementById('addCanvasBtn').onclick=()=>{
+ openCanvasEditorPage('internal');
+};
+document.getElementById('closeProjectPanel').onclick=()=>{projectPanel.classList.remove('show');projectBtn.classList.remove('active')};
+document.getElementById('closeAssetPanel').onclick=()=>{assetPanel.classList.remove('show');assetBtn.classList.remove('active')};
+const closeElementPanelButton=document.getElementById('closeElementPanel');
+closeElementPanelButton.onmousedown=e=>e.stopPropagation();
+closeElementPanelButton.onclick=e=>{
+ e.preventDefault();e.stopPropagation();
+ closeElementPanel();
+};
+
+/* 资产库 */
+let assets=[
+ {id:'a1',type:'portrait',name:'女主角·林夏',image:'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=700&q=85',images:['https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=700&q=85','https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=700&q=85','https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=700&q=85'],desc:'现代都市女主，黑色长发，冷静气质',prompt:'同一位女性角色，黑色长发，清冷气质，现代都市服装，保持人物五官一致',tags:'女性 主角 都市 肖像'},
+ {id:'a2',type:'portrait',name:'少年剑客·陆离',image:'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=700&q=85',desc:'东方玄幻少年剑客，沉稳冷峻',prompt:'东方玄幻少年剑客，束发，青色长袍，腰佩长剑，保持角色一致性',tags:'男性 少年 武侠 玄幻'},
+ {id:'a3',type:'portrait',name:'时尚人物参考',image:'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=700&q=85',desc:'自然光人物肖像，可用作角色一致性参考',prompt:'自然光人物肖像，柔和肤色，真实摄影质感，保持人物面部一致',tags:'人物 摄影 肖像 自然光'},
+ {id:'a4',type:'scene',name:'雨夜霓虹街道',image:'https://images.unsplash.com/photo-1519608487953-e999c86e7455?auto=format&fit=crop&w=700&q=85',images:['https://images.unsplash.com/photo-1519608487953-e999c86e7455?auto=format&fit=crop&w=700&q=85','https://images.unsplash.com/photo-1514565131-fce0801e5785?auto=format&fit=crop&w=700&q=85','https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=700&q=85'],desc:'潮湿路面、霓虹灯与电影感夜景',prompt:'雨夜城市街道，潮湿路面反射霓虹灯，电影感，蓝紫色氛围',tags:'城市 夜景 霓虹 雨'},
+ {id:'a5',type:'scene',name:'云海仙山',image:'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=700&q=85',desc:'山脉、云层与宏大自然远景',prompt:'东方云海山脉，晨曦穿透云层，宏大远景，仙侠氛围',tags:'仙侠 山水 云海 场景'},
+ {id:'a6',type:'scene',name:'复古电影片场',image:'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=700&q=85',desc:'影院与复古电影空间氛围',prompt:'复古电影空间，暖色钨丝灯，胶片质感，电影氛围',tags:'复古 片场 室内 电影'},
+ {id:'a7',type:'video',name:'角色缓慢转身',image:'https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&w=700&q=85',desc:'5 秒人物缓慢转身镜头模板',prompt:'人物缓慢转身看向镜头，头发自然摆动，镜头轻微推进，动作连贯',tags:'人物 运镜 转身 5秒'},
+ {id:'a8',type:'video',name:'城市航拍推进',image:'https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?auto=format&fit=crop&w=700&q=85',desc:'10 秒城市上空航拍推进模板',prompt:'航拍镜头从城市上空缓慢向前推进，建筑灯光逐渐亮起，稳定电影运镜',tags:'城市 航拍 运镜 10秒'},
+ {id:'a9',type:'audio',name:'雨夜氛围音乐',image:'https://images.unsplash.com/photo-1511379938547-c1f69419868d?auto=format&fit=crop&w=700&q=85',desc:'32 秒低沉电子氛围音乐，适合都市雨夜镜头',prompt:'低沉电子氛围音乐，缓慢节奏，雨夜城市感，克制而神秘',tags:'配乐 氛围 雨夜 32秒'},
+ {id:'a10',type:'audio',name:'电影转场音效',image:'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?auto=format&fit=crop&w=700&q=85',desc:'3 秒电影感上升转场音效',prompt:'电影感上升音效，由低到高，结尾短促有力，适合镜头转场',tags:'音效 转场 电影 3秒'}
+];
+
+function assetTypeName(type){return type==='portrait'?'角色卡':type==='scene'?'场景卡':type==='video'?'视频':'音频'}
+function renderAssetLibrary(){
+ const q=assetSearch.value.trim().toLowerCase();
+ const list=assets.filter(a=>(assetFilter==='all'||a.type===assetFilter)&&(!q||(a.name+' '+a.desc+' '+a.tags).toLowerCase().includes(q)));
+ assetCount.textContent=assets.length+' 项资产';
+ assetGrid.innerHTML=`<div class="asset-add-card" id="assetAddCard"><div class="plus">＋</div><span>添加新资产</span></div>`+
+ (list.length?list.map(a=>`
+  <div class="asset-card ${a.type==='portrait'?'character-card':''}" data-asset-id="${a.id}" data-asset-type="${a.type}">
+    <div class="asset-cover ${a.type}">
+      <img src="${a.image}" alt="${a.name}" loading="lazy">
+      <span class="asset-type">${assetTypeName(a.type)}</span>
+      <div class="asset-card-menu"><button class="asset-edit" title="编辑">✎</button></div>
+      ${a.type==='video'?'<span class="asset-play"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M10 8l6 4-6 4z"/></svg></span>':''}
+      ${a.type==='audio'?'<span class="asset-audio-wave"><i></i><i></i><i></i><i></i><i></i></span>':''}
+    </div>
+    <div class="asset-info">
+      <div class="asset-name">${a.name}</div>
+      <div class="asset-desc">${a.desc}</div>
+      <div class="asset-reference-line">
+        <span>${a.type==='portrait'?'参考图片':a.type==='scene'?'场景参考':a.type==='video'?'视频模板':'音频素材'}</span>
+        <b>${['portrait','scene'].includes(a.type)?((a.images?.length)||1)+' 张':a.type==='video'?'可调用':'可试听'}</b>
+        ${a.type==='portrait'&&a.audio?.name?'<em class="character-audio-ready">♫ 音频已配置</em>':''}
+      </div>
+      <div class="asset-actions">
+        <button class="primary asset-call" style="flex:1">调用资产</button>
+      </div>
+    </div>
+  </div>`).join(''):'<div class="asset-empty">没有匹配的资产</div>');
+
+ document.getElementById('assetAddCard').onclick=()=>openAssetModal();
+ assetGrid.querySelectorAll('.asset-call').forEach(btn=>btn.onclick=e=>{
+   e.stopPropagation();const card=btn.closest('.asset-card'),asset=assets.find(a=>a.id===card.dataset.assetId);callAsset(asset);
+ });
+  assetGrid.querySelectorAll('.asset-edit').forEach(btn=>btn.onclick=e=>{
+   e.stopPropagation();const card=btn.closest('.asset-card'),asset=assets.find(a=>a.id===card.dataset.assetId);openAssetModal(asset);
+ });
+}
+function nodeAssetCover(n){
+ const existing=n.el.querySelector('.media-placeholder img')?.src;
+ if(existing)return existing;
+ const name=n.el.querySelector('.node-name').value.trim()||'节点资产';
+ const label=n.type==='image'?'IMAGE':n.type==='video'?'VIDEO':'AUDIO';
+ const accent=n.type==='image'?'#9fa8ff':n.type==='video'?'#ffad89':'#7dd7ff';
+ const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="800" height="500" viewBox="0 0 800 500"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#252a36"/><stop offset="1" stop-color="#101217"/></linearGradient></defs><rect width="800" height="500" fill="url(#g)"/><circle cx="690" cy="80" r="150" fill="${accent}" opacity=".16"/><rect x="56" y="62" width="92" height="30" rx="15" fill="${accent}" opacity=".9"/><text x="102" y="82" text-anchor="middle" fill="#101217" font-family="Arial" font-size="14" font-weight="700">${label}</text><text x="56" y="300" fill="#f4f5f7" font-family="Arial,sans-serif" font-size="42" font-weight="700">${name.replace(/[<>&]/g,'')}</text><text x="56" y="344" fill="#818997" font-family="Arial,sans-serif" font-size="18">Reelay · Generated node asset</text></svg>`;
+ return 'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg);
+}
+function saveNodeAsAsset(n){
+ if(!['已完成','审核通过'].includes(n.status))return pop('请等待节点生成完成后再保存');
+ const el=n.el,name=el.querySelector('.node-name').value.trim()||'未命名节点资产';
+ const a=el.querySelector('.a').value,b=el.querySelector('.b').value,count=el.querySelector('.count').value;
+ const draft={type:n.type==='image'?'scene':n.type,name,image:nodeAssetCover(n),images:[nodeAssetCover(n)],desc:`由${n.type==='image'?'图片':n.type==='video'?'视频':'音频'}节点生成 · ${a} · ${b} · ${count} 个结果`,prompt:el.querySelector('.prompt').value.trim(),tags:`节点生成 ${n.type==='image'?'图片':n.type==='video'?'视频':'音频'} ${a} ${b}`};
+ openAssetModal(draft,true);
+ document.getElementById('assetModalTitle').textContent='保存节点内容为资产';
+}
+function openAssetModal(asset=null,asNew=false){
+ const modal=document.querySelector('.asset-modal');modal.classList.remove('maximized');modal.style.transform='';modal.style.width='';modal.style.height='';modal.dataset.dragX='0';modal.dataset.dragY='0';document.getElementById('toggleAssetModalSize').textContent='□';document.getElementById('toggleAssetModalSize').title='放大编辑窗口';
+ editingAssetId=asNew?null:(asset?.id||null);
+ assetImageList=asset?.images?.length?[...asset.images]:(asset?.image?[asset.image]:[]);
+ assetImageData=assetImageList[0]||'';
+ document.getElementById('assetModalTitle').textContent=asset?'编辑资产':'添加资产';
+ assetTypeInput.value=asset?.type||'portrait';
+ assetNameInput.value=asset?.name||'';
+ assetDescInput.value=asset?.desc||'';
+ assetPromptInput.value=asset?.prompt||'';
+ assetTagsInput.value=asset?.tags||'';
+ characterAudioData=asset?.audio?{...asset.audio}:null;
+ assetFileInput.value='';
+ document.getElementById('characterAudioInput').value='';
+ document.getElementById('characterAudioPurpose').value=asset?.audio?.purpose||'音色参考';
+ document.getElementById('characterAudioLanguage').value=asset?.audio?.language||'中文（普通话）';
+ document.getElementById('characterAudioEmotion').value=asset?.audio?.emotion||'自然';
+ document.getElementById('characterAudioSpeed').value=asset?.audio?.speed||1;
+ renderCharacterAudio();renderAssetImageGallery();updateAssetUploadMode();
+ assetModalMask.classList.add('show');
+}
+function closeAssetModal(){
+ assetModalMask.classList.remove('show');editingAssetId=null;assetImageData='';assetImageList=[];characterAudioData=null;
+}
+function renderCharacterAudio(){
+ const hasAudio=Boolean(characterAudioData?.data);
+ document.getElementById('characterAudioFileName').textContent=characterAudioData?.name||'上传角色音频';
+ document.getElementById('characterAudioPreview').classList.toggle('show',hasAudio);
+ const player=document.getElementById('characterAudioPlayer');if(hasAudio)player.src=characterAudioData.data;else{player.pause();player.removeAttribute('src')}
+ const speed=Number(document.getElementById('characterAudioSpeed').value||1);document.getElementById('characterAudioSpeedValue').textContent=speed.toFixed(1)+'×';
+}
+function renderAssetImageGallery(){
+ assetImageData=assetImageList[0]||'';
+ if(assetImageData){assetPreviewImg.src=assetImageData;assetPreviewImg.style.display='block'}else{assetPreviewImg.removeAttribute('src');assetPreviewImg.style.display='none'}
+ document.getElementById('assetImageCount').textContent=assetImageList.length+' 张';
+ document.getElementById('assetImageGallery').innerHTML=assetImageList.map((src,index)=>`<div class="asset-gallery-item ${index===0?'primary':''}"><img src="${src}" alt="参考图 ${index+1}"><button data-remove-asset-image="${index}" title="移除">×</button></div>`).join('');
+ document.querySelectorAll('[data-remove-asset-image]').forEach(btn=>btn.onclick=e=>{e.stopPropagation();assetImageList.splice(Number(btn.dataset.removeAssetImage),1);renderAssetImageGallery()});
+}
+function updateAssetUploadMode(){
+ const multi=['portrait','scene'].includes(assetTypeInput.value);
+ document.getElementById('characterAudioFields').classList.toggle('show',assetTypeInput.value==='portrait');
+ assetFileInput.multiple=multi;
+ document.getElementById('assetUploadHint').innerHTML=multi?(assetTypeInput.value==='portrait'?'点击上传多张角色参考图<br>支持不同角度、表情和服装':'点击上传多张场景参考图<br>支持不同机位、时间和光线'):'点击上传资产封面<br>支持 JPG / PNG / WEBP';
+ if(!multi&&assetImageList.length>1){assetImageList=assetImageList.slice(0,1);renderAssetImageGallery()}
+}
+assetTypeInput.onchange=updateAssetUploadMode;
+document.getElementById('characterAudioInput').onchange=e=>{
+ const file=e.target.files?.[0];if(!file)return;
+ if(file.size>20*1024*1024){e.target.value='';return pop('角色音频请控制在 20MB 以内')}
+ const reader=new FileReader();reader.onload=event=>{characterAudioData={name:file.name,size:file.size,type:file.type||'audio/mpeg',data:event.target.result};renderCharacterAudio()};reader.readAsDataURL(file);
+};
+document.getElementById('removeCharacterAudio').onclick=()=>{characterAudioData=null;document.getElementById('characterAudioInput').value='';renderCharacterAudio()};
+document.getElementById('characterAudioSpeed').oninput=renderCharacterAudio;
+assetFileInput.onchange=async()=>{
+ const files=[...assetFileInput.files];if(!files.length)return;
+ const results=await Promise.all(files.map(file=>new Promise(resolve=>{const reader=new FileReader();reader.onload=e=>resolve(e.target.result);reader.readAsDataURL(file)})));
+ assetImageList=['portrait','scene'].includes(assetTypeInput.value)?[...assetImageList,...results]:[results[0]];
+ renderAssetImageGallery();assetFileInput.value='';
+};
+document.getElementById('saveAssetBtn').onclick=()=>{
+ const name=assetNameInput.value.trim(),desc=assetDescInput.value.trim(),prompt=assetPromptInput.value.trim();
+ if(!name)return pop('请输入资产名称');
+ if(!assetImageList.length)return pop('请至少上传一张资产图片或封面');
+ assetImageData=assetImageList[0];
+ const audio=assetTypeInput.value==='portrait'&&characterAudioData?{...characterAudioData,purpose:document.getElementById('characterAudioPurpose').value,language:document.getElementById('characterAudioLanguage').value,emotion:document.getElementById('characterAudioEmotion').value,speed:Number(document.getElementById('characterAudioSpeed').value)}:null;
+ if(editingAssetId){
+   const a=assets.find(x=>x.id===editingAssetId);
+   Object.assign(a,{type:assetTypeInput.value,name,desc,prompt,tags:assetTagsInput.value.trim(),image:assetImageData,images:[...assetImageList],audio});
+   pop('资产已更新');
+ }else{
+   const createdAsset={id:'a'+Date.now(),type:assetTypeInput.value,name,desc,prompt,tags:assetTagsInput.value.trim(),image:assetImageData,images:[...assetImageList],audio};
+   assets.unshift(createdAsset);
+   projectAssets.unshift(createdAsset);
+   assetScope='project';
+   document.querySelectorAll('[data-scope]').forEach(btn=>btn.classList.toggle('active',btn.dataset.scope==='project'));
+   pop('资产已添加');
+ }
+ closeAssetModal();
+ renderAssetLibrary();
+};
+let assetScope='public';
+const publicAssets = assets.filter(x=>['a1','a2','a3','a4','a5','a7','a8','a9'].includes(x.id));
+const projectAssets = assets.filter(x=>['a6','a7','a8','a9','a10'].includes(x.id));
+
+document.querySelectorAll('[data-scope]').forEach(btn=>{
+  btn.onclick=()=>{
+    document.querySelectorAll('[data-scope]').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    assetScope=btn.dataset.scope;
+    renderAssetLibrary();
+  };
+});
+
+const _oldRenderAssetLibrary = renderAssetLibrary;
+renderAssetLibrary = function(){
+  const backup = assets;
+  assets = assetScope==='public' ? publicAssets : projectAssets;
+  _oldRenderAssetLibrary();
+  assets = backup;
+
+  // Ensure every asset card has a single "调用资产" button
+  document.querySelectorAll('.asset-card').forEach(card=>{
+      let actions = card.querySelector('.asset-actions');
+      if(actions){
+          actions.innerHTML='<button class="primary asset-call" style="flex:1">调用资产</button>';
+      }
+  });
+
+  document.querySelectorAll('.asset-call').forEach(btn=>{
+      btn.onclick=(e)=>{
+          e.stopPropagation();
+          const card=btn.closest('.asset-card');
+          const id=card.dataset.assetId;
+          const all=[...publicAssets,...projectAssets];
+          const asset=all.find(a=>a.id===id);
+          if(asset) callAsset(asset);
+      };
+  });
+}
+
+
+/* ===== 项目权限 ===== */
+const currentMemberRole='admin'; // 改为 member 可体验普通成员权限
+
+const _renderProject=renderProject;
+renderProject=function(){
+  _renderProject();
+  const isAdmin=currentMemberRole==='admin';
+
+  document.getElementById('projectName').disabled=!isAdmin;
+  document.getElementById('addCanvasBtn').style.display=isAdmin?'inline-block':'none';
+  document.getElementById('renameProjectBtn').style.display=isAdmin?'inline-block':'none';
+
+  const owned=['cv2']; // 普通成员可见画布
+
+  canvasList.querySelectorAll('.canvas-item').forEach((item,i)=>{
+      const canvas=project.canvases[i];
+      if(!isAdmin){
+          if(!owned.includes(canvas.id)){
+              item.style.display='none';
+              return;
+          }
+          const input=item.querySelector('.canvasName');
+          if(input) input.disabled=true;
+          const btn=item.querySelector('[data-open]');
+          if(btn) btn.textContent='进入';
+          const meta=item.querySelector('.canvas-meta');
+          if(meta) meta.innerHTML='<span class="canvas-private">我的画布</span>';
+      }else{
+          const meta=item.querySelector('.canvas-meta');
+          if(meta){
+             const count=canvas.id===activeCanvasId?nodes.length:(canvas.state?.nodes?.length||0);
+             meta.innerHTML=count+' 个节点 · '+(canvas.id===activeCanvasId?'<span class="canvas-current-badge">当前画布</span>':'<span class="role-lock">管理员可编辑</span>');
+          }
+      }
+  });
+}
+
+renderAssetLibrary();renderProject();
+document.getElementById('closeAssetModal').onclick=closeAssetModal;
+document.getElementById('cancelAssetModal').onclick=closeAssetModal;
+assetModalMask.onclick=e=>{if(e.target===assetModalMask)closeAssetModal()};
+
+/* 资产编辑窗口：标题栏拖拽、自由缩放与放大还原 */
+(()=>{
+ const modal=document.querySelector('.asset-modal'),head=modal.querySelector('.asset-modal-head'),sizeBtn=document.getElementById('toggleAssetModalSize');
+ let drag=null;
+ sizeBtn.onclick=e=>{
+ e.stopPropagation();const maximizing=!modal.classList.contains('maximized');
+  modal.classList.toggle('maximized',maximizing);modal.style.transform='';modal.style.width='';modal.style.height='';modal.dataset.dragX='0';modal.dataset.dragY='0';
+  sizeBtn.textContent=maximizing?'❐':'□';sizeBtn.title=maximizing?'还原编辑窗口':'放大编辑窗口';
+ };
+ head.addEventListener('pointerdown',e=>{
+  if(e.target.closest('button')||modal.classList.contains('maximized'))return;
+  const rect=modal.getBoundingClientRect(),maskRect=assetModalMask.getBoundingClientRect(),startX=Number(modal.dataset.dragX||0),startY=Number(modal.dataset.dragY||0);
+  drag={clientX:e.clientX,clientY:e.clientY,startX,startY,baseLeft:rect.left-startX,baseTop:rect.top-startY,width:rect.width,height:rect.height,maskRect};
+  head.setPointerCapture(e.pointerId);e.preventDefault();
+ });
+ head.addEventListener('pointermove',e=>{
+  if(!drag)return;
+  let x=drag.startX+e.clientX-drag.clientX,y=drag.startY+e.clientY-drag.clientY;
+  x=Math.min(drag.maskRect.right-8-drag.width-drag.baseLeft,Math.max(drag.maskRect.left+8-drag.baseLeft,x));
+  y=Math.min(drag.maskRect.bottom-8-drag.height-drag.baseTop,Math.max(drag.maskRect.top+8-drag.baseTop,y));
+  modal.dataset.dragX=String(x);modal.dataset.dragY=String(y);modal.style.transform=`translate3d(${x}px,${y}px,0)`;
+ });
+ const stopDrag=()=>{drag=null};head.addEventListener('pointerup',stopDrag);head.addEventListener('pointercancel',stopDrag);
+})();
+
+function canvasCenterPosition(){
+ const vr=viewport.getBoundingClientRect();
+ return {x:(vr.width/2-panX)/scale-155,y:(vr.height/2-panY)/scale-180}
+}
+function assetReferenceHTML(asset){
+ const images=asset.images?.length?asset.images:[asset.image];
+ if(['portrait','scene'].includes(asset.type)&&images.length>1)return `<div class="node-reference-grid">${images.slice(0,4).map(src=>`<img src="${src}" alt="${asset.name}">`).join('')}</div>`;
+ return `<img src="${asset.image}" style="width:100%;height:100%;object-fit:cover" alt="${asset.name}">`;
+}
+const referencePickerMask=document.getElementById('referencePickerMask');
+const referencePickerGrid=document.getElementById('referencePickerGrid');
+const referenceSelectedCount=document.getElementById('referenceSelectedCount');
+const toggleAllReferences=document.getElementById('toggleAllReferences');
+const confirmReferencePicker=document.getElementById('confirmReferencePicker');
+let pendingReferenceAsset=null;
+let selectedReferenceIndexes=new Set();
+function updateReferencePicker(){
+ const total=pendingReferenceAsset?.images?.length||0;
+ referencePickerGrid.querySelectorAll('.reference-picker-item').forEach((item,index)=>item.classList.toggle('selected',selectedReferenceIndexes.has(index)));
+ referenceSelectedCount.textContent=`已选择 ${selectedReferenceIndexes.size} 张`;
+ toggleAllReferences.textContent=selectedReferenceIndexes.size===total?'取消全选':'全选';
+ confirmReferencePicker.disabled=selectedReferenceIndexes.size===0;
+}
+function openReferencePicker(asset){
+ pendingReferenceAsset=asset;
+ selectedReferenceIndexes=new Set([0]);
+ document.getElementById('referencePickerTitle').textContent=`选择「${asset.name}」的参考图`;
+ referencePickerGrid.innerHTML=asset.images.map((src,index)=>`<button class="reference-picker-item${index===0?' selected':''}" data-reference-index="${index}" aria-label="选择第 ${index+1} 张图片"><img src="${src}" alt="${asset.name} 参考图 ${index+1}"><span class="reference-picker-check">✓</span></button>`).join('');
+ referencePickerMask.classList.add('show');
+ updateReferencePicker();
+}
+function closeReferencePicker(){
+ referencePickerMask.classList.remove('show');
+ pendingReferenceAsset=null;
+ selectedReferenceIndexes.clear();
+}
+referencePickerGrid.onclick=e=>{
+ const item=e.target.closest('.reference-picker-item');
+ if(!item)return;
+ const index=Number(item.dataset.referenceIndex);
+ selectedReferenceIndexes.has(index)?selectedReferenceIndexes.delete(index):selectedReferenceIndexes.add(index);
+ updateReferencePicker();
+};
+toggleAllReferences.onclick=()=>{
+ const total=pendingReferenceAsset?.images?.length||0;
+ selectedReferenceIndexes=selectedReferenceIndexes.size===total?new Set():new Set(Array.from({length:total},(_,index)=>index));
+ updateReferencePicker();
+};
+document.getElementById('closeReferencePicker').onclick=closeReferencePicker;
+document.getElementById('cancelReferencePicker').onclick=closeReferencePicker;
+referencePickerMask.onclick=e=>{if(e.target===referencePickerMask)closeReferencePicker()};
+confirmReferencePicker.onclick=()=>{
+ if(!pendingReferenceAsset||!selectedReferenceIndexes.size)return;
+ const asset=pendingReferenceAsset;
+ const selectedImages=[...selectedReferenceIndexes].sort((a,b)=>a-b).map(index=>asset.images[index]);
+ closeReferencePicker();
+ callAsset(asset,selectedImages);
+};
+function callAsset(asset,selectedImages=null){
+ const allImages=asset.images?.length?asset.images:[asset.image];
+ if(!selectedImages&&['portrait','scene'].includes(asset.type)&&allImages.length>1){openReferencePicker({...asset,images:allImages});return}
+ if(selectedImages)asset={...asset,images:[...selectedImages],image:selectedImages[0]};
+ const selected=document.querySelector('.node.selected');
+ if(selected){
+   const n=nodes.find(x=>x.el===selected);
+   if(asset.type==='video'&&n.type!=='video'){pop('视频资产只能调用到视频节点');return}
+   if(asset.type==='audio'&&n.type!=='audio'){pop('音频资产只能调用到音频节点');return}
+   const prompt=n.el.querySelector('.prompt');
+   const prefix=prompt.value.trim()?prompt.value.trim()+'；':'';
+   const referenceCount=asset.images?.length||1;
+   prompt.value=prefix+'调用资产「'+asset.name+'」'+(referenceCount>1?'（'+referenceCount+'张参考图）':'')+'：'+asset.prompt;
+   n.el.querySelector('.media-placeholder').innerHTML=asset.type==='audio'?`<div class="node-audio-preview"><span>▥</span><b>${asset.name}</b><small>音频资产已加载</small></div>`:assetReferenceHTML(asset);
+   if(!n.el.querySelector('.asset-source')){
+      const s=document.createElement('div');
+      s.className='asset-source';
+      n.el.querySelector('.media').appendChild(s);
+   }
+   n.el.querySelector('.asset-source').textContent='资产库 · '+assetTypeName(asset.type);
+   syncNode(n);updateRefs();renderElementList();draw();
+   assetPanel.classList.remove('show');assetBtn.classList.remove('active');
+   pop('资产已调用到当前节点');
+   return;
+ }
+ const pos=canvasCenterPosition(),type=asset.type==='video'?'video':asset.type==='audio'?'audio':'image';
+ const n=createNode(type,pos.x+Math.random()*35,pos.y+Math.random()*35);
+ n.el.querySelector('.node-name').value=asset.name;
+ n.el.querySelector('.prompt').value=(asset.images?.length>1?'引用 '+asset.images.length+' 张参考图；':'')+asset.prompt;
+ if(asset.type==='video'){
+   n.el.querySelector('.model').value='Video Gen';
+ }else if(asset.type==='audio'){
+   n.el.querySelector('.model').value='Audio Gen';
+ }else{
+   n.el.querySelector('.model').value='Image Edit';
+ }
+ const media=n.el.querySelector('.media');
+ media.querySelector('.media-placeholder').innerHTML=asset.type==='audio'?`<div class="node-audio-preview"><span>▥</span><b>${asset.name}</b><small>音频资产已加载</small></div>`:assetReferenceHTML(asset);
+ const source=document.createElement('div');source.className='asset-source';source.textContent='资产库 · '+assetTypeName(asset.type);media.appendChild(source);
+ n.assetId=asset.id;
+ syncNode(n);renderElementList();selectNode(n.id);
+ assetPanel.classList.remove('show');assetBtn.classList.remove('active');
+ pop('已调用资产：'+asset.name);
+}
+
+assetBtn.onclick=()=>{
+ assetPanel.classList.toggle('show');
+ assetBtn.classList.toggle('active');
+ renderAssetLibrary();
+};
+assetSearch.oninput=renderAssetLibrary;
+document.querySelectorAll('[data-asset-filter]').forEach(t=>t.onclick=()=>{
+ document.querySelectorAll('[data-asset-filter]').forEach(x=>x.classList.remove('active'));
+ t.classList.add('active');assetFilter=t.dataset.assetFilter;renderAssetLibrary();
+});
+
+
+
+
+/* 分层侧边栏 */
+const mainSidebar=document.getElementById('mainSidebar');
+const sidebarCollapse=document.getElementById('sidebarCollapse');
+
+sidebarCollapse.onclick=()=>{
+  mainSidebar.classList.toggle('collapsed');
+  sidebarCollapse.title=mainSidebar.classList.contains('collapsed')?'展开侧边栏':'收起侧边栏';
+};
+
+document.querySelectorAll('.sidebar .nav-item').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    if(['layoutBtn','clearBtn','elementsBtn','directorBtn'].includes(btn.id)) return;
+    document.querySelectorAll('.sidebar .nav-item').forEach(x=>x.classList.remove('active'));
+    btn.classList.add('active');
+  });
+});
+
+document.addEventListener('click',e=>{
+  if(!e.target.closest('.sidebar') &&
+     !e.target.closest('.asset-panel') &&
+     !e.target.closest('.project-panel') &&
+     !e.target.closest('.element-panel') &&
+     !e.target.closest('.director-panel') &&
+     !e.target.closest('.share-panel') &&
+     !e.target.closest('.permission-panel') &&
+     !e.target.closest('.points-panel') &&
+     !e.target.closest('.message-panel')){
+    document.querySelectorAll('.sidebar .nav-item').forEach(x=>x.classList.remove('active'));
+  }
+});
+
+/* 权限管理 */
+
+let permissionDeleteAction=null;
+document.getElementById('permissionCancelDelete').onclick=e=>{
+ e.preventDefault();e.stopPropagation();
+ document.getElementById('permissionConfirmMask').classList.remove('show');
+ permissionDeleteAction=null;
+};
+document.getElementById('permissionConfirmDelete').onclick=e=>{
+ e.preventDefault();e.stopPropagation();
+ const action=permissionDeleteAction;permissionDeleteAction=null;
+ try{if(action)action()}finally{document.getElementById('permissionConfirmMask').classList.remove('show')}
+};
+
+let permissionRole='orgAdmin'; // orgAdmin / projectAdmin
+let permissionTab='org';
+const permissionMemberInput=document.getElementById('permissionMemberInput');
+const permissionMemberRole=document.getElementById('permissionMemberRole');
+
+const projectAdmins=[
+ {id:'pa1',name:'Nora',email:'nora@reelay.ai',project:'星海漫游',role:'项目管理员',color:'#8ee0b0',
+  permissions:{editProject:true,manageMembers:true,manageAssets:true,viewReports:true,allocatePoints:false}},
+ {id:'pa2',name:'Leo',email:'leo@reelay.ai',project:'霓虹追踪',role:'项目管理员',color:'#ff9d7d',
+  permissions:{editProject:true,manageMembers:false,manageAssets:true,viewReports:true,allocatePoints:false}},
+ {id:'pa3',name:'Mia',email:'mia@reelay.ai',project:'未来城市计划',role:'项目管理员',color:'#7db2ff',
+  permissions:{editProject:true,manageMembers:true,manageAssets:false,viewReports:true,allocatePoints:true}}
+];
+
+const canvasMembers=[
+ {id:'cm1',name:'Ava',email:'ava@reelay.ai',canvas:'角色设计',role:'编辑者',color:'#c9a7ff',
+  permissions:{editCanvas:true,comment:true,generate:true,download:false,invite:false}},
+ {id:'cm2',name:'Kai',email:'kai@reelay.ai',canvas:'第一幕分镜',role:'审核者',color:'#ffd277',
+  permissions:{editCanvas:false,comment:true,generate:false,download:true,invite:false}},
+ {id:'cm3',name:'Mia',email:'mia@reelay.ai',canvas:'视频生成',role:'编辑者',color:'#7db2ff',
+  permissions:{editCanvas:true,comment:true,generate:true,download:true,invite:false}}
+];
+
+function permissionLabel(key){
+ const labels={
+  editProject:'编辑项目',manageMembers:'管理成员',manageAssets:'管理资产',
+  viewReports:'查看报表',allocatePoints:'分配积分',
+  editCanvas:'编辑画布',comment:'评论回复',generate:'生成内容',
+  download:'下载导出',invite:'邀请成员'
+ };
+ return labels[key]||key;
+}
+
+function renderPermissionPanel(){
+ const q=permissionSearch.value.trim().toLowerCase();
+ const isOrg=permissionRole==='orgAdmin';
+
+ document.getElementById('permissionRoleNote').textContent=
+   isOrg?'当前身份：组织管理员 · 可管理项目管理员和组织成员':
+   '当前身份：项目管理员 · 可管理画布成员';
+
+ // 项目管理员只显示积分权限和项目权限
+ document.querySelectorAll('.permission-tab').forEach(btn=>{
+   const tab=btn.dataset.permissionTab;
+   btn.style.display=(!isOrg&&tab==='org')?'none':'inline-block';
+   btn.classList.toggle('active',tab===permissionTab);
+ });
+ if(!isOrg && permissionTab==='org') permissionTab='project';
+
+ permissionMemberRole.innerHTML=isOrg
+   ?'<option value="项目管理员">项目管理员</option><option value="项目成员">项目成员</option>'
+   :'<option value="编辑者">编辑者</option><option value="审核者">审核者</option><option value="浏览者">浏览者</option>';
+
+ let list=isOrg?projectAdmins:canvasMembers;
+ list=list.filter(x=>(x.name+x.email+(x.project||'')+(x.canvas||'')).toLowerCase().includes(q));
+
+ permissionList.innerHTML=list.length?list.map(member=>{
+   const context=isOrg?member.project:member.canvas;
+   const contextLabel=isOrg?'管理项目':'所在画布';
+   const keys=Object.keys(member.permissions).filter(key=>{
+     if(permissionTab==='points') return ['allocatePoints','viewReports','generate'].includes(key);
+     return isOrg
+       ?['editProject','manageMembers','manageAssets','viewReports'].includes(key)
+       :['editCanvas','comment','generate','download','invite'].includes(key);
+   });
+   return `<div class="permission-card" data-member-id="${member.id}">
+     <div class="permission-card-head">
+       <div class="permission-avatar" style="background:${member.color}">${member.name[0]}</div>
+       <div><div class="permission-name">${member.name}</div><div class="permission-meta">${member.email} · ${contextLabel}：${context}</div></div>
+       <span class="permission-badge">${member.role}</span>
+     </div>
+     <select class="permission-select">
+       ${isOrg
+         ?`<option ${member.role==='项目管理员'?'selected':''}>项目管理员</option><option ${member.role==='项目成员'?'selected':''}>项目成员</option>`
+         :`<option ${member.role==='编辑者'?'selected':''}>编辑者</option><option ${member.role==='审核者'?'selected':''}>审核者</option><option ${member.role==='浏览者'?'selected':''}>浏览者</option>`}
+     </select>
+     <div class="permission-options">
+       ${keys.map(key=>`<label class="permission-option"><input type="checkbox" data-key="${key}" ${member.permissions[key]?'checked':''}>${permissionLabel(key)}</label>`).join('')}
+     </div>
+     <div class="permission-member-actions">
+       <button class="permission-save">保存权限</button>
+       <button class="danger permission-remove">删除成员</button>
+     </div>
+   </div>`;
+ }).join(''):'<div class="permission-empty">没有匹配的成员</div>';
+
+ permissionList.querySelectorAll('.permission-card').forEach(card=>{
+   const source=isOrg?projectAdmins:canvasMembers;
+   const member=source.find(x=>x.id===card.dataset.memberId);
+
+   card.querySelector('.permission-save').onclick=()=>{
+     card.querySelectorAll('[data-key]').forEach(input=>member.permissions[input.dataset.key]=input.checked);
+     member.role=card.querySelector('.permission-select').value;
+     pop(member.name+' 的权限已更新');
+     renderPermissionPanel();
+   };
+
+   card.querySelector('.permission-remove').onclick=()=>{
+     document.getElementById('permissionConfirmText').textContent='确认删除成员“'+member.name+'”吗？删除后将失去当前权限。';
+     permissionDeleteAction=()=>{
+       const idx=source.findIndex(x=>x.id===member.id);
+       if(idx>=0) source.splice(idx,1);
+       pop(member.name+' 已被删除');
+       renderPermissionPanel();
+     };
+     document.getElementById('permissionConfirmMask').classList.add('show');
+   };
+ });
+}
+
+
+permissionBtn.onclick=()=>{
+ const show=!permissionPanel.classList.contains('show');
+ closeUtilityPanels();
+ permissionPanel.classList.toggle('show',show);
+ permissionBtn.classList.toggle('active',show);
+ if(show)renderPermissionPanel();
+};
+document.getElementById('closePermissionPanel').onclick=()=>{
+ permissionPanel.classList.remove('show');
+ permissionBtn.classList.remove('active');
+};
+document.querySelectorAll('[data-permission-tab]').forEach(btn=>btn.onclick=()=>{
+ permissionTab=btn.dataset.permissionTab;
+ renderPermissionPanel();
+});
+document.getElementById('switchRoleBtn').onclick=()=>{
+ permissionRole=permissionRole==='orgAdmin'?'projectAdmin':'orgAdmin';
+ permissionTab=permissionRole==='orgAdmin'?'org':'project';
+ renderPermissionPanel();
+ pop(permissionRole==='orgAdmin'?'已切换为组织管理员视角':'已切换为项目管理员视角');
+};
+
+document.getElementById('addPermissionMember').onclick=()=>{
+ const value=permissionMemberInput.value.trim();
+ if(!value)return pop('请输入姓名或邮箱');
+ const name=value.includes('@')?value.split('@')[0]:value;
+ const email=value.includes('@')?value:name.toLowerCase()+'@reelay.ai';
+ const colors=['#c9a7ff','#ffd277','#89d7d0','#f197b6','#7db2ff'];
+ if(permissionRole==='orgAdmin'){
+   projectAdmins.push({
+     id:'pa'+Date.now(),name,email,project:'未分配项目',role:permissionMemberRole.value,
+     color:colors[projectAdmins.length%colors.length],
+     permissions:{editProject:false,manageMembers:false,manageAssets:false,viewReports:false,allocatePoints:false}
+   });
+ }else{
+   canvasMembers.push({
+     id:'cm'+Date.now(),name,email,canvas:'未分配画布',role:permissionMemberRole.value,
+     color:colors[canvasMembers.length%colors.length],
+     permissions:{editCanvas:false,comment:true,generate:false,download:false,invite:false}
+   });
+ }
+ permissionMemberInput.value='';
+ renderPermissionPanel();
+ pop(name+' 已添加');
+};
+permissionSearch.oninput=renderPermissionPanel;
+
+/* 积分中心与消息中心 */
+const pointsRecords=[
+ {date:'2026-07-17 11:26',member:'Suzy',title:'图片节点生成',desc:'项目：星海漫游 / 画布：主视觉设计',value:-60,type:'expense',mediaType:'图片',params:['2048×2048','4 张','Image Gen','2K']},
+ {date:'2026-07-17 09:00',member:'系统',title:'团队每日积分到账',desc:'组织每日创作额度',value:200,type:'income'},
+ {date:'2026-07-15 14:20',member:'Mia',title:'视频节点生成',desc:'项目：星海漫游 / 画布：视频生成',value:-120,type:'expense',mediaType:'视频',params:['8 秒','1920×1080','24 FPS','Video Gen']},
+ {date:'2026-07-15 13:42',member:'Mia',title:'邀请成员奖励',desc:'成功邀请 Mia 加入项目',value:300,type:'income'},
+ {date:'2026-07-14 18:10',member:'Nora',title:'图片节点生成',desc:'项目：霓虹追踪 / 画布：角色设定',value:-40,type:'expense',mediaType:'图片',params:['2048×2048','2 张','Image Edit','高清']},
+ {date:'2026-07-14 09:30',member:'Leo',title:'每日登录奖励',desc:'连续登录第 7 天',value:80,type:'income'},
+ {date:'2026-07-13 21:16',member:'Suzy',title:'4K 视频导出',desc:'项目：未来城市计划',value:-260,type:'expense',mediaType:'视频',params:['12 秒','3840×2160','30 FPS','H.264']},
+ {date:'2026-07-13 12:00',member:'系统',title:'项目里程碑奖励',desc:'完成第一幕全部画布',value:500,type:'income'}
+];
+let pointsCurrentPage=1;
+const pointsPageSize=4;
+let messageFilter='all';
+let pointsBalanceValue=12860;
+let selectedPurchasePoints=1000,selectedPurchasePrice=99,selectedPaymentMethod='微信支付';
+const pointAllocations=[
+ {member:'Nora',amount:600,note:'场景概念设计',date:'2026-07-17',time:'今天 10:24',operator:'Suzy'},
+ {member:'Mia',amount:1000,note:'视频分镜生成',date:'2026-07-16',time:'昨天 16:08',operator:'Suzy'},
+ {member:'Leo',amount:300,note:'音频素材测试',date:'2026-07-14',time:'07-14 11:32',operator:'Nora'}
+];
+let messages=[
+ {id:'m1',type:'collab',title:'Mia 回复了你的评论',desc:'“角色眼神细节已经调整，可以查看最新节点。”',time:'2 分钟前',unread:true},
+ {id:'m2',type:'system',title:'画布生成任务已完成',desc:'项目「星海漫游」中的视频节点已完成生成。',time:'12 分钟前',unread:true},
+ {id:'m3',type:'points',title:'积分消耗提醒',desc:'本次视频生成消耗 120 积分，当前余额 12,860。',time:'13 分钟前',unread:true},
+ {id:'m4',type:'collab',title:'Nora 邀请你加入画布',desc:'你已被加入「未来城市计划 / 夜景灯光」画布。',time:'1 小时前',unread:false},
+ {id:'m5',type:'system',title:'项目权限已更新',desc:'你在「霓虹追踪」项目中的角色已调整为管理员。',time:'昨天',unread:false}
+];
+
+function getFilteredPointsRecords(){
+ const type=document.getElementById('pointsType').value,member=document.getElementById('pointsMember').value,range=document.getElementById('pointsRange').value;
+ const startInput=document.getElementById('pointsDateStart').value,endInput=document.getElementById('pointsDateEnd').value,today=new Date();
+ let start=startInput,end=endInput;
+ if(!start&&!end&&range!=='all'){
+  const d=new Date(today);if(range==='day')start=end=formatDate(d);else if(range==='month'){start=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-01`;end=formatDate(d)}else if(range==='quarter'){const month=Math.floor(d.getMonth()/3)*3+1;start=`${d.getFullYear()}-${String(month).padStart(2,'0')}-01`;end=formatDate(d)}else if(range==='year'){start=`${d.getFullYear()}-01-01`;end=formatDate(d)}
+ }
+ return pointsRecords.filter(r=>{const date=r.date.slice(0,10);return(type==='all'||r.type===type)&&(member==='all'||r.member===member)&&(!start||date>=start)&&(!end||date<=end)});
+}
+function getFilteredAllocations(){
+ const start=document.getElementById('allocationDateStart').value,end=document.getElementById('allocationDateEnd').value,member=document.getElementById('allocationMemberFilter').value;
+ return pointAllocations.filter(a=>(member==='all'||a.member===member)&&(!start||a.date>=start)&&(!end||a.date<=end));
+}
+function renderPoints(){
+ const filtered=getFilteredPointsRecords(),pageCount=Math.max(1,Math.ceil(filtered.length/pointsPageSize));
+ pointsCurrentPage=Math.min(pointsCurrentPage,pageCount);
+ const list=filtered.slice((pointsCurrentPage-1)*pointsPageSize,pointsCurrentPage*pointsPageSize);
+ document.getElementById('pointsBalance').textContent=pointsBalanceValue.toLocaleString();
+ document.getElementById('allocatablePoints').textContent=pointsBalanceValue.toLocaleString();
+ pointsList.innerHTML=list.map(r=>`
+   <div class="points-item">
