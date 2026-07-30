@@ -1,0 +1,1444 @@
+     <div class="points-record-icon ${r.value>0?'income':''}">${r.value>0?'＋':'−'}</div>
+     <div><div class="points-title">${r.title}</div><div class="points-desc">${r.member||'系统'} · ${r.desc}<br>${r.date}</div>${r.params?.length?`<div class="points-record-params"><span>${r.mediaType}</span>${r.params.map(p=>`<span>${p}</span>`).join('')}</div>`:''}</div>
+     <div class="points-value ${r.value<0?'negative':'positive'}">${r.value>0?'+':''}${r.value}</div>
+   </div>`).join('')||'<div class="points-empty">当前筛选条件下暂无积分记录</div>';
+ const pagination=document.getElementById('pointsPagination');
+ pagination.innerHTML=filtered.length?`<button data-points-page="prev" ${pointsCurrentPage===1?'disabled':''}>‹ 上一页</button>${Array.from({length:pageCount},(_,i)=>`<button data-points-page="${i+1}" class="${pointsCurrentPage===i+1?'active':''}">${i+1}</button>`).join('')}<button data-points-page="next" ${pointsCurrentPage===pageCount?'disabled':''}>下一页 ›</button><span>共 ${filtered.length} 条</span>`:'';
+ pagination.querySelectorAll('[data-points-page]').forEach(btn=>btn.onclick=()=>{const target=btn.dataset.pointsPage;pointsCurrentPage=target==='prev'?Math.max(1,pointsCurrentPage-1):target==='next'?Math.min(pageCount,pointsCurrentPage+1):Number(target);renderPoints()});
+ const trends=[{d:'周一',i:36,e:22},{d:'周二',i:55,e:31},{d:'周三',i:42,e:48},{d:'周四',i:78,e:35},{d:'周五',i:62,e:51},{d:'周六',i:88,e:43},{d:'今天',i:70,e:28}];
+ document.getElementById('pointsTrendChart').innerHTML=trends.map(x=>`<div class="points-bar-col"><div class="points-bar-stack"><i class="points-bar income" style="height:${x.i}%"></i><i class="points-bar expense" style="height:${x.e}%"></i></div><small>${x.d}</small></div>`).join('');
+ const categories=[['视频生成',46],['图片生成',31],['高清导出',15],['音频生成',8]];
+ document.getElementById('pointsCategoryChart').innerHTML=categories.map(x=>`<div class="points-category-row"><span>${x[0]}</span><div class="points-category-track"><div class="points-category-fill" style="width:${x[1]}%"></div></div><b>${x[1]}%</b></div>`).join('');
+ document.getElementById('pointsAllocationList').innerHTML=pointAllocations.map(a=>`<div class="allocation-item"><div class="allocation-avatar">${a.member.slice(0,1)}</div><div><b>${a.member}</b><span>${a.note} · ${a.time}</span></div><span class="allocation-value">-${a.amount}</span></div>`).join('');
+ const filteredAllocations=getFilteredAllocations();
+ document.getElementById('allocationTotal').textContent=filteredAllocations.reduce((sum,a)=>sum+a.amount,0).toLocaleString();
+ document.getElementById('allocationMemberCount').textContent=new Set(filteredAllocations.map(a=>a.member)).size;
+ document.getElementById('allocationRecordCount').textContent=filteredAllocations.length;
+ document.getElementById('allocationFilterSummary').textContent=`当前显示 ${filteredAllocations.length} 条记录 · 合计 ${filteredAllocations.reduce((sum,a)=>sum+a.amount,0).toLocaleString()} 积分`;
+ document.getElementById('pointsAllocationRecords').innerHTML=filteredAllocations.map(a=>`<div class="allocation-record"><div class="allocation-avatar">${a.member.slice(0,1)}</div><div class="allocation-record-main"><b>${a.member}</b><span>${a.note}</span></div><div class="allocation-record-meta"><b>分配人：${a.operator||'Suzy'}</b><span>${a.date} · ${a.time}</span></div><div class="allocation-record-value">-${a.amount}</div></div>`).join('')||'<div class="points-empty">当前筛选条件下暂无分配记录</div>';
+ updateDailyReport();
+}
+function renderMessages(){
+ const list=messages.filter(m=>messageFilter==='all'||m.type===messageFilter);
+ messageList.innerHTML=list.map(m=>`
+   <div class="message-item ${m.unread?'unread':''}" data-message-id="${m.id}">
+     <div class="message-title">${m.title}</div>
+     <div class="message-desc">${m.desc}</div>
+     <div class="message-time">${m.time}</div>
+   </div>`).join('');
+ messageList.querySelectorAll('.message-item').forEach(item=>item.onclick=()=>{
+   const m=messages.find(x=>x.id===item.dataset.messageId);m.unread=false;
+   renderMessages();updateMessageDot();pop('消息已标记为已读');
+ });
+ updateMessageDot();
+}
+function updateMessageDot(){
+ const unread=messages.filter(m=>m.unread).length;
+ document.getElementById('messageDot').style.display=unread?'block':'none';
+}
+function closeUtilityPanels(){
+ pointsPanel.classList.remove('show');messagePanel.classList.remove('show');permissionPanel.classList.remove('show');
+ pointsBtn.classList.remove('active');messageBtn.classList.remove('active');permissionBtn.classList.remove('active');
+}
+pointsBtn.onclick=()=>{
+ const show=!pointsPanel.classList.contains('show');
+ closeUtilityPanels();
+ if(show){pointsPanel.classList.add('show');pointsBtn.classList.add('active');renderPoints();}
+};
+messageBtn.onclick=()=>{
+ const show=!messagePanel.classList.contains('show');
+ closeUtilityPanels();
+ if(show){messagePanel.classList.add('show');messageBtn.classList.add('active');renderMessages();}
+};
+document.querySelectorAll('.close-panel').forEach(btn=>btn.onclick=closeUtilityPanels);
+document.getElementById('pointsType').onchange=()=>{pointsCurrentPage=1;renderPoints()};
+document.getElementById('pointsMember').onchange=()=>{pointsCurrentPage=1;renderPoints()};
+document.getElementById('pointsDateStart').onchange=()=>{pointsCurrentPage=1;renderPoints()};
+document.getElementById('pointsDateEnd').onchange=()=>{pointsCurrentPage=1;renderPoints()};
+document.getElementById('pointsRange').onchange=()=>{pointsCurrentPage=1;document.getElementById('pointsDateStart').value='';document.getElementById('pointsDateEnd').value='';renderPoints();pop('已切换积分统计周期')};
+document.getElementById('allocationDateStart').onchange=renderPoints;
+document.getElementById('allocationDateEnd').onchange=renderPoints;
+document.getElementById('allocationMemberFilter').onchange=renderPoints;
+document.querySelectorAll('[data-points-view]').forEach(btn=>btn.onclick=()=>{
+ document.querySelectorAll('[data-points-view]').forEach(x=>x.classList.remove('active'));
+ document.querySelectorAll('[data-points-section]').forEach(x=>x.classList.remove('active'));
+ btn.classList.add('active');
+ document.querySelector(`[data-points-section="${btn.dataset.pointsView}"]`).classList.add('active');
+ renderPoints();
+});
+document.querySelectorAll('[data-points-amount]').forEach(btn=>btn.onclick=()=>{document.getElementById('pointsAllocateAmount').value=btn.dataset.pointsAmount});
+const pointsPurchaseMask=document.getElementById('pointsPurchaseMask');
+function updatePurchaseSummary(){document.getElementById('purchaseSummaryPoints').textContent=`到账 ${selectedPurchasePoints.toLocaleString()} 积分`;document.getElementById('purchaseSummaryPrice').textContent=`应付 ¥${selectedPurchasePrice}`}
+function openPointsPurchase(){pointsPurchaseMask.classList.add('show');updatePurchaseSummary()}
+function closePointsPurchase(){pointsPurchaseMask.classList.remove('show')}
+document.getElementById('buyPointsEntry').onclick=openPointsPurchase;document.getElementById('closePointsPurchase').onclick=closePointsPurchase;
+pointsPurchaseMask.addEventListener('mousedown',event=>{if(event.target===pointsPurchaseMask)closePointsPurchase()});
+document.querySelectorAll('.points-package').forEach(btn=>btn.onclick=()=>{document.querySelectorAll('.points-package').forEach(x=>x.classList.remove('active'));btn.classList.add('active');selectedPurchasePoints=Number(btn.dataset.buyPoints);selectedPurchasePrice=Number(btn.dataset.buyPrice);updatePurchaseSummary()});
+document.querySelectorAll('.payment-method').forEach(btn=>btn.onclick=()=>{document.querySelectorAll('.payment-method').forEach(x=>x.classList.remove('active'));btn.classList.add('active');selectedPaymentMethod=btn.dataset.paymentMethod});
+document.getElementById('confirmPointsPurchase').onclick=()=>{
+ const button=document.getElementById('confirmPointsPurchase'),points=selectedPurchasePoints,price=selectedPurchasePrice,method=selectedPaymentMethod;
+ button.disabled=true;button.textContent='正在创建支付订单…';
+ setTimeout(()=>{button.textContent=method==='企业账户'?'正在确认企业账户…':'支付处理中…';setTimeout(()=>{
+  pointsBalanceValue+=points;pointsRecords.unshift({date:formatDate(new Date())+' '+new Date().toTimeString().slice(0,5),member:'Suzy',title:'购买积分',desc:`${method} · 订单金额 ¥${price}`,value:points,type:'income'});
+  messages.unshift({id:'pay-'+Date.now(),type:'points',title:'积分购买成功',desc:`已通过${method}购买 ${points.toLocaleString()} 积分，当前余额 ${pointsBalanceValue.toLocaleString()}。`,time:'刚刚',unread:true});
+  document.getElementById('pointsAllocateAmount').max=pointsBalanceValue;document.getElementById('profilePointsBalance').textContent=pointsBalanceValue.toLocaleString();renderPoints();renderMessages();updateMessageDot();closePointsPurchase();button.disabled=false;button.textContent='确认支付';pop(`支付成功，${points.toLocaleString()} 积分已到账`);
+ },750)},650);
+};
+document.getElementById('confirmPointsAllocation').onclick=()=>{
+ const member=document.getElementById('pointsAllocateMember').value;
+ const amount=Math.floor(Number(document.getElementById('pointsAllocateAmount').value));
+ const note=document.getElementById('pointsAllocateNote').value.trim()||'团队创作积分';
+ if(!amount||amount<1)return pop('请输入有效的积分数量');
+ if(amount>pointsBalanceValue)return pop('可用积分不足，请调整分配数量');
+ pointsBalanceValue-=amount;
+ pointAllocations.unshift({member,amount,note,date:formatDate(new Date()),time:'刚刚',operator:'Suzy'});
+ pointsRecords.unshift({date:formatDate(new Date())+' '+new Date().toTimeString().slice(0,5),member,title:'成员积分分配',desc:`分配给 ${member} · ${note}`,value:-amount,type:'expense'});
+ document.getElementById('pointsAllocateAmount').value='';
+ document.getElementById('pointsAllocateNote').value='';
+ document.getElementById('pointsAllocateAmount').max=pointsBalanceValue;
+ renderPoints();
+ pop(`已向 ${member} 分配 ${amount} 积分`);
+};
+document.querySelectorAll('.message-tab').forEach(btn=>btn.onclick=()=>{
+ document.querySelectorAll('.message-tab').forEach(x=>x.classList.remove('active'));
+ btn.classList.add('active');messageFilter=btn.dataset.msgFilter;renderMessages();
+});
+document.getElementById('markAllRead').onclick=()=>{
+ messages.forEach(m=>m.unread=false);renderMessages();pop('全部消息已读');
+};
+document.getElementById('pointsRulesBtn').onclick=()=>pop('积分用于图片、视频生成和高清导出');
+document.getElementById('downloadPointsReport').onclick=()=>{
+ const range=document.getElementById('pointsRange').value;
+ const today=formatDate(new Date());
+ const records=getFilteredPointsRecords();
+ const filename=range==='day'?`Reelay_${today}_积分日报.csv`:'Reelay_积分报表.csv';
+ downloadReport(records,filename);
+ pop(range==='day'?'按日积分报表已下载':'积分报表已下载');
+};
+document.getElementById('exportAllocationRecords').onclick=()=>{
+ const records=getFilteredAllocations(),rows=[['日期','接收人员','分配积分','用途','分配人'],...records.map(a=>[a.date,a.member,a.amount,a.note,a.operator||'Suzy'])];
+ const csv=rows.map(row=>row.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n'),blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8;'}),url=URL.createObjectURL(blob),a=document.createElement('a');
+ a.href=url;a.download='Reelay_积分分配记录.csv';a.click();URL.revokeObjectURL(url);pop(`已导出 ${records.length} 条分配记录`);
+};
+
+function formatDate(date){
+  const y=date.getFullYear(),m=String(date.getMonth()+1).padStart(2,'0'),d=String(date.getDate()).padStart(2,'0');
+  return `${y}-${m}-${d}`;
+}
+function getDailyRecords(dateStr){
+  return pointsRecords.filter(r=>r.date.startsWith(dateStr));
+}
+function updateDailyReport(){
+  const today=formatDate(new Date());
+  const records=getDailyRecords(today);
+  const income=records.filter(r=>r.value>0).reduce((s,r)=>s+r.value,0);
+  const expense=Math.abs(records.filter(r=>r.value<0).reduce((s,r)=>s+r.value,0));
+  const net=income-expense;
+  document.getElementById('dailyReportDate').textContent=today;
+  document.getElementById('dailyIncome').textContent='+'+income;
+  document.getElementById('dailyExpense').textContent='-'+expense;
+  document.getElementById('dailyNet').textContent=(net>=0?'+':'')+net;
+}
+function downloadReport(records,filename){
+  const rows=[['时间','人员','项目/说明','媒体类型','生成参数','积分变化'],...records.map(r=>[r.date,r.member||'系统',r.title+' - '+r.desc,r.mediaType||'—',(r.params||[]).join(' / ')||'—',r.value])];
+  const csv=rows.map(row=>row.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8;'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download=filename;a.click();
+  URL.revokeObjectURL(url);
+}
+function generateDailyReport(manual=false){
+  const today=formatDate(new Date());
+  updateDailyReport();
+  if(!messages.some(m=>m.type==='points'&&m.title.includes(today))){
+    messages.unshift({
+      id:'m'+Date.now(),
+      type:'points',
+      title:`${today} 积分日报已生成`,
+      desc:'系统已自动生成今日积分日报，可前往积分中心查看或下载。',
+      time:'刚刚',
+      unread:true
+    });
+  }
+  renderMessages();
+  updateMessageDot();
+  if(manual) pop('积分日报已生成，并发送消息提醒');
+}
+
+/* 列表浮层：标题栏拖拽 + 右下角自由缩放 */
+let floatingPanelZ=180;
+function enableFloatingListPanels(){
+ const selector='.project-panel,.asset-panel,.permission-panel,.points-panel,.message-panel,.element-panel,.share-panel,.director-panel';
+ document.querySelectorAll(selector).forEach(panel=>{
+  if(panel.dataset.floatingReady)return;
+  panel.dataset.floatingReady='true';panel.classList.add('floating-list-panel');
+  const handle=panel.querySelector('.panel-title-row')||panel.querySelector('.asset-head')||panel.querySelector('.permission-head')||panel.querySelector('.panel-head')||panel.querySelector('.element-head')||panel.querySelector('.share-head')||panel.querySelector('.director-head')||panel.querySelector('.project-head');
+  const resize=document.createElement('span');resize.className='floating-panel-resize';resize.title='拖动调整窗口大小';panel.appendChild(resize);
+  panel.addEventListener('mousedown',()=>{panel.style.zIndex=String(++floatingPanelZ)});
+  if(handle)handle.addEventListener('mousedown',e=>{
+   if(e.button!==0||e.target.closest('button,input,select,textarea,a'))return;
+   e.preventDefault();e.stopPropagation();
+   const rect=panel.getBoundingClientRect(),parent=panel.offsetParent||document.body,parentRect=parent.getBoundingClientRect();
+   const offsetX=e.clientX-rect.left,offsetY=e.clientY-rect.top;
+   panel.style.left=(rect.left-parentRect.left)+'px';panel.style.top=(rect.top-parentRect.top)+'px';panel.style.right='auto';panel.style.bottom='auto';panel.style.transform='none';panel.style.zIndex=String(++floatingPanelZ);panel.classList.add('is-moving');
+   const move=ev=>{
+    const maxLeft=Math.max(8,parentRect.width-panel.offsetWidth-8),maxTop=Math.max(8,parentRect.height-panel.offsetHeight-8);
+    panel.style.left=Math.min(maxLeft,Math.max(8,ev.clientX-parentRect.left-offsetX))+'px';
+    panel.style.top=Math.min(maxTop,Math.max(8,ev.clientY-parentRect.top-offsetY))+'px';
+   };
+   const up=()=>{panel.classList.remove('is-moving');document.removeEventListener('mousemove',move);document.removeEventListener('mouseup',up)};
+   document.addEventListener('mousemove',move);document.addEventListener('mouseup',up);
+  });
+  if(handle){
+   handle.title='双击收起或展开列表';
+   handle.addEventListener('dblclick',e=>{
+    if(panel.id==='elementPanel'||panel.id==='directorPanel')return;
+    if(e.target.closest('button,input,select,textarea,a'))return;
+    e.preventDefault();e.stopPropagation();
+    const collapsed=panel.classList.contains('panel-collapsed');
+    if(collapsed){
+      panel.classList.remove('panel-collapsed');
+      if(panel.dataset.expandedHeight)panel.style.height=panel.dataset.expandedHeight;
+    }else{
+      panel.dataset.expandedHeight=panel.style.height||panel.getBoundingClientRect().height+'px';
+      panel.classList.add('panel-collapsed');
+    }
+   });
+  }
+  resize.addEventListener('mousedown',e=>{
+   if(e.button!==0)return;e.preventDefault();e.stopPropagation();
+   const rect=panel.getBoundingClientRect(),parent=panel.offsetParent||document.body,parentRect=parent.getBoundingClientRect();
+   const startX=e.clientX,startY=e.clientY,startW=rect.width,startH=rect.height,minW=panel.id==='directorPanel'?480:260,minH=panel.id==='directorPanel'?260:220;
+   panel.style.left=(rect.left-parentRect.left)+'px';panel.style.top=(rect.top-parentRect.top)+'px';panel.style.right='auto';panel.style.bottom='auto';panel.style.transform='none';panel.style.maxHeight='none';panel.style.zIndex=String(++floatingPanelZ);panel.classList.add('is-resizing');
+   const move=ev=>{
+    const maxW=Math.max(minW,parentRect.right-rect.left-8),maxH=Math.max(minH,parentRect.bottom-rect.top-8);
+    panel.style.width=Math.min(maxW,Math.max(minW,startW+ev.clientX-startX))+'px';
+    panel.style.height=Math.min(maxH,Math.max(minH,startH+ev.clientY-startY))+'px';
+   };
+   const up=()=>{panel.classList.remove('is-resizing');document.removeEventListener('mousemove',move);document.removeEventListener('mouseup',up)};
+   document.addEventListener('mousemove',move);document.addEventListener('mouseup',up);
+  });
+ });
+}
+function enableLeftPanelPlacement(){
+ const panels=document.querySelectorAll('.project-panel,.asset-panel,.permission-panel,.points-panel,.message-panel,.element-panel,.share-panel');
+ panels.forEach(panel=>{
+  let wasShown=panel.classList.contains('show');
+  const placeLeft=()=>{
+   panel.style.left='18px';panel.style.top='64px';panel.style.right='auto';panel.style.bottom='auto';panel.style.transform='none';
+   panel.style.zIndex=String(++floatingPanelZ);
+  };
+  if(wasShown)placeLeft();
+  new MutationObserver(()=>{
+   const isShown=panel.classList.contains('show');
+   if(isShown&&!wasShown)placeLeft();
+   wasShown=isShown;
+  }).observe(panel,{attributes:true,attributeFilter:['class']});
+ });
+}
+function enableElementPanelControls(){
+ const panel=document.getElementById('elementPanel'),header=panel.querySelector('.element-head'),trigger=document.getElementById('elementsBtn');
+ header.ondblclick=e=>{
+  if(e.target.closest('button,input,select,textarea,a'))return;
+  e.preventDefault();e.stopPropagation();
+  if(panel.classList.contains('panel-collapsed')){
+    panel.classList.remove('panel-collapsed');
+    if(panel.dataset.elementExpandedHeight)panel.style.height=panel.dataset.elementExpandedHeight;
+  }else{
+    panel.dataset.elementExpandedHeight=panel.style.height||panel.getBoundingClientRect().height+'px';
+    panel.classList.add('panel-collapsed');
+  }
+ };
+ document.addEventListener('click',e=>{
+  const close=e.target.closest('#closeElementPanel');if(!close)return;
+  e.preventDefault();e.stopImmediatePropagation();
+  closeElementPanel();
+ },true);
+}
+// 原型模拟：页面打开时自动生成当日日报与提醒
+setTimeout(()=>generateDailyReport(false),500);
+updateDailyReport();
+
+enableFloatingListPanels();enableElementPanelControls();enableLeftPanelPlacement();renderPoints();renderMessages();
+
+/* 画布评论 */
+function toggleCommentMode(){
+  commentMode=!commentMode;
+  commentBtn.classList.toggle('active',commentMode);
+  workspace.classList.toggle('comment-placement-mode',commentMode);
+  if(commentMode){
+    closeCommentCompose();
+    pop('点击画布标记评论位置');
+  }else{
+    closeCommentCompose();
+    commentCursorDot.style.display='none';
+  }
+}
+function openCommentCompose(clientX,clientY){
+  const wr=workspace.getBoundingClientRect();
+  commentDraftPos={
+    stageX:(clientX-wr.left-panX)/scale,
+    stageY:(clientY-wr.top-panY)/scale,
+    clientX:clientX-wr.left,
+    clientY:clientY-wr.top
+  };
+  commentCompose.style.left=Math.min(commentDraftPos.clientX,wr.width-270)+'px';
+  commentCompose.style.top=Math.min(commentDraftPos.clientY,wr.height-130)+'px';
+  commentCompose.classList.add('show');
+  commentInput.value='';
+  setTimeout(()=>commentInput.focus(),0);
+}
+function closeCommentCompose(){
+  commentCompose.classList.remove('show');
+  commentDraftPos=null;
+}
+function addComment(){
+  const text=commentInput.value.trim();
+  if(!text) return pop('请输入评论内容');
+  const c={
+    id:'c'+commentSeq++,
+    author:'Suzy',
+    text,
+    replies:[],
+    x:commentDraftPos.stageX,
+    y:commentDraftPos.stageY,
+    created:'刚刚'
+  };
+  
+const homeOverlay=document.getElementById('homeOverlay');
+document.querySelector('.logo').style.cursor='pointer';
+document.querySelector('.logo').title='返回首页';
+document.querySelector('.logo').onclick=()=>homeOverlay.classList.add('show');
+document.getElementById('enterStudio').onclick=showWorkspace;
+
+
+/* 可交互项目管理 */
+let projectData=[
+  {id:'p1',name:'星海漫游',type:'AI 动画项目',desc:'围绕角色、场景、分镜与视频生成搭建完整 AI 动画创作流程。',updated:'刚刚更新',members:3,canvases:['角色设计','场景设定','第一幕分镜','视频生成','配音与字幕','最终输出']},
+  {id:'p2',name:'霓虹追踪',type:'AI 短剧项目',desc:'赛博朋克题材 AI 短剧，从人物设定到镜头输出。',updated:'昨天更新',members:2,canvases:['角色设定','城市夜景','追逐镜头','成片输出']},
+  {id:'p3',name:'未来城市计划',type:'视觉概念项目',desc:'围绕未来城市视觉语言进行概念探索与镜头实验。',updated:'3 天前更新',members:3,canvases:['建筑概念','交通系统','夜景灯光','人物比例','航拍视频','街道细节','广告视觉','提案输出']}
+];
+let activeProjectId='p1';
+let editingProjectId=null;
+
+const projectGrid=document.getElementById('projectGrid');
+const projectModalMask=document.getElementById('projectModalMask');
+const projectDetailPage=document.getElementById('projectDetailPage');
+
+
+
+function renderProjects(){
+  projectGrid.innerHTML=projectData.map((p,i)=>`
+    <article class="project-card" data-project-id="${p.id}">
+      <button class="delete-project-btn" data-delete-project="${p.id}" title="删除项目">×</button>
+      <button class="edit-project-btn" data-edit-project="${p.id}" title="编辑项目">✎</button>
+      <div class="project-cover"><img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&q=80" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.58"><div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(10,10,12,.75),rgba(10,10,12,.15))"></div><div class="project-cover-content"><span>${p.type}</span><h3>${p.name}${i===0?'<span class="latest-badge">最新项目</span>':''}</h3></div></div>
+      <div class="project-info">
+        <div class="project-meta"><span>${p.canvases.length} 张画布</span><span>${p.updated}</span></div>
+        <div class="project-members">${Array.from({length:p.members},(_,idx)=>`<div class="project-avatar" style="background:${['#f0d18a','#7db2ff','#8ee0b0','#ff9d7d'][idx%4]}">${String.fromCharCode(65+idx)}</div>`).join('')}</div>
+        <div class="project-actions-row">
+          <button class="primary open-project-studio" data-project-id="${p.id}">进入工作台</button>
+        </div>
+      </div>
+    </article>`).join('');
+
+  document.querySelectorAll('.open-project-studio').forEach(btn=>btn.onclick=()=>{
+    activeProjectId=btn.dataset.projectId;
+    showWorkspace();
+  });
+  document.querySelectorAll('[data-edit-project]').forEach(btn=>btn.onclick=()=>{
+    const p=projectData.find(x=>x.id===btn.dataset.editProject);
+    openProjectModal(p);
+  });
+  document.querySelectorAll('[data-delete-project]').forEach(btn=>btn.onclick=()=>{
+    const p=projectData.find(x=>x.id===btn.dataset.deleteProject);
+    askConfirm('删除项目','确定删除项目「'+p.name+'」吗？项目下的画布也会一并删除。',()=>{
+      projectData=projectData.filter(x=>x.id!==p.id);
+      if(activeProjectId===p.id) activeProjectId=projectData[0]?.id||null;
+      
+let confirmAction=null;
+function askConfirm(title,text,action){
+  document.getElementById('confirmTitle').textContent=title;
+  document.getElementById('confirmText').textContent=text;
+  confirmAction=action;
+  document.getElementById('confirmMask').classList.add('show');
+}
+document.getElementById('confirmCancel').onclick=()=>{
+  document.getElementById('confirmMask').classList.remove('show');
+  confirmAction=null;
+};
+document.getElementById('confirmDelete').onclick=()=>{
+  if(confirmAction)confirmAction();
+  document.getElementById('confirmMask').classList.remove('show');
+  confirmAction=null;
+};
+
+
+function openCanvasCreate(){
+  const p=projectData.find(x=>x.id===activeProjectId);
+  if(!p){ pop('请先创建项目'); return; }
+
+  const name=prompt('画布名称','新画布');
+  if(!name||!name.trim()) return;
+
+  const desc=prompt('画布描述（可选）','用于角色设计 / 分镜 / 视频生成');
+  const canvas={
+    name:name.trim(),
+    desc:desc||'',
+    nodes:0
+  };
+
+  if(!Array.isArray(p.canvases)) p.canvases=[];
+  p.canvases.push(canvas.name);
+
+  renderProjects();
+  openProjectDetail(p.id);
+  pop('画布创建成功，正在进入工作台…');
+
+  setTimeout(()=>{
+    showWorkspace();
+  },300);
+}
+
+document.getElementById('addCanvasTop').onclick=openCanvasCreate;
+
+renderProjects();
+      if(activeProjectId) openProjectDetail(activeProjectId);
+      else {
+        document.getElementById('inlineProjectTitle').textContent='暂无项目';
+        document.getElementById('inlineProjectDesc').textContent='请先新建一个项目';
+        document.getElementById('inlineCanvasGrid').innerHTML='';
+      }
+      pop('项目已删除');
+    });
+  });
+}
+
+
+
+function openProjectModal(project=null){
+  editingProjectId=project?.id||null;
+  document.getElementById('projectModalTitle').textContent=project?'编辑项目':'新建项目';
+  document.getElementById('newProjectName').value=project?.name||'';
+  document.getElementById('newProjectType').value=project?.type||'AI 动画项目';
+  document.getElementById('newCanvasName').value=project?.canvases?.[0]||'主画布';
+  document.getElementById('newProjectDesc').value=project?.desc||'';
+  projectModalMask.classList.add('show');
+  setTimeout(()=>document.getElementById('newProjectName').focus(),0);
+}
+function closeProjectModal(){projectModalMask.classList.remove('show');editingProjectId=null}
+
+document.querySelector('.project-create').onclick=()=>openProjectModal();
+document.getElementById('closeProjectModal').onclick=closeProjectModal;
+document.getElementById('cancelProjectModal').onclick=closeProjectModal;
+projectModalMask.onclick=e=>{if(e.target===projectModalMask)closeProjectModal()};
+
+document.getElementById('saveNewProject').onclick=()=>{
+  const name=document.getElementById('newProjectName').value.trim();
+  const type=document.getElementById('newProjectType').value;
+  const desc=document.getElementById('newProjectDesc').value.trim();
+  const canvasName=document.getElementById('newCanvasName').value.trim()||'主画布';
+  if(!name)return pop('请输入项目名称');
+
+  if(editingProjectId){
+    const p=projectData.find(x=>x.id===editingProjectId);
+    p.name=name;p.type=type;p.desc=desc;
+    if(p.canvases.length)p.canvases[0]=canvasName;else p.canvases=[canvasName];
+    activeProjectId=p.id;
+    pop('项目已保存');
+    openProjectDetail(p.id);
+  }else{
+    const p={id:'p'+Date.now(),name,type,desc,updated:'刚刚创建',members:1,canvases:[canvasName]};
+    projectData.unshift(p);activeProjectId=p.id;
+    pop('项目已创建');
+  }
+  closeProjectModal();
+  renderProjects();
+if(projectData.length){ activeProjectId=projectData[0].id; openProjectDetail(activeProjectId); }
+};
+
+
+
+
+function openProjectDetail(id){
+  activeProjectId=id;
+  const p=projectData.find(x=>x.id===id);
+  if(!p)return;
+  document.getElementById('inlineProjectTitle').textContent=p.name+' · 全部画布';
+  document.getElementById('inlineProjectDesc').textContent=p.desc||'';
+  document.getElementById('inlineCanvasGrid').innerHTML=
+  `<div class="add-canvas-card" id="inlineAddCanvas"><div class="add-circle">＋</div><span>添加新画布</span></div>`+
+  p.canvases.map((name,idx)=>`
+    <div class="canvas-card" data-canvas-index="${idx}">
+      <button class="delete-canvas-btn" data-delete-canvas="${idx}" title="删除画布">×</button>
+      <button class="edit-canvas-btn" data-edit-canvas="${idx}" title="编辑画布">✎</button>
+      <div class="canvas-thumb" style="background-image:url('https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=900&q=80');background-size:cover;background-position:center;"></div>
+      <h4>${name}</h4>
+      <p>${8+idx*2} 个节点 · ${1+(idx%3)} 人协作</p>
+      <button class="detail-open-canvas">进入画布</button>
+    </div>`).join('');
+
+  document.getElementById('inlineAddCanvas').onclick=()=>openCanvasCreate();
+  document.querySelectorAll('.detail-open-canvas').forEach(btn=>btn.onclick=showWorkspace);
+  document.querySelectorAll('[data-edit-canvas]').forEach(btn=>btn.onclick=()=>{
+    const idx=Number(btn.dataset.editCanvas);
+    const card=btn.closest('.canvas-card');
+    card.innerHTML=`
+      <input class="inline-edit" value="${p.canvases[idx]}">
+      <div class="inline-edit-row">
+        <button class="cancel-canvas-edit">取消</button>
+        <button class="primary save-canvas-edit">保存</button>
+      </div>`;
+    card.querySelector('.cancel-canvas-edit').onclick=()=>openProjectDetail(id);
+    card.querySelector('.save-canvas-edit').onclick=()=>{
+      const value=card.querySelector('.inline-edit').value.trim();
+      if(!value)return pop('请输入画布名称');
+      p.canvases[idx]=value;
+      openProjectDetail(id);
+      renderProjects();
+      pop('画布已保存'); setTimeout(()=>showWorkspace(),200);
+    };
+  });
+  document.querySelectorAll('[data-delete-canvas]').forEach(btn=>btn.onclick=()=>{
+    const idx=Number(btn.dataset.deleteCanvas);
+    const name=p.canvases[idx];
+    askConfirm('删除画布','确定删除画布「'+name+'」吗？',()=>{
+      p.canvases.splice(idx,1);
+      openProjectDetail(id);
+      renderProjects();
+      pop('画布已删除');
+    });
+  });
+}
+
+
+
+document.getElementById('detailEnterStudio').onclick=showWorkspace;
+document.getElementById('openCurrentCanvas').onclick=showWorkspace;
+document.getElementById('editCurrentProject').onclick=()=>{
+  const p=projectData.find(x=>x.id===activeProjectId);
+  openProjectModal(p);
+};
+
+renderProjects();
+
+
+document.querySelectorAll('.faq-question').forEach(btn=>btn.onclick=()=>{
+  const item=btn.closest('.faq-item');
+  document.querySelectorAll('.faq-item').forEach(x=>{if(x!==item)x.classList.remove('open')});
+  item.classList.toggle('open');
+});
+document.querySelectorAll('[data-footer-link]').forEach(link=>link.onclick=()=>{
+  const names={help:'帮助中心',manual:'产品使用手册',tutorial:'视频教程',feedback:'意见反馈',contact:'联系我们'};
+  pop(names[link.dataset.footerLink]+'页面将在正式产品中打开');
+});
+
+const projectPage=document.getElementById('projectPage');
+let isAuthenticated=false,pendingAuthDestination=null;
+
+function requireAuthentication(destination){
+ if(isAuthenticated)return true;
+ pendingAuthDestination=destination;openLoginFlow();
+ setTimeout(()=>{if(typeof loginError!=='undefined')loginError.textContent=destination==='projects'?'请先登录后进入项目管理':'请先登录后进入工作台'},0);
+ return false;
+}
+
+function showHomePage(){
+  projectPage.classList.remove('show');
+  homeOverlay.classList.add('show');
+}
+function showProjectPage(){
+  if(!requireAuthentication('projects'))return;
+  pendingAuthDestination=null;
+  homeOverlay.classList.remove('show');
+  projectPage.classList.add('show');
+  if(projectData.length){ activeProjectId=projectData[0].id; openProjectDetail(activeProjectId); }
+}
+function showWorkspace(){
+  if(!requireAuthentication('workspace'))return;
+  pendingAuthDestination=null;
+  homeOverlay.classList.remove('show');
+  projectPage.classList.remove('show');
+  projectDetailPage.classList.remove('show');
+}
+
+document.getElementById('openProjectsTop').onclick=showProjectPage;
+document.getElementById('openProjectsHero').onclick=showProjectPage;
+document.getElementById('projectBackHome').onclick=showHomePage;
+document.getElementById('projectEnterStudio').onclick=showWorkspace;
+document.querySelectorAll('.open-project-studio').forEach(btn=>btn.onclick=showWorkspace);
+
+document.getElementById('scrollFeature').onclick=()=>document.getElementById('featureSection').scrollIntoView({behavior:'smooth'});
+
+comments.push(c);
+  renderComments();
+  closeCommentCompose();
+  pop('评论已发布');
+}
+function renderComments(){
+  document.querySelectorAll('.comment-pin,.comment-bubble').forEach(x=>x.remove());
+  comments.forEach(c=>{
+    c.color=c.color||'#7c8cff';
+    const pin=document.createElement('button');
+    pin.className='comment-pin';
+    pin.dataset.id=c.id;
+    pin.style.left=(c.x-12)+'px';
+    pin.style.top=(c.y-12)+'px';
+    pin.style.background=c.color;
+    pin.style.borderColor=c.color;
+    pin.style.setProperty('--marker-color',c.color);
+    pin.textContent='';
+    pin.onclick=e=>{
+      e.stopPropagation();
+      toggleCommentBubble(c.id,pin);
+    };
+    stage.appendChild(pin);
+
+    const bubble=document.createElement('div');
+    bubble.className='comment-bubble';
+    bubble.dataset.id=c.id;
+    bubble.style.left=c.x+'px';
+    bubble.style.top=(c.y-16)+'px';
+    bubble.style.transform='translate(-50%,-100%)';
+    bubble.style.display='none';
+    bubble.innerHTML=commentBubbleHTML(c);
+    stage.appendChild(bubble);
+    bindCommentBubble(c,bubble,pin);
+  });
+}
+function commentBubbleHTML(c){
+  return `
+    <div class="comment-head">
+      <div><span class="comment-author">${c.author}</span> <span class="comment-time">${c.created}</span></div>
+      <button class="comment-close" style="border:0;background:transparent;color:#888;cursor:pointer">×</button>
+    </div>
+    <div class="comment-text">${escapeComment(c.text)}</div>
+    <div class="comment-actions">
+      <button class="edit-comment">编辑</button>
+      <button class="reply-comment">回复</button>
+      <button class="color-comment"><span class="marker-color-preview" style="background:${c.color}"></span>标记点颜色</button>
+      <button class="delete-comment">删除</button>
+    </div>
+    <div class="comment-color-panel">
+      <div class="marker-color-label">选择标记点颜色</div>
+      <div class="marker-color-grid">${['#7c8cff','#5ed39a','#ffad89','#f0d56b','#dc83ff','#ff6f91'].map(color=>`<button class="comment-color-swatch ${c.color===color?'active':''}" data-comment-color="${color}" style="background:${color};color:${color}" title="选择颜色"></button>`).join('')}</div>
+      <label class="marker-custom-color"><span>自定义颜色</span><span class="marker-color-code">${c.color}</span><input class="comment-custom-color" type="color" value="${c.color}" title="自定义颜色"></label>
+    </div>
+    <div class="comment-editor">
+      <textarea>${escapeComment(c.text)}</textarea>
+      <div class="reply-row"><button class="cancel-edit">取消</button><button class="primary save-edit">保存</button></div>
+    </div>
+    <div class="comment-thread">${c.replies.map((r,index)=>`<div class="reply-item" data-reply-index="${index}"><div class="reply-content"><b>${r.author}</b> ${escapeComment(r.text)}${r.edited?' <span class="comment-time">已编辑</span>':''}</div><div class="reply-actions"><button class="edit-reply">编辑</button><button class="delete-reply">删除</button></div><div class="reply-inline-editor"><textarea>${escapeComment(r.text)}</textarea><div class="reply-row"><button class="cancel-reply-edit">取消</button><button class="primary save-reply-edit">保存</button></div></div></div>`).join('')}</div>
+    <div class="reply-editor">
+      <textarea placeholder="输入回复"></textarea>
+      <div class="reply-row"><button class="cancel-reply">取消</button><button class="primary save-reply">回复</button></div>
+    </div>`;
+}
+function escapeComment(s){
+  return s.replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+}
+function toggleCommentBubble(id,pin){
+  document.querySelectorAll('.comment-bubble').forEach(b=>{
+    if(b.dataset.id!==id){b.style.display='none';b.classList.remove('selected')}
+  });
+  document.querySelectorAll('.comment-pin').forEach(p=>p.classList.remove('active'));
+  const bubble=stage.querySelector(`.comment-bubble[data-id="${id}"]`);
+  const open=bubble.style.display!=='none';
+  bubble.style.display=open?'none':'block';
+  pin.classList.toggle('active',!open);
+  selectedCommentId=open?null:id;bubble.classList.toggle('selected',!open);
+}
+function bindCommentBubble(c,bubble,pin){
+  bubble.addEventListener('mousedown',()=>{selectedCommentId=c.id;document.querySelectorAll('.comment-bubble').forEach(item=>item.classList.toggle('selected',item===bubble))});
+  bubble.querySelector('.comment-close').onclick=()=>{bubble.style.display='none';bubble.classList.remove('selected');pin.classList.remove('active');if(selectedCommentId===c.id)selectedCommentId=null};
+  const editor=bubble.querySelector('.comment-editor');
+  const replyEditor=bubble.querySelector('.reply-editor');
+  const colorPanel=bubble.querySelector('.comment-color-panel');
+  bubble.querySelector('.edit-comment').onclick=()=>editor.classList.add('show');
+  bubble.querySelector('.cancel-edit').onclick=()=>editor.classList.remove('show');
+  bubble.querySelector('.save-edit').onclick=()=>{
+    const value=editor.querySelector('textarea').value.trim();
+    if(!value)return pop('评论内容不能为空');
+    c.text=value;c.created='已编辑';renderComments();pop('评论已更新');
+  };
+  bubble.querySelector('.reply-comment').onclick=()=>replyEditor.classList.add('show');
+  bubble.querySelector('.color-comment').onclick=()=>colorPanel.classList.toggle('show');
+  const applyMarkerColor=color=>{
+    c.color=color;pin.style.background=color;pin.style.borderColor=color;pin.style.setProperty('--marker-color',color);
+    bubble.querySelector('.marker-color-preview').style.background=color;
+    colorPanel.querySelector('.marker-color-code').textContent=color;
+    colorPanel.querySelectorAll('[data-comment-color]').forEach(x=>x.classList.toggle('active',x.dataset.commentColor.toLowerCase()===color.toLowerCase()));
+  };
+  colorPanel.querySelectorAll('[data-comment-color]').forEach(btn=>btn.onclick=()=>{applyMarkerColor(btn.dataset.commentColor);pop('标记点颜色已更新')});
+  colorPanel.querySelector('.comment-custom-color').oninput=e=>applyMarkerColor(e.target.value);
+  colorPanel.querySelector('.comment-custom-color').onchange=()=>pop('标记点颜色已更新');
+  bubble.querySelector('.cancel-reply').onclick=()=>replyEditor.classList.remove('show');
+  bubble.querySelector('.save-reply').onclick=()=>{
+    const value=replyEditor.querySelector('textarea').value.trim();
+    if(!value)return pop('请输入回复内容');
+    c.replies.push({author:'Suzy',text:value});
+    renderComments();
+    const np=stage.querySelector(`.comment-pin[data-id="${c.id}"]`);
+    toggleCommentBubble(c.id,np);
+    pop('回复已发布');
+  };
+  bubble.querySelectorAll('.reply-item').forEach(item=>{
+    const index=Number(item.dataset.replyIndex),inlineEditor=item.querySelector('.reply-inline-editor');
+    item.querySelector('.edit-reply').onclick=()=>inlineEditor.classList.add('show');
+    item.querySelector('.cancel-reply-edit').onclick=()=>inlineEditor.classList.remove('show');
+    item.querySelector('.save-reply-edit').onclick=()=>{const value=inlineEditor.querySelector('textarea').value.trim();if(!value)return pop('回复内容不能为空');c.replies[index].text=value;c.replies[index].edited=true;selectedCommentId=c.id;renderComments();const nextPin=stage.querySelector(`.comment-pin[data-id="${c.id}"]`);toggleCommentBubble(c.id,nextPin);pop('回复已更新')};
+    item.querySelector('.delete-reply').onclick=()=>requestDeleteConfirm('删除回复','确定删除这条回复吗？删除后无法恢复。',()=>{c.replies.splice(index,1);selectedCommentId=c.id;renderComments();const nextPin=stage.querySelector(`.comment-pin[data-id="${c.id}"]`);toggleCommentBubble(c.id,nextPin);pop('回复已删除')});
+  });
+  bubble.querySelector('.delete-comment').onclick=()=>{
+    commentDeleteId=c.id;
+    commentDeleteMask.classList.add('show');
+  };
+}
+
+function closeCommentDeleteDialog(closeBubble=false){
+  const id=commentDeleteId;
+  commentDeleteMask.classList.remove('show');
+  if(closeBubble&&id){
+    const bubble=stage.querySelector(`.comment-bubble[data-id="${id}"]`),pin=stage.querySelector(`.comment-pin[data-id="${id}"]`);
+    if(bubble)bubble.style.display='none';if(pin)pin.classList.remove('active');
+    if(selectedCommentId===id)selectedCommentId=null;
+  }
+  commentDeleteId=null;
+}
+document.getElementById('cancelCommentDelete').onclick=e=>{
+  e.preventDefault();e.stopPropagation();
+  closeCommentDeleteDialog(true);
+};
+document.getElementById('confirmCommentDelete').onclick=e=>{
+  e.preventDefault();e.stopPropagation();
+  const deletingId=commentDeleteId;
+  if(deletingId){
+    comments=comments.filter(x=>x.id!==deletingId);
+    if(selectedCommentId===deletingId)selectedCommentId=null;
+    renderComments();
+    pop('评论已删除');
+  }
+  closeCommentDeleteDialog();
+};
+commentDeleteMask.onclick=e=>{if(e.target===commentDeleteMask){e.stopPropagation();closeCommentDeleteDialog(true)}};
+
+commentBtn.onclick=toggleCommentMode;
+document.getElementById('cancelCommentBtn').onclick=closeCommentCompose;
+document.getElementById('saveCommentBtn').onclick=addComment;
+
+
+workspace.addEventListener('mousemove',e=>{
+  if(!commentMode)return;
+  const wr=workspace.getBoundingClientRect();
+  commentCursorDot.style.left=(e.clientX-wr.left)+'px';
+  commentCursorDot.style.top=(e.clientY-wr.top)+'px';
+  commentCursorDot.style.display='block';
+});
+workspace.addEventListener('mouseleave',()=>{
+  if(commentMode)commentCursorDot.style.display='none';
+});
+workspace.addEventListener('mouseenter',()=>{
+  if(commentMode)commentCursorDot.style.display='block';
+});
+
+workspace.addEventListener('click',e=>{
+  if(!commentMode)return;
+  if(e.target.closest('.comment-compose')||e.target.closest('.comment-bubble')||e.target.closest('.comment-pin')||e.target.closest('.topbar')||e.target.closest('.element-panel')||e.target.closest('.share-panel')||e.target.closest('.asset-panel'))return;
+  openCommentCompose(e.clientX,e.clientY);
+  e.stopPropagation();
+});
+
+
+let a=createNode('image',150,150),b=createNode('video',520,150),c=createNode('image',890,150),d=createNode('audio',520,560);
+a.el.querySelector('.node-name').value='角色立绘';a.el.querySelector('.prompt').value='生成动漫角色立绘';
+b.el.querySelector('.node-name').value='镜头动画';b.el.querySelector('.prompt').value='参考角色立绘生成镜头运动';
+c.el.querySelector('.node-name').value='封面图';c.el.querySelector('.prompt').value='参考角色形象生成竖版封面';
+d.el.querySelector('.node-name').value='雨夜氛围配乐';d.el.querySelector('.prompt').value='低沉电子氛围音乐，雨夜城市感，缓慢节奏，30秒';
+links.push({from:a.id,to:b.id},{from:a.id,to:c.id},{from:d.id,to:b.id});refresh();renderMembers();renderAssetLibrary();
+saveCurrentCanvas();renderProject();
+
+const homeOverlay=document.getElementById('homeOverlay');
+document.querySelector('.logo').style.cursor='pointer';
+document.querySelector('.logo').title='返回首页';
+document.querySelector('.logo').onclick=()=>homeOverlay.classList.add('show');
+document.getElementById('enterStudio').onclick=showWorkspace;
+
+
+/* 可交互项目管理 */
+let projectData=[
+  {id:'p1',name:'星海漫游',type:'AI 动画项目',desc:'围绕角色、场景、分镜与视频生成搭建完整 AI 动画创作流程。',updated:'刚刚更新',members:3,canvases:['角色设计','场景设定','第一幕分镜','视频生成','配音与字幕','最终输出']},
+  {id:'p2',name:'霓虹追踪',type:'AI 短剧项目',desc:'赛博朋克题材 AI 短剧，从人物设定到镜头输出。',updated:'昨天更新',members:2,canvases:['角色设定','城市夜景','追逐镜头','成片输出']},
+  {id:'p3',name:'未来城市计划',type:'视觉概念项目',desc:'围绕未来城市视觉语言进行概念探索与镜头实验。',updated:'3 天前更新',members:3,canvases:['建筑概念','交通系统','夜景灯光','人物比例','航拍视频','街道细节','广告视觉','提案输出']}
+];
+let activeProjectId='p1';
+let editingProjectId=null;
+
+const projectGrid=document.getElementById('projectGrid');
+const projectModalMask=document.getElementById('projectModalMask');
+const projectDetailPage=document.getElementById('projectDetailPage');
+
+function renderProjects(){
+  projectGrid.innerHTML=projectData.map((p,i)=>`
+    <article class="project-card" data-project-id="${p.id}">
+      <button class="edit-project-btn" data-final-edit-project="${p.id}" title="编辑项目" aria-label="编辑项目">✎</button>
+      <div class="project-cover"><img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&q=80" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.58"><div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(10,10,12,.75),rgba(10,10,12,.15))"></div><div class="project-cover-content"><span>${p.type}</span><h3>${p.name}</h3></div></div>
+      <div class="project-info">
+        <div class="project-meta"><span>${p.canvases.length} 张画布</span><span>${p.updated}</span></div>
+        <div class="project-members">${Array.from({length:p.members},(_,idx)=>`<div class="project-avatar" style="background:${['#f0d18a','#7db2ff','#8ee0b0','#ff9d7d'][idx%4]}">${String.fromCharCode(65+idx)}</div>`).join('')}</div>
+        <div class="project-actions-row">
+          <button class="view-project" data-project-id="${p.id}">查看项目</button>
+          <button class="primary open-project-studio" data-project-id="${p.id}">进入工作台</button>
+          <button class="inline-delete-btn" data-final-delete-project="${p.id}">删除</button>
+        </div>
+      </div>
+    </article>`).join('');
+
+  document.querySelectorAll('.view-project').forEach(btn=>btn.onclick=()=>openProjectDetail(btn.dataset.projectId));
+  document.querySelectorAll('[data-final-edit-project]').forEach(btn=>btn.onclick=e=>{e.stopPropagation();const p=projectData.find(x=>x.id===btn.dataset.finalEditProject);if(p)openProjectModal(p)});
+  document.querySelectorAll('.open-project-studio').forEach(btn=>btn.onclick=()=>{
+    activeProjectId=btn.dataset.projectId;
+    showWorkspace();
+  });
+  document.querySelectorAll('[data-final-delete-project]').forEach(btn=>btn.onclick=e=>{
+    e.stopPropagation();
+    const p=projectData.find(x=>x.id===btn.dataset.finalDeleteProject);if(!p)return;
+    requestDeleteConfirm('删除项目','确定删除项目「'+p.name+'」吗？该项目下的 '+p.canvases.length+' 张画布将一并删除，且无法恢复。',()=>{
+      projectData=projectData.filter(x=>x.id!==p.id);
+      if(activeProjectId===p.id)activeProjectId=projectData[0]?.id||null;
+      renderProjects();
+      if(activeProjectId)openProjectDetail(activeProjectId);
+      else{document.getElementById('inlineProjectTitle').textContent='暂无项目';document.getElementById('inlineProjectDesc').textContent='请先新建项目';document.getElementById('inlineCanvasGrid').innerHTML='';}
+      pop('项目及下属画布已删除');
+    });
+  });
+}
+
+function openProjectModal(project=null){
+  editingProjectId=project?.id||null;
+  document.getElementById('projectModalTitle').textContent=project?'编辑项目':'新建项目';
+  document.getElementById('newProjectName').value=project?.name||'';
+  document.getElementById('newProjectType').value=project?.type||'AI 动画项目';
+  document.getElementById('newCanvasName').value=project?.canvases?.[0]||'主画布';
+  document.getElementById('newProjectDesc').value=project?.desc||'';
+  const canvasField=document.getElementById('newCanvasName').closest('.project-field');
+  if(canvasField)canvasField.style.display=project?'none':'';
+  projectModalMask.classList.add('show');
+  setTimeout(()=>document.getElementById('newProjectName').focus(),0);
+}
+function closeProjectModal(){projectModalMask.classList.remove('show');editingProjectId=null}
+
+document.querySelector('.project-create').onclick=()=>openProjectModal();
+document.getElementById('closeProjectModal').onclick=closeProjectModal;
+document.getElementById('cancelProjectModal').onclick=closeProjectModal;
+projectModalMask.onclick=e=>{if(e.target===projectModalMask)closeProjectModal()};
+
+document.getElementById('saveNewProject').onclick=()=>{
+  const name=document.getElementById('newProjectName').value.trim();
+  const type=document.getElementById('newProjectType').value;
+  const desc=document.getElementById('newProjectDesc').value.trim();
+  const canvasName=document.getElementById('newCanvasName').value.trim()||'主画布';
+  if(!name)return pop('请输入项目名称');
+
+  if(editingProjectId){
+    const p=projectData.find(x=>x.id===editingProjectId);
+    p.name=name;p.type=type;p.desc=desc;
+    p.updated='刚刚更新';
+    activeProjectId=p.id;
+    pop('项目已保存');
+    openProjectDetail(p.id);
+  }else{
+    const p={id:'p'+Date.now(),name,type,desc,updated:'刚刚创建',members:1,canvases:[canvasName]};
+    projectData.unshift(p);activeProjectId=p.id;
+    pop('项目已创建');
+  }
+  closeProjectModal();
+  renderProjects();
+};
+
+
+function openProjectDetail(id){
+  activeProjectId=id;
+  const p=projectData.find(x=>x.id===id);
+  document.getElementById('inlineProjectTitle').textContent=p.name+' · 画布';
+  document.getElementById('inlineProjectDesc').textContent=p.desc||'';
+  document.getElementById('inlineCanvasGrid').innerHTML=p.canvases.map((name,idx)=>`
+    <div class="canvas-card" data-canvas-index="${idx}">
+      <button class="edit-canvas-btn" data-final-edit-canvas="${idx}" title="编辑画布" aria-label="编辑画布">✎</button>
+      <div class="canvas-thumb" style="background-image:url('https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=900&q=80');background-size:cover;background-position:center;"></div>
+      <h4>${name}</h4>
+      <p>${8+idx*2} 个节点 · ${1+(idx%3)} 人协作</p>
+      <div class="canvas-card-actions"><button class="detail-open-canvas">进入画布</button><button class="inline-delete-btn" data-final-delete-canvas="${idx}">删除</button></div>
+    </div>`).join('');
+  document.querySelectorAll('.detail-open-canvas').forEach(btn=>btn.onclick=()=>{const idx=Number(btn.closest('.canvas-card')?.dataset.canvasIndex||0),canvasName=p.canvases[idx],style=canvasStyleRegistry[canvasStyleKey(p.id,canvasName)]||'电影写实';enterCanvasWorkspace(p,canvasName,style)});
+  document.querySelectorAll('[data-final-edit-canvas]').forEach(btn=>btn.onclick=e=>{
+    e.stopPropagation();const idx=Number(btn.dataset.finalEditCanvas),card=btn.closest('.canvas-card'),oldName=p.canvases[idx];
+    card.classList.add('editing');card.innerHTML=`<div class="canvas-inline-editor"><label>画布名称</label><input class="inline-edit" maxlength="30"><p>修改后仅更新画布信息，不会影响已有节点。</p><div class="inline-edit-row"><button class="cancel-canvas-edit">取消</button><button class="primary save-canvas-edit">保存修改</button></div></div>`;
+    const input=card.querySelector('.inline-edit');input.value=oldName;input.focus();input.select();
+    card.querySelector('.cancel-canvas-edit').onclick=()=>openProjectDetail(id);
+    card.querySelector('.save-canvas-edit').onclick=()=>{const value=input.value.trim();if(!value)return pop('请输入画布名称');p.canvases[idx]=value;p.updated='刚刚更新';openProjectDetail(id);renderProjects();pop('画布名称已保存')};
+    input.onkeydown=event=>{if(event.key==='Enter')card.querySelector('.save-canvas-edit').click();if(event.key==='Escape')openProjectDetail(id)};
+  });
+  document.querySelectorAll('[data-final-delete-canvas]').forEach(btn=>btn.onclick=e=>{
+    e.stopPropagation();
+    const idx=Number(btn.dataset.finalDeleteCanvas),name=p.canvases[idx];
+    requestDeleteConfirm('删除画布','确定删除画布「'+name+'」吗？删除后无法恢复。',()=>{
+      p.canvases.splice(idx,1);p.updated='刚刚更新';
+      openProjectDetail(p.id);renderProjects();pop('画布已删除');
+    });
+  });
+  
+}
+
+document.getElementById('detailEnterStudio').onclick=showWorkspace;
+document.getElementById('openCurrentCanvas').onclick=showWorkspace;
+document.getElementById('editCurrentProject').onclick=()=>{
+  const p=projectData.find(x=>x.id===activeProjectId);
+  openProjectModal(p);
+};
+
+renderProjects();
+
+
+document.querySelectorAll('.faq-question').forEach(btn=>btn.onclick=()=>{
+  const item=btn.closest('.faq-item');
+  document.querySelectorAll('.faq-item').forEach(x=>{if(x!==item)x.classList.remove('open')});
+  item.classList.toggle('open');
+});
+document.querySelectorAll('[data-footer-link]').forEach(link=>link.onclick=()=>{
+  const names={help:'帮助中心',manual:'产品使用手册',tutorial:'视频教程',feedback:'意见反馈',contact:'联系我们'};
+  pop(names[link.dataset.footerLink]+'页面将在正式产品中打开');
+});
+
+const projectPage=document.getElementById('projectPage');
+
+function showHomePage(){
+  projectPage.classList.remove('show');
+  homeOverlay.classList.add('show');
+}
+function showProjectPage(){
+  homeOverlay.classList.remove('show');
+  projectPage.classList.add('show');
+  if(projectData.length){ activeProjectId=projectData[0].id; openProjectDetail(activeProjectId); }
+}
+function showWorkspace(){
+  homeOverlay.classList.remove('show');
+  projectPage.classList.remove('show');
+  projectDetailPage.classList.remove('show');
+}
+
+document.getElementById('openProjectsTop').onclick=showProjectPage;
+document.getElementById('openProjectsHero').onclick=showProjectPage;
+document.getElementById('projectBackHome').onclick=showHomePage;
+document.getElementById('projectEnterStudio').onclick=showWorkspace;
+document.querySelectorAll('.open-project-studio').forEach(btn=>btn.onclick=showWorkspace);
+
+document.getElementById('scrollFeature').onclick=()=>document.getElementById('featureSection').scrollIntoView({behavior:'smooth'});
+
+/* 项目管理：新建画布编辑页面 */
+let pendingDeleteAction=null;
+function requestDeleteConfirm(title,text,action){
+  document.getElementById('confirmTitle').textContent=title;
+  document.getElementById('confirmText').textContent=text;
+  pendingDeleteAction=action;
+  document.getElementById('confirmMask').classList.add('show');
+}
+document.addEventListener('click',e=>{
+  if(e.target.closest('#confirmCancel')){
+    e.preventDefault();e.stopPropagation();
+    document.getElementById('confirmMask').classList.remove('show');pendingDeleteAction=null;
+  }
+  if(e.target.closest('#confirmDelete')){
+    e.preventDefault();e.stopPropagation();
+    const action=pendingDeleteAction;pendingDeleteAction=null;
+    try{if(action)action()}finally{document.getElementById('confirmMask').classList.remove('show')}
+  }
+});
+const canvasEditorPage=document.getElementById('canvasEditorPage');
+let canvasEditorContext='external';
+function enterCanvasWorkspace(projectRecord,canvasName,style='电影写实'){
+  saveCurrentCanvas();project.name=projectRecord?.name||project.name;
+  let target=project.canvases.find(canvas=>canvas.name===canvasName);
+  if(!target){target={id:'cv'+Date.now(),name:canvasName,style,state:null};project.canvases.push(target)}else target.style=style;
+  activeCanvasId=target.id;currentCanvasStyle=style;updateCanvasStylePill();restoreCanvasState(target.state);renderProject();showWorkspace();pop(`已进入「${canvasName}」· ${style}风格`);
+}
+function openCanvasEditorPage(context='external'){
+  canvasEditorContext=context;
+  if(context==='internal'){
+    document.getElementById('canvasEditorProjectName').textContent='所属项目：'+project.name;
+    document.getElementById('canvasEditorName').value='';document.getElementById('canvasEditorStyle').value=currentCanvasStyle||'电影写实';canvasEditorPage.classList.add('show');setTimeout(()=>document.getElementById('canvasEditorName').focus(),0);return;
+  }
+  const p=projectData.find(x=>x.id===activeProjectId)||projectData[0];
+  if(!p)return pop('请先创建项目');
+  activeProjectId=p.id;
+  document.getElementById('canvasEditorProjectName').textContent='所属项目：'+p.name;
+  document.getElementById('canvasEditorName').value='';
+  document.getElementById('canvasEditorStyle').value='电影写实';
+  canvasEditorPage.classList.add('show');
+  setTimeout(()=>document.getElementById('canvasEditorName').focus(),0);
+}
+function closeCanvasEditorPage(){canvasEditorPage.classList.remove('show')}
+function saveCanvasFromEditor(enterAfter){
+  const name=document.getElementById('canvasEditorName').value.trim();
+  const style=document.getElementById('canvasEditorStyle').value;
+  if(!name)return pop('请输入画布名称');
+  if(canvasEditorContext==='internal'){
+    if(project.canvases.some(canvas=>canvas.name===name))return pop('画布名称已存在');
+    saveCurrentCanvas();const canvas={id:'cv'+Date.now(),name,style,state:null};project.canvases.push(canvas);activeCanvasId=canvas.id;currentCanvasStyle=style;updateCanvasStylePill();restoreCanvasState(null);closeCanvasEditorPage();renderProject();projectPanel.classList.add('show');projectBtn.classList.add('active');pop(`画布「${name}」已创建 · ${style}风格`);return;
+  }
+  const p=projectData.find(x=>x.id===activeProjectId);
+  if(!p)return pop('当前项目不存在');
+  if(p.canvases.some(x=>(typeof x==='string'?x:x.name)===name))return pop('画布名称已存在');
+  p.canvases.push(name);
+  canvasStyleRegistry[canvasStyleKey(p.id,name)]=style;
+  p.updated='刚刚更新';
+  closeCanvasEditorPage();renderProjects();openProjectDetail(p.id);
+  pop('画布「'+name+'」已创建');
+  if(enterAfter)setTimeout(()=>enterCanvasWorkspace(p,name,style),220)
+}
+document.getElementById('canvasEditorClose').onclick=closeCanvasEditorPage;
+document.getElementById('canvasEditorCancel').onclick=closeCanvasEditorPage;
+document.getElementById('canvasEditorSave').onclick=()=>saveCanvasFromEditor(true);
+document.getElementById('canvasEditorSaveEnter').onclick=()=>saveCanvasFromEditor(true);
+document.getElementById('canvasEditorName').addEventListener('keydown',e=>{if(e.key==='Enter')saveCanvasFromEditor(true)});
+canvasEditorPage.addEventListener('mousedown',e=>{if(e.target===canvasEditorPage)closeCanvasEditorPage()});
+document.addEventListener('click',e=>{
+  const trigger=e.target.closest('#addCanvasTop,#inlineAddCanvas');
+  if(!trigger)return;
+  e.preventDefault();e.stopImmediatePropagation();openCanvasEditorPage();
+},true);
+
+const reelayLogoSvg=`<svg class="reelay-logo-svg" viewBox="0 0 32 32" aria-hidden="true">
+  <path class="logo-mark" d="M10 24V8h7.2c4.2 0 6.8 2.1 6.8 5.7s-2.6 5.8-6.8 5.8H10M18 19.5l6 4.5"/>
+  <circle class="logo-accent" cx="10" cy="8" r="1.8"/>
+</svg>`;
+/* 清除旧版本遗留的重复首页栏及机器人 Logo，只保留新版品牌标识 */
+document.querySelectorAll('#homeOverlay').forEach((panel,index)=>{if(index>0)panel.remove()});
+document.querySelectorAll('.home-brand-mark,.logo').forEach(mark=>mark.innerHTML=reelayLogoSvg);
+
+/* 修复评论发布，并支持评论点与气泡自由拖动 */
+function publishCanvasComment(){
+  const text=commentInput.value.trim();
+  if(!text)return pop('请输入评论内容');
+  if(!commentDraftPos)return pop('请先在画布上选择评论位置');
+  comments.push({id:'c'+commentSeq++,author:'Suzy',text,replies:[],x:commentDraftPos.stageX,y:commentDraftPos.stageY,created:'刚刚'});
+  renderComments();closeCommentCompose();pop('评论已发布');
+}
+document.getElementById('saveCommentBtn').onclick=publishCanvasComment;
+commentInput.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();publishCanvasComment()}});
+
+const renderCommentsBase=renderComments;
+renderComments=function(){
+  renderCommentsBase();
+  comments.forEach(c=>{
+    const pin=stage.querySelector(`.comment-pin[data-id="${c.id}"]`);
+    const bubble=stage.querySelector(`.comment-bubble[data-id="${c.id}"]`);
+    if(!pin||!bubble)return;
+    let dragged=false;
+    pin.addEventListener('mousedown',e=>{
+      if(e.button!==0)return;e.stopPropagation();
+      const sx=e.clientX,sy=e.clientY,startX=c.x,startY=c.y;dragged=false;
+      const move=v=>{
+        const dx=(v.clientX-sx)/scale,dy=(v.clientY-sy)/scale;
+        if(Math.abs(dx)+Math.abs(dy)>3)dragged=true;
+        c.x=startX+dx;c.y=startY+dy;
+        pin.style.left=(c.x-12)+'px';pin.style.top=(c.y-12)+'px';
+        bubble.style.left=c.x+'px';bubble.style.top=(c.y-16)+'px';
+      };
+      const up=()=>{document.removeEventListener('mousemove',move);document.removeEventListener('mouseup',up);if(dragged)pop('评论位置已更新')};
+      document.addEventListener('mousemove',move);document.addEventListener('mouseup',up);
+    });
+    pin.addEventListener('click',e=>{if(dragged){e.preventDefault();e.stopImmediatePropagation();dragged=false}},true);
+
+    const handle=bubble.querySelector('.comment-head');
+    handle.style.cursor='move';
+    handle.addEventListener('mousedown',e=>{
+      if(e.button!==0||e.target.closest('button'))return;e.stopPropagation();e.preventDefault();
+      const sx=e.clientX,sy=e.clientY,startX=c.x,startY=c.y;
+      const move=v=>{
+        c.x=startX+(v.clientX-sx)/scale;c.y=startY+(v.clientY-sy)/scale;
+        pin.style.left=(c.x-12)+'px';pin.style.top=(c.y-12)+'px';
+        bubble.style.left=c.x+'px';bubble.style.top=(c.y-16)+'px';
+      };
+      const up=()=>{document.removeEventListener('mousemove',move);document.removeEventListener('mouseup',up);pop('评论位置已更新')};
+      document.addEventListener('mousemove',move);document.addEventListener('mouseup',up);
+    });
+  });
+};
+
+comments.push({id:'c'+commentSeq++,author:'Mia',text:'这个角色立绘可以再增强一下眼神细节吗？',replies:[{author:'Suzy',text:'可以，我会在下一版调整。'}],x:420,y:125,created:'2分钟前'});renderComments();
+
+/* 手机号 / 邮箱注册流程 */
+const policyMask=document.getElementById('policyMask'),policyTitle=document.getElementById('policyTitle'),policyContent=document.getElementById('policyContent');
+const policyCopy={
+ user:{title:'用户协议',subtitle:'使用 Reelay 前请了解平台服务规则',content:'<h4>服务说明</h4><p>用户应合法、合规地使用 Reelay 的 AI 创作、项目管理与协作能力，并对所提交内容及生成结果承担相应责任。</p><h4>账号与内容</h4><p>请妥善保管账号信息，不得利用平台制作、传播侵权、违法或危害他人权益的内容。</p><h4>知识产权</h4><p>用户应确保上传素材、提示词及参考内容已获得必要授权；平台将依照适用规则处理生成内容与服务数据。</p>'},
+ privacy:{title:'隐私政策',subtitle:'了解个人信息的收集、使用与保护方式',content:'<h4>信息收集</h4><p>我们仅在提供注册、登录、项目协作和安全保障所必需的范围内处理账号及使用信息。</p><h4>信息使用</h4><p>相关信息用于提供服务、改善体验、保障账号安全及履行法律义务，不会超出约定目的使用。</p><h4>用户权利</h4><p>用户可以依照适用规则访问、更正或申请删除个人信息，并管理账号授权。</p>'},
+ voice:{title:'音色政策',subtitle:'AI 配音、声音克隆与音色素材使用规范',content:'<h4>授权要求</h4><p>上传或使用真人音色前，必须获得音色权利人清晰、有效且可验证的授权。</p><h4>禁止用途</h4><p>不得冒充他人、实施欺诈、误导公众，或生成侵犯隐私、人格与知识产权的声音内容。</p><h4>标识与治理</h4><p>涉及合成音色的内容应按适用场景进行明确标识；平台可对高风险或违规音色采取限制、下架等措施。</p>'}
+};
+function openPolicy(type){const item=policyCopy[type]||policyCopy.user;policyTitle.textContent=item.title;document.getElementById('policySubtitle').textContent=item.subtitle;policyContent.innerHTML=item.content;policyMask.classList.add('show')}
+function closePolicy(){policyMask.classList.remove('show')}
+document.querySelectorAll('[data-policy]').forEach(link=>link.onclick=e=>{e.preventDefault();e.stopPropagation();openPolicy(link.dataset.policy)});
+document.getElementById('closePolicy').onclick=closePolicy;policyMask.addEventListener('mousedown',e=>{if(e.target===policyMask)closePolicy()});
+const registerMask=document.getElementById('registerMask');
+const registerForm=document.getElementById('registerForm');
+const registerSuccess=document.getElementById('registerSuccess');
+const registerContact=document.getElementById('registerContact');
+const registerError=document.getElementById('registerError');
+let registerType='phone',registerCountdown=null;
+function resetRegisterView(){
+ registerForm.classList.remove('hidden');registerSuccess.classList.remove('show');registerError.textContent='';
+ document.getElementById('registerCode').value='';document.getElementById('registerPassword').value='';document.getElementById('registerAgreement').checked=false;
+}
+function openRegisterFlow(){resetRegisterView();registerMask.classList.add('show');setTimeout(()=>registerContact.focus(),0)}
+function closeRegisterFlow(){registerMask.classList.remove('show')}
+document.getElementById('openRegister').onclick=openRegisterFlow;
+document.getElementById('closeRegister').onclick=closeRegisterFlow;
+registerMask.addEventListener('mousedown',e=>{if(e.target===registerMask)closeRegisterFlow()});
+document.querySelectorAll('[data-register-type]').forEach(btn=>btn.onclick=()=>{
+ registerType=btn.dataset.registerType;
+ document.querySelectorAll('[data-register-type]').forEach(item=>item.classList.toggle('active',item===btn));
+ document.getElementById('registerContactLabel').textContent=registerType==='phone'?'手机号码':'邮箱地址';
+ registerContact.type=registerType==='phone'?'tel':'email';registerContact.autocomplete=registerType==='phone'?'tel':'email';
+ registerContact.placeholder=registerType==='phone'?'请输入 11 位手机号码':'请输入常用邮箱地址';registerContact.value='';registerError.textContent='';registerContact.focus();
+});
+function validRegisterContact(){
+ const value=registerContact.value.trim();
+ return registerType==='phone'?/^1[3-9]\d{9}$/.test(value):/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+}
+document.getElementById('sendRegisterCode').onclick=()=>{
+ if(!validRegisterContact()){registerError.textContent=registerType==='phone'?'请输入有效的 11 位手机号码':'请输入有效的邮箱地址';return}
+ const button=document.getElementById('sendRegisterCode');let seconds=60;button.disabled=true;button.textContent=seconds+'s 后重发';registerError.textContent='';
+ clearInterval(registerCountdown);registerCountdown=setInterval(()=>{seconds--;button.textContent=seconds+'s 后重发';if(seconds<=0){clearInterval(registerCountdown);button.disabled=false;button.textContent='发送验证码'}},1000);
+ pop('验证码已发送');
+};
+document.getElementById('submitRegister').onclick=()=>{
+ const code=document.getElementById('registerCode').value.trim(),password=document.getElementById('registerPassword').value;
+ if(!validRegisterContact())return registerError.textContent=registerType==='phone'?'请输入有效的手机号码':'请输入有效的邮箱地址';
+ if(!/^\d{6}$/.test(code))return registerError.textContent='请输入 6 位验证码';
+ if(password.length<8||!/[A-Za-z]/.test(password)||!/\d/.test(password))return registerError.textContent='密码至少 8 位，并同时包含字母和数字';
+ if(!document.getElementById('registerAgreement').checked)return registerError.textContent='请先阅读并同意用户协议与隐私政策';
+ registerError.textContent='';registerForm.classList.add('hidden');registerSuccess.classList.add('show');
+ document.getElementById('registerSuccessText').textContent=(registerType==='phone'?'手机号 ':'邮箱 ')+registerContact.value.trim()+' 已完成注册。';
+};
+const loginMask=document.getElementById('loginMask');
+const loginAccount=document.getElementById('loginAccount');
+const loginPassword=document.getElementById('loginPassword');
+const loginError=document.getElementById('loginError');
+function openLoginFlow(){loginError.textContent='';loginPassword.value='';loginMask.classList.add('show');setTimeout(()=>loginAccount.focus(),0)}
+function closeLoginFlow(){loginMask.classList.remove('show')}
+function validLoginAccount(){const value=loginAccount.value.trim();return /^1[3-9]\d{9}$/.test(value)||/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)}
+document.getElementById('openLogin').onclick=openLoginFlow;
+document.getElementById('closeLogin').onclick=()=>{pendingAuthDestination=null;closeLoginFlow()};
+loginMask.addEventListener('mousedown',e=>{if(e.target===loginMask){pendingAuthDestination=null;closeLoginFlow()}});
+document.getElementById('submitLogin').onclick=()=>{
+ if(!validLoginAccount())return loginError.textContent='请输入有效的手机号或邮箱';
+ if(loginPassword.value.length<6)return loginError.textContent='请输入至少 6 位登录密码';
+ const destination=pendingAuthDestination||'workspace';isAuthenticated=true;pendingAuthDestination=null;loginError.textContent='';closeLoginFlow();
+ if(destination==='projects')showProjectPage();else showWorkspace();pop('登录成功，欢迎回来');
+};
+document.getElementById('forgotPassword').onclick=()=>{
+ if(!validLoginAccount())return loginError.textContent='请先输入需要找回的手机号或邮箱';
+ loginError.textContent='';pop('密码重置指引已发送');
+};
+document.getElementById('registerLoginLink').onclick=()=>{closeRegisterFlow();openLoginFlow()};
+document.getElementById('loginRegisterLink').onclick=()=>{closeLoginFlow();openRegisterFlow()};
+loginPassword.addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('submitLogin').click()});
+document.getElementById('registerEnterStudio').onclick=()=>{isAuthenticated=true;const destination=pendingAuthDestination||'workspace';pendingAuthDestination=null;closeRegisterFlow();if(destination==='projects')showProjectPage();else showWorkspace();pop('欢迎加入 Reelay')};
+document.getElementById('registerPassword').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('submitRegister').click()});
+
+/* 项目管理页签与搜索筛选 */
+const baseProjectListRenderer=renderProjects;
+let projectPageScope='all';
+let projectPageKeyword='';
+const sharedProjectIds=new Set(['p3']);
+renderProjects=function(){
+  const allProjects=projectData;
+  projectData=allProjects.filter(project=>{
+    const ownership=sharedProjectIds.has(project.id)?'shared':'created';
+    const scopeMatch=projectPageScope==='all'||projectPageScope===ownership;
+    const text=(project.name+' '+project.type+' '+project.desc).toLowerCase();
+    return scopeMatch&&(!projectPageKeyword||text.includes(projectPageKeyword));
+  });
+  baseProjectListRenderer();
+  projectData=allProjects;
+  if(!projectGrid.children.length){
+    projectGrid.innerHTML=`<div style="grid-column:1/-1;padding:70px 20px;text-align:center;border:1px dashed #30333b;border-radius:16px;color:#737a87;font-size:11px">${projectPageKeyword?'没有匹配的项目':projectPageScope==='shared'?'暂无与我共享的项目':'暂无我创建的项目'}</div>`;
+  }
+};
+document.querySelectorAll('.project-tabs .project-tab').forEach((tab,index)=>{
+  tab.dataset.projectScope=['all','created','shared'][index];
+  tab.onclick=()=>{
+    projectPageScope=tab.dataset.projectScope;
+    document.querySelectorAll('.project-tabs .project-tab').forEach(item=>item.classList.toggle('active',item===tab));
+    renderProjects();
+  };
+});
+const projectPageSearch=document.querySelector('.project-search');
+projectPageSearch.oninput=()=>{projectPageKeyword=projectPageSearch.value.trim().toLowerCase();renderProjects()};
+renderProjects();
+
+homeOverlay.classList.add('show');
+</script>
+
+<div class="confirm-mask" id="confirmMask">
+  <div class="confirm-box">
+    <h3 id="confirmTitle">确认删除</h3>
+    <p id="confirmText">删除后无法恢复。</p>
+    <div class="confirm-actions">
+      <button id="confirmCancel">取消</button>
+      <button class="danger" id="confirmDelete">确认删除</button>
+    </div>
+  </div>
+</div>
+<div class="confirm-mask" id="logoutConfirmMask" role="dialog" aria-modal="true" aria-labelledby="logoutConfirmTitle">
+  <div class="confirm-box logout-confirm-box">
+    <div class="logout-confirm-icon">↪</div>
+    <h3 id="logoutConfirmTitle">确认退出登录？</h3>
+    <p>退出后将返回 Reelay 首页，当前画布内容不会受到影响。</p>
+    <div class="confirm-actions">
+      <button id="logoutConfirmCancel">取消</button>
+      <button class="danger" id="logoutConfirmSubmit">确认退出</button>
+    </div>
+  </div>
+</div>
+<div class="account-settings-mask" id="accountSettingsMask" role="dialog" aria-modal="true" aria-labelledby="accountSettingsTitle">
+  <div class="account-settings-dialog">
+    <div class="account-settings-head"><div><h3 id="accountSettingsTitle">账号设置</h3><p>编辑个人资料与联系方式</p></div><button id="closeAccountSettings" title="关闭">×</button></div>
+    <div class="account-settings-body">
+      <div class="account-avatar-editor"><div class="account-avatar-preview" id="accountAvatarPreview">S</div><div><b>头像颜色</b><p>选择适合你的个人标识颜色</p><div class="account-color-options" id="accountColorOptions"><button data-avatar-color="#343b5b" class="active" style="--avatar-color:#343b5b"></button><button data-avatar-color="#315f72" style="--avatar-color:#315f72"></button><button data-avatar-color="#4d526f" style="--avatar-color:#4d526f"></button><button data-avatar-color="#446453" style="--avatar-color:#446453"></button><button data-avatar-color="#704b5b" style="--avatar-color:#704b5b"></button></div></div></div>
+      <div class="account-form-grid">
+        <label><span>姓名</span><input id="accountProfileName" maxlength="24" value="Suzy"></label>
+        <label><span>职位</span><input id="accountProfileRole" maxlength="30" value="项目管理员"></label>
+        <label class="full"><span>邮箱</span><input id="accountProfileEmail" type="email" value="suzy@reelay.ai"></label>
+        <label class="full"><span>手机号</span><input id="accountProfilePhone" type="tel" maxlength="20" placeholder="请输入手机号"></label>
+      </div>
+    </div>
+    <div class="account-settings-foot"><button id="cancelAccountSettings">取消</button><button class="primary" id="saveAccountSettings">保存个人信息</button></div>
+  </div>
+</div>
+<style id="homeHeroCompact">
+/* 首页首屏紧凑化：减少导航前后与下一内容区之间的空白 */
+.profile-reading-mode{margin:2px 0 5px;padding:9px 8px;border-radius:9px}.profile-reading-label{display:grid;grid-template-columns:27px 1fr;align-items:center;gap:7px;color:#b7bdc8}.profile-reading-label>span{font-size:13px;text-align:center}.profile-reading-label b,.profile-reading-label small{display:block}.profile-reading-label b{font-size:9px}.profile-reading-label small{margin-top:3px;color:#747c88;font-size:7px}.reading-mode-switch{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin:8px 0 0 34px;padding:3px;border:1px solid #30343d;border-radius:8px;background:#1b1e24}.profile-dropdown .reading-mode-switch button{display:block;width:100%;height:25px;padding:0;border:0;border-radius:6px;background:transparent;color:#747d8b;text-align:center;font-size:8px;cursor:pointer}.profile-dropdown .reading-mode-switch button:hover{background:#262a32;color:#ccd1da}.profile-dropdown .reading-mode-switch button.active{background:#eef0f4;color:#17191e;font-weight:700}
+.message-tabs{align-items:center;padding:9px 12px!important;border-bottom:1px solid rgba(255,255,255,.06)}.message-read-all{height:27px;margin-left:auto;padding:0 9px;border:1px solid #363b45;border-radius:8px;background:#242830;color:#aeb5c0;font-size:8px;cursor:pointer}.message-read-all:hover{background:#303540;color:#fff}
+#app,#app .workspace,#app .sidebar,#app .node,#app .topbar-message-btn,#app .canvas-quick-tools{transition:background-color .22s,color .22s,border-color .22s}
+#app.light-theme .workspace,#app.light-theme .sidebar{--bg:#f5f6f8;--grid:#d9dde4;--card:#fff;--panel:#fff;--panel2:#f1f3f6;--border:#d7dbe2;--text:#20242b;--muted:#727a86;--line:#667085;color:#20242b}
+#app.light-theme .workspace{background-color:#f7f8fa!important;background-image:radial-gradient(#cdd2da 1px,transparent 1px)!important}
+#app.light-theme .sidebar{background:rgba(255,255,255,.96)!important;border-color:#d9dde4!important}
+#app.light-theme .sidebtn{border-color:#dce0e6!important;background:#f5f6f8!important;color:#66707d!important}#app.light-theme .sidebtn:hover,#app.light-theme .sidebtn.active{background:#e9ecf2!important;color:#252a31!important}
+#app.light-theme .node{background:#fff!important;border-color:#d7dce3!important;color:#242930!important;box-shadow:0 18px 42px rgba(55,65,81,.13)!important}#app.light-theme .node.selected{border-color:#7b87df!important;box-shadow:0 0 0 3px rgba(124,140,255,.14),0 18px 42px rgba(55,65,81,.13)!important}#app.light-theme .node .media{background:#f0f2f5!important;border-color:#dce0e6!important}#app.light-theme .node .params,#app.light-theme .node .footer{border-color:#e0e3e8!important}#app.light-theme .node .field input,#app.light-theme .node .field textarea,#app.light-theme .node .field select{background:#f6f7f9!important;border-color:#d6dbe2!important;color:#252a31!important}#app.light-theme .node .reference{background:#f5f6f8!important;border-color:#d3d8df!important;color:#69727f!important}#app.light-theme .node .prompt-summary,#app.light-theme .node .title-text{color:#303640!important}
+#app.light-theme .node-group{border-color:rgba(105,117,201,.42)!important;background:rgba(124,140,255,.055)!important}#app.light-theme .node-group-name{color:#5966bc!important}#app.light-theme .node-group-name:focus{background:#fff!important;color:#313a72!important}
+#app.light-theme .topbar .pill,#app.light-theme .topbar-message-btn,#app.light-theme .canvas-quick-tools{border-color:#d8dde5!important;background:rgba(255,255,255,.94)!important;color:#56606d!important;box-shadow:0 10px 28px rgba(47,57,70,.1)!important}
+#app.light-theme .canvas-style-pill{border-color:#ccd3ec!important;background:rgba(245,247,252,.96)!important;color:#737e91!important;box-shadow:0 10px 28px rgba(47,57,70,.1)!important}#app.light-theme .canvas-style-pill b{color:#4c58a8!important}
+#app.light-theme .project-panel,#app.light-theme .asset-panel,#app.light-theme .permission-panel,#app.light-theme .points-panel,#app.light-theme .message-panel,#app.light-theme .element-panel,#app.light-theme .share-panel,#app.light-theme .skill-panel,#app.light-theme .canvas-chat,#app.light-theme .profile-dropdown,#app.light-theme .logo-dropdown{background:rgba(255,255,255,.98)!important;border-color:#d8dde5!important;color:#252a31!important;box-shadow:0 22px 60px rgba(42,52,65,.16)!important}#app.light-theme .profile-dropdown button,#app.light-theme .logo-dropdown button{color:#505966}#app.light-theme .profile-dropdown button:hover,#app.light-theme .logo-dropdown button:hover{background:#eef1f5!important;color:#20242b!important}#app.light-theme .profile-dropdown-head,#app.light-theme .panel-head,#app.light-theme .asset-head,#app.light-theme .element-head{border-color:#e1e4e9!important}#app.light-theme .profile-dropdown-head b{color:#252a31!important}#app.light-theme .reading-mode-switch{background:#eef1f5;border-color:#d8dde5}#app.light-theme .profile-dropdown .reading-mode-switch button.active{background:#252a31;color:#fff}
+#app.light-theme .asset-card,#app.light-theme .points-kpi,#app.light-theme .points-chart-card,#app.light-theme .points-alloc-card,#app.light-theme .message-item,#app.light-theme .element-item,#app.light-theme .skill-card{background:#f5f7f9!important;border-color:#dce1e7!important;color:#252a31!important}#app.light-theme .workspace input,#app.light-theme .workspace textarea,#app.light-theme .workspace select{background:#fff!important;border-color:#d5dae1!important;color:#252a31!important}
+#app.light-theme .canvas-chat-bubble{background:#f0f2f5!important;color:#303640!important}#app.light-theme .canvas-chat-msg.user .canvas-chat-bubble{background:#e5e9ff!important;color:#303b78!important}
+#app.light-theme .logo-wrap .logo{background:#e7eaf0!important;border-color:#cfd5de!important;box-shadow:0 7px 18px rgba(75,85,99,.12)!important}#app.light-theme .logo-wrap .logo:hover{background:#dde2ea!important;border-color:#bdc6d2!important}#app.light-theme .logo-wrap .logo-mark{stroke:#596273!important}#app.light-theme .logo-wrap .logo-accent{fill:#7d88da!important}
+#app.light-theme .profile-dropdown .profile-points-card{border-color:#cbd2ef!important;background:radial-gradient(circle at 88% 12%,rgba(129,143,218,.2),transparent 42%),linear-gradient(145deg,#edf0fa,#e5e9f4)!important;color:#343b4a!important}#app.light-theme .profile-dropdown .profile-points-card:hover{border-color:#aeb9e3!important;background:linear-gradient(145deg,#e7ebf8,#dfe5f2)!important}#app.light-theme .profile-points-icon{border-color:#c5ccef;background:#dfe4f7;color:#6672c2}#app.light-theme .profile-points-card b{color:#343b4a!important}#app.light-theme .profile-points-card small,#app.light-theme .profile-points-card em{color:#727d91!important}
+#app.light-theme .node .media-badge,#app.light-theme .node .status-badge{border-color:rgba(130,140,155,.2)!important;background:rgba(232,235,240,.92)!important;color:#596371!important}#app.light-theme .node .expand{border-color:#d6dbe2!important;background:#eef0f4!important;color:#66707d!important}#app.light-theme .node .generate-btn{background:#626c7d!important;color:#fff!important}#app.light-theme .node .node-save-asset{border-color:#d2d7df!important;background:#eceff3!important;color:#606a78!important}#app.light-theme .schedule-setting{border-color:#ccd3ec!important;background:#edf0fa!important}
+#app.light-theme .node .media::after{background:linear-gradient(to top,rgba(96,106,120,.08),transparent 42%)!important}#app.light-theme .node .port{background:#e2e6ec!important;border-color:#7b8492!important}#app.light-theme .node .output{background:#768193!important;border-color:#768193!important}#app.light-theme .node .progress{background:#dde1e7!important}#app.light-theme .human-review-setting{border-color:#ead9ce!important;background:#f8f1ed!important}#app.light-theme .review-setting-head{color:#56606c!important}
+#app.light-theme .node-picker{border-color:#d4d9e0!important;background:#f7f8fa!important;box-shadow:0 20px 52px rgba(47,57,70,.15)!important}#app.light-theme .node-picker button{color:#4c5663!important}#app.light-theme .node-picker button:hover{background:#e9edf2!important;color:#252a31!important}#app.light-theme .picker-title,#app.light-theme .picker-meta{color:#75808d!important}
+#app.light-theme .canvas-quick-tools button:hover{background:#e7ebf0!important;color:#303741!important}#app.light-theme .canvas-quick-tools .quick-divider{background:#d7dce3!important}#app.light-theme .canvas-quick-tools .canvas-mode-btn.active{background:#dfe4f7!important;color:#4c58a8!important;box-shadow:inset 0 0 0 1px #bbc4eb!important}
+#app.light-theme .sidebar-collapse{border-color:#cfd5dd!important;background:#eef1f5!important;color:#66717e!important;box-shadow:0 6px 16px rgba(55,65,81,.1)!important}#app.light-theme .sidebar-collapse:hover{background:#e2e6ec!important;color:#343c47!important}#app.light-theme .floating-panel-resize{border-color:#8f9bd8!important}
+#app.light-theme .message-panel .panel-head{background:#f6f7f9!important}#app.light-theme .message-tabs{border-color:#e1e4e9!important;background:#f1f3f6!important}#app.light-theme .message-tab{border-color:#d3d8df!important;background:#e7eaef!important;color:#65707d!important}#app.light-theme .message-tab:hover{background:#dde2e8!important;color:#343b44!important}#app.light-theme .message-tab.active{border-color:#8b97dc!important;background:#727fc9!important;color:#fff!important}#app.light-theme .message-read-all{border-color:#cfd5dd!important;background:#e2e6ec!important;color:#56616e!important}#app.light-theme .message-read-all:hover{background:#d6dce4!important;color:#303741!important}#app.light-theme .message-list{background:#fafbfc!important}#app.light-theme .message-item{background:#f0f2f5!important;border-color:#e0e4e9!important}#app.light-theme .message-item.unread{background:#e9edf9!important;border-color:#d6dcf2!important}#app.light-theme .message-item:hover{background:#e6eaf0!important;border-color:#cdd4dd!important}#app.light-theme .message-title{color:#333a44!important}#app.light-theme .message-desc{color:#697482!important}#app.light-theme .message-time{color:#87909c!important}#app.light-theme .panel-head .close-panel{color:#7b8592!important}
+#app.light-theme .asset-card .asset-info,#app.light-theme .asset-card.character-card .asset-info,#app.light-theme .asset-card .asset-actions{background:#f3f5f7!important}#app.light-theme .asset-unified-meta{background:#e8ecf1!important;color:#66717e!important}#app.light-theme .asset-card .asset-actions button{border-color:#697485!important;background:#697485!important;color:#fff!important}
+#app.light-theme .skill-detail{border-color:#dce1e7!important;background:#eef1f5!important}#app.light-theme .skill-card.active{border-color:#8d99df!important;background:linear-gradient(145deg,#e8ebfa,#f4f5fa)!important}#app.light-theme .skill-flow span{background:#dfe4ec!important;color:#586473!important}
+#app.light-theme .canvas-chat-launcher{border-color:#cbd2dc!important;background:#e4e8ee!important;color:#596474!important;box-shadow:0 12px 28px rgba(55,65,81,.14)!important}
+.profile-dropdown .profile-points-card{width:100%;display:grid;grid-template-columns:34px 1fr;align-items:center;gap:9px;margin:3px 0 7px;padding:11px;border:1px solid rgba(124,140,255,.22);border-radius:11px;background:radial-gradient(circle at 88% 12%,rgba(124,140,255,.26),transparent 38%),linear-gradient(145deg,#252c4b,#1c202d);color:#eef0f7;cursor:pointer}.profile-dropdown .profile-points-card:hover{border-color:rgba(150,162,255,.48);background:radial-gradient(circle at 88% 12%,rgba(124,140,255,.34),transparent 40%),linear-gradient(145deg,#2a3256,#202534)}.profile-points-icon{width:32px;height:32px;display:grid;place-items:center;border:1px solid rgba(174,184,255,.24);border-radius:9px;background:rgba(124,140,255,.12);color:#b9c2ff;font-size:13px}.profile-points-card div{min-width:0}.profile-points-card small,.profile-points-card b,.profile-points-card em{display:block!important;text-align:left}.profile-points-card small{color:#929bb0!important;font-size:7px!important}.profile-points-card b{margin-top:2px;color:#f4f5fa!important;font-size:15px!important;line-height:1.15}.profile-points-card em{margin-top:4px;color:#8d96aa;font-size:7px;font-style:normal}
+.account-settings-mask{position:fixed;inset:0;z-index:260;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.58);backdrop-filter:blur(5px)}.account-settings-mask.show{display:flex}.account-settings-dialog{width:min(480px,calc(100vw - 28px));overflow:hidden;border:1px solid #303540;border-radius:18px;background:#17191e;box-shadow:0 30px 90px rgba(0,0,0,.58)}.account-settings-head{height:64px;padding:0 18px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.07)}.account-settings-head h3{margin:0;font-size:13px}.account-settings-head p{margin:4px 0 0;color:#777f8c;font-size:8px}.account-settings-head button{width:28px;height:28px;border:0;border-radius:8px;background:transparent;color:#858d9a;font-size:17px;cursor:pointer}.account-settings-head button:hover{background:#292d35;color:#fff}.account-settings-body{padding:18px}.account-avatar-editor{display:grid;grid-template-columns:58px 1fr;align-items:center;gap:13px;padding:13px;border:1px solid #2d323c;border-radius:12px;background:#1d2026}.account-avatar-preview{width:54px;height:54px;display:grid;place-items:center;border:1px solid rgba(174,184,255,.28);border-radius:15px;background:#343b5b;color:#eef0ff;font-size:16px;font-weight:800}.account-avatar-editor b{font-size:9px}.account-avatar-editor p{margin:4px 0 8px;color:#737b88;font-size:7px}.account-color-options{display:flex;gap:7px}.account-color-options button{width:20px;height:20px;border:2px solid transparent;border-radius:7px;background:var(--avatar-color);cursor:pointer}.account-color-options button.active{border-color:#fff;box-shadow:0 0 0 2px rgba(124,140,255,.45)}.account-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-top:14px}.account-form-grid label.full{grid-column:1/-1}.account-form-grid label span{display:block;margin-bottom:6px;color:#929aa7;font-size:8px}.account-form-grid input{width:100%;height:36px;padding:0 10px;border:1px solid #343944;border-radius:9px;background:#20242b;color:#eef0f4;font-size:9px;outline:none}.account-form-grid input:focus{border-color:#6f7bd0;box-shadow:0 0 0 2px rgba(124,140,255,.1)}.account-settings-foot{padding:12px 18px;display:flex;justify-content:flex-end;gap:8px;border-top:1px solid rgba(255,255,255,.07)}.account-settings-foot button{height:34px;padding:0 13px;border:1px solid #343944;border-radius:9px;background:#22262d;color:#b8bec8;font-size:9px;cursor:pointer}.account-settings-foot button.primary{border-color:#eef0f4;background:#eef0f4;color:#111;font-weight:700}@media(max-width:560px){.account-form-grid{grid-template-columns:1fr}.account-form-grid label.full{grid-column:auto}}
+.project-actions-row{display:grid!important;grid-template-columns:1fr 1fr 1fr!important}.project-actions-row button{min-width:0!important;padding-left:5px!important;padding-right:5px!important}.canvas-card-actions{display:grid!important;grid-template-columns:1fr 1fr!important}.canvas-card .canvas-card-actions button{min-width:0!important;padding:0 5px!important}.project-card .edit-project-btn,.canvas-card .edit-canvas-btn{top:10px!important;right:10px!important;transition:.16s ease}.project-card .edit-project-btn:hover,.canvas-card .edit-canvas-btn:hover{border-color:rgba(174,184,255,.55);background:rgba(35,40,55,.94);color:#dce1ff;transform:translateY(-1px)}.canvas-card.editing{min-height:188px;padding:16px;background:#181b21}.canvas-inline-editor label{display:block;margin-bottom:7px;color:#939baa;font-size:8px}.canvas-inline-editor .inline-edit{width:100%;height:36px;padding:0 10px;border:1px solid #465078;border-radius:9px;background:#20242b;color:#fff;font-size:10px;outline:none}.canvas-inline-editor p{margin:9px 0 15px!important;color:#727b89!important;font-size:8px!important;line-height:1.5}.canvas-inline-editor .inline-edit-row{display:flex;gap:8px}.canvas-inline-editor .inline-edit-row button{flex:1;height:32px;border:1px solid #343944;border-radius:8px;background:#22262d;color:#b2b8c3;font-size:8px;cursor:pointer}.canvas-inline-editor .inline-edit-row button.primary{border-color:#eef0f4;background:#eef0f4;color:#111}
+.skill-panel{position:absolute;left:82px;top:64px;bottom:18px;width:390px;z-index:78;display:none;flex-direction:column;overflow:hidden;border:1px solid rgba(255,255,255,.09);border-radius:18px;background:rgba(17,19,24,.97);box-shadow:0 26px 80px rgba(0,0,0,.5);backdrop-filter:blur(20px)}.skill-panel.show{display:flex}.skill-panel-head{display:flex;align-items:flex-start;justify-content:space-between;padding:17px 18px 13px;border-bottom:1px solid rgba(255,255,255,.07)}.skill-panel-head h3{margin:3px 0 4px;font-size:15px}.skill-panel-head p{margin:0;color:#767e8c;font-size:8px}.skill-kicker{color:#8f9cff;font-size:7px;letter-spacing:.14em}.skill-panel-head>button{width:28px;height:28px;border:0;border-radius:8px;background:transparent;color:#808795;font-size:17px;cursor:pointer}.skill-panel-head>button:hover{background:#292d35;color:#fff}.skill-search{padding:10px 14px}.skill-search input{width:100%;height:34px;padding:0 10px;border:1px solid #303540;border-radius:9px;background:#20242b;color:#eef0f4;font-size:9px;outline:none}.skill-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:2px 14px 12px;overflow:auto}.skill-card{min-height:104px;padding:12px;border:1px solid #2e333d;border-radius:12px;background:#1b1e24;color:#daddE5;text-align:left;cursor:pointer}.skill-card:hover,.skill-card.active{border-color:#6875c9;background:linear-gradient(145deg,rgba(124,140,255,.16),#1c2028)}.skill-card-icon{width:27px;height:27px;display:grid;place-items:center;margin-bottom:9px;border-radius:8px;background:rgba(124,140,255,.12);color:#aeb8ff;font-size:12px}.skill-card b{display:block;font-size:10px}.skill-card span{display:block;margin-top:5px;color:#79818e;font-size:7px;line-height:1.5}.skill-detail{margin-top:auto;padding:13px 14px 15px;border-top:1px solid rgba(255,255,255,.07);background:#15181d}.skill-detail-empty{padding:15px;text-align:center;color:#6f7784;font-size:8px}.skill-detail h4{margin:0 0 5px;font-size:11px}.skill-detail p{margin:0;color:#7f8794;font-size:8px;line-height:1.55}.skill-flow{display:flex;flex-wrap:wrap;gap:5px;margin:10px 0}.skill-flow span{padding:4px 6px;border-radius:6px;background:#222731;color:#9fa8b8;font-size:7px}.skill-generate-btn{width:100%;height:36px;border:0;border-radius:9px;background:#eef0f4;color:#111;font-size:9px;font-weight:750;cursor:pointer}.skill-generate-btn:hover{background:#fff}@media(max-width:640px){.skill-panel{left:10px;right:10px;top:58px;bottom:10px;width:auto}.skill-grid{grid-template-columns:1fr}}
+.logout-confirm-box{width:360px;text-align:center}.logout-confirm-icon{width:42px;height:42px;margin:0 auto 12px;display:grid;place-items:center;border:1px solid rgba(255,95,115,.2);border-radius:12px;background:rgba(255,95,115,.08);color:#ff9bab;font-size:18px}.logout-confirm-box h3{font-size:14px}.logout-confirm-box p{max-width:280px;margin:0 auto!important}.logout-confirm-box .confirm-actions{justify-content:center}.logout-confirm-box .confirm-actions button{min-width:92px}
+.home-overlay .hero{min-height:0!important;padding:26px 72px 24px!important;gap:36px!important}
+.home-overlay .hero-visual>div{max-width:560px!important}
+.home-overlay .hero-visual img{height:380px!important}
+.home-overlay .hero-copy h1{margin-top:12px!important;margin-bottom:14px!important;font-size:52px!important}
+.home-overlay .hero-copy p{margin-top:0!important;margin-bottom:0!important}
+.home-overlay .hero-actions{margin-top:18px!important}
+@media(max-width:1000px){.home-overlay .hero{padding:28px 36px 26px!important;grid-template-columns:1fr!important}.home-overlay .hero-visual img{height:320px!important}}
+@media(max-width:640px){.home-overlay .hero{padding:22px 20px 24px!important}.home-overlay .hero-copy h1{font-size:38px!important}.home-overlay .hero-visual img{height:250px!important}}
+.asset-modal-mask{position:absolute!important}.asset-modal{position:relative;width:430px;min-width:390px;min-height:360px;max-width:calc(100% - 24px);max-height:calc(100% - 24px);resize:both;overflow:auto!important;will-change:transform}.asset-modal.maximized{position:absolute;inset:14px!important;width:auto!important;height:auto!important;max-width:none;max-height:none;resize:none;display:grid;grid-template-rows:48px minmax(0,1fr) auto}.asset-modal-head{position:relative;top:auto;z-index:12;background:#161618;cursor:grab;user-select:none}.asset-modal-head:active{cursor:grabbing}.asset-modal-window-actions{display:flex;align-items:center;gap:3px}.asset-modal-window-actions button{width:29px;height:29px;display:grid;place-items:center;border-radius:8px!important}.asset-modal-window-actions button:hover{background:#292b31!important;color:#fff!important}.asset-modal-body{min-height:0;overflow:visible}.asset-modal.maximized .asset-modal-body{display:block;visibility:visible;overflow:auto}.asset-modal.maximized .asset-form-grid{grid-template-columns:minmax(210px,32%) minmax(0,1fr);gap:20px}.asset-modal-foot{position:relative;bottom:auto;z-index:12;background:#161618}@media(max-width:520px){.asset-modal{min-width:0;resize:none}.asset-modal-window-actions button:first-child{display:none}.asset-form-grid,.asset-modal.maximized .asset-form-grid{grid-template-columns:1fr}.asset-modal.maximized{inset:7px!important}}
+.asset-grid{grid-auto-rows:288px!important;min-height:0!important;padding:10px 10px 56px!important;overflow-y:auto!important;overflow-x:hidden!important;align-content:start!important;scroll-padding-bottom:56px}.asset-card,.asset-add-card{height:288px!important;min-height:288px!important;box-sizing:border-box!important}.asset-card{grid-template-rows:158px minmax(0,1fr)!important}.asset-card .asset-cover,.asset-card.character-card .asset-cover{height:158px!important;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 42%,#292d36 0,#191b20 68%,#141519 100%)!important}.asset-card .asset-cover img,.asset-card.character-card .asset-cover img{width:100%!important;height:100%!important;padding:4px;object-fit:contain!important;object-position:center!important;box-sizing:border-box;opacity:1!important;filter:none!important}.asset-card .asset-cover.audio img{opacity:.3!important}.asset-card .asset-type{left:6px;top:6px;bottom:auto!important;padding:3px 6px!important;font-size:6px!important}.asset-card-menu{right:6px!important;top:6px!important}.asset-card-menu button{width:22px!important;height:22px!important;font-size:10px!important}.asset-reference-count{display:none!important}.asset-card .asset-info{min-height:0!important;padding:8px 9px!important;overflow:hidden!important}.asset-card .asset-desc{height:13px!important;min-height:13px!important;-webkit-line-clamp:1!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.asset-reference-line{height:18px;min-height:18px;margin-top:5px;padding:0 6px;display:flex;align-items:center;gap:4px;border-radius:5px;background:#22242a;color:#858b96;font-size:6px;line-height:1}.asset-reference-line span{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.asset-reference-line b{margin-left:auto;color:#c3c7d0;font-size:6px;font-weight:650;white-space:nowrap}.asset-reference-line em{margin-left:2px;padding-left:5px;border-left:1px solid rgba(125,215,255,.16);font-size:6px;font-style:normal;white-space:nowrap}.asset-card .asset-actions{min-height:35px!important;padding-top:5px!important}.asset-card[data-asset-type="portrait"] .asset-reference-line{background:rgba(124,140,255,.09)}.asset-card[data-asset-type="portrait"] .asset-reference-line b{color:#aeb8ff}.asset-card[data-asset-type="scene"] .asset-reference-line{background:rgba(88,177,124,.09)}.asset-card[data-asset-type="scene"] .asset-reference-line b{color:#9bd8b0}.asset-card[data-asset-type="video"] .asset-reference-line{background:rgba(255,173,137,.09)}.asset-card[data-asset-type="video"] .asset-reference-line b{color:#ffc1a7}.asset-card[data-asset-type="audio"] .asset-reference-line{background:rgba(125,215,255,.09)}.asset-card[data-asset-type="audio"] .asset-reference-line b{color:#a9e2ff}#app.light-theme .asset-reference-line{background:#e8ecf1!important;color:#66717e!important}
+.canvas-version-wrap{position:relative;z-index:2;height:36px;display:flex;align-items:center;gap:8px;pointer-events:auto}.canvas-version-label{color:#6f7682;font-size:7px;letter-spacing:.06em}.canvas-version-switch{display:flex;align-items:center;gap:2px;padding:3px;border:1px solid #30343c;border-radius:10px;background:#191b20;pointer-events:auto}.canvas-version-switch button{position:relative;z-index:1;height:26px;padding:0 11px;border:0;border-radius:7px;background:transparent;color:#777f8c;font-size:8px;cursor:pointer;pointer-events:auto;transition:.15s}.canvas-version-switch button:hover{color:#e2e5ea}.canvas-version-switch button.active{background:#eef0f4;color:#17191e;font-weight:750;box-shadow:0 3px 10px rgba(0,0,0,.2)}.canvas-version-note{padding-left:2px;color:#747b87;font-size:7px}#app[data-canvas-version="general"] [data-drama-tool],#app[data-canvas-version="general"] #smartToolsNavGroup,#app[data-canvas-version="general"] #smartToolsSeparator{display:none!important}#app.light-theme .canvas-version-switch{border-color:#d5dae1;background:#e9edf2}#app.light-theme .canvas-version-switch button{color:#67717e}#app.light-theme .canvas-version-switch button.active{background:#626d7d;color:#fff}@media(max-width:760px){.canvas-version-label,.canvas-version-note{display:none}.canvas-version-switch button{padding:0 8px}}
+.home-canvas-entries{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:20px}.home-canvas-entry{min-width:0;padding:13px 14px;display:grid;grid-template-columns:34px minmax(0,1fr) auto;align-items:center;gap:10px;border:1px solid #30343c;border-radius:13px;background:rgba(24,26,31,.86);color:#e8eaee;text-align:left;cursor:pointer;transition:transform .16s,border-color .16s,background .16s}.home-canvas-entry:hover{transform:translateY(-2px);border-color:#596171;background:#20232a}.home-canvas-entry.drama{border-color:rgba(124,140,255,.3);background:linear-gradient(145deg,rgba(124,140,255,.12),rgba(24,26,31,.9))}.home-canvas-entry-icon{width:34px;height:34px;display:grid;place-items:center;border-radius:10px;background:#292d34;color:#cdd2db;font-size:14px}.home-canvas-entry.drama .home-canvas-entry-icon{background:rgba(124,140,255,.16);color:#b7c0ff}.home-canvas-entry b,.home-canvas-entry small{display:block}.home-canvas-entry b{font-size:10px}.home-canvas-entry small{margin-top:4px;color:#777f8c;font-size:7px;line-height:1.4}.home-canvas-entry em{color:#8d95a3;font-size:8px;font-style:normal;white-space:nowrap}.home-canvas-entry.drama em{color:#aeb8ff}@media(max-width:680px){.home-canvas-entries{grid-template-columns:1fr}}
+</style>
+<script>
+/* 顶部消息与个人菜单增强 */
+(() => {
+  const msgButton=document.getElementById('messageBtn');
+  const msgPanel=document.getElementById('messagePanel');
+  const profileButton=document.getElementById('profileBtn');
+  const profileMenu=document.getElementById('profileDropdown');
+  const logoButton=document.getElementById('workspaceLogo');
+  const logoMenu=document.getElementById('logoDropdown');
+  if(!msgButton||!msgPanel||!profileButton||!profileMenu||!logoButton||!logoMenu)return;
+  logoButton.onclick=null;
+
+  function positionMessagePanel(){
+    const rect=msgButton.getBoundingClientRect();
+    const gap=8;
+    const panelWidth=Math.min(340,window.innerWidth-24);
+    const left=Math.max(12,Math.min(rect.right-panelWidth,window.innerWidth-panelWidth-12));
+    msgPanel.style.left=left+'px';
+    msgPanel.style.right='auto';
+    msgPanel.style.top=(rect.bottom+gap)+'px';
+    msgPanel.style.maxHeight=Math.max(240,window.innerHeight-rect.bottom-gap-12)+'px';
+  }
+  msgButton.addEventListener('click',()=>{
+    profileMenu.classList.remove('show');
+    profileButton.classList.remove('active');
+    profileButton.setAttribute('aria-expanded','false');
+    requestAnimationFrame(positionMessagePanel);
+  });
+  profileButton.addEventListener('click',(event)=>{
+    event.stopPropagation();
+    const show=!profileMenu.classList.contains('show');
+    profileMenu.classList.toggle('show',show);
+    profileButton.classList.toggle('active',show);
+    profileButton.setAttribute('aria-expanded',String(show));
+    if(show&&typeof pointsBalanceValue!=='undefined')document.getElementById('profilePointsBalance').textContent=pointsBalanceValue.toLocaleString();
+    if(show&&msgPanel.classList.contains('show'))msgButton.click();
+    logoMenu.classList.remove('show');logoButton.setAttribute('aria-expanded','false');
+  });
+  logoButton.addEventListener('click',(event)=>{
+    event.stopPropagation();
+    const show=!logoMenu.classList.contains('show');
+    logoMenu.classList.toggle('show',show);logoButton.setAttribute('aria-expanded',String(show));
+    profileMenu.classList.remove('show');profileButton.classList.remove('active');profileButton.setAttribute('aria-expanded','false');
+    if(msgPanel.classList.contains('show'))msgButton.click();
+  });
+  document.getElementById('logoGoProjects').addEventListener('click',()=>{
+    logoMenu.classList.remove('show');logoButton.setAttribute('aria-expanded','false');
+    if(typeof showProjectPage==='function')showProjectPage();
+  });
+  document.getElementById('logoGoHome').addEventListener('click',()=>{
+    logoMenu.classList.remove('show');logoButton.setAttribute('aria-expanded','false');
+    if(typeof showHomePage==='function')showHomePage();
+  });
+  document.getElementById('profilePointsCard').addEventListener('click',()=>{
+    profileMenu.classList.remove('show');profileButton.classList.remove('active');profileButton.setAttribute('aria-expanded','false');
+    const btn=document.getElementById('pointsBtn');if(btn&&!document.getElementById('pointsPanel').classList.contains('show'))btn.click();
+  });
+  const accountMask=document.getElementById('accountSettingsMask'),accountPreview=document.getElementById('accountAvatarPreview');
+  let selectedAvatarColor='#343b5b',savedProfile={name:'Suzy',role:'项目管理员',email:'suzy@reelay.ai',phone:'',color:'#343b5b'};
+  function closeAccountSettings(){accountMask.classList.remove('show')}
+  document.getElementById('profileAccountSettings').addEventListener('click',()=>{
+    document.getElementById('accountProfileName').value=savedProfile.name;document.getElementById('accountProfileRole').value=savedProfile.role;document.getElementById('accountProfileEmail').value=savedProfile.email;document.getElementById('accountProfilePhone').value=savedProfile.phone;selectedAvatarColor=savedProfile.color;accountPreview.textContent=savedProfile.name.slice(0,1).toUpperCase();accountPreview.style.background=savedProfile.color;document.querySelectorAll('[data-avatar-color]').forEach(x=>x.classList.toggle('active',x.dataset.avatarColor===savedProfile.color));
+    profileMenu.classList.remove('show');profileButton.classList.remove('active');profileButton.setAttribute('aria-expanded','false');accountMask.classList.add('show');
+    setTimeout(()=>document.getElementById('accountProfileName').focus(),0);
+  });
+  document.querySelectorAll('[data-avatar-color]').forEach(btn=>btn.addEventListener('click',()=>{
+    selectedAvatarColor=btn.dataset.avatarColor;document.querySelectorAll('[data-avatar-color]').forEach(x=>x.classList.toggle('active',x===btn));accountPreview.style.background=selectedAvatarColor;
+  }));
+  document.getElementById('accountProfileName').addEventListener('input',event=>{accountPreview.textContent=event.target.value.trim().slice(0,1).toUpperCase()||'S'});
+  document.getElementById('closeAccountSettings').onclick=closeAccountSettings;document.getElementById('cancelAccountSettings').onclick=closeAccountSettings;
+  accountMask.addEventListener('mousedown',event=>{if(event.target===accountMask)closeAccountSettings()});
+  document.getElementById('saveAccountSettings').onclick=()=>{
+    const name=document.getElementById('accountProfileName').value.trim(),role=document.getElementById('accountProfileRole').value.trim(),email=document.getElementById('accountProfileEmail').value.trim(),phone=document.getElementById('accountProfilePhone').value.trim();
+    if(!name)return pop('请输入姓名');if(!role)return pop('请输入职位');if(email&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))return pop('请输入有效的邮箱地址');if(phone&&!/^[+\d\s-]{6,20}$/.test(phone))return pop('请输入有效的手机号');
+    const initial=name.slice(0,1).toUpperCase(),background=`linear-gradient(145deg,${selectedAvatarColor},#252a40)`;
+    savedProfile={name,role,email,phone,color:selectedAvatarColor};profileButton.textContent=initial;profileButton.style.background=background;document.getElementById('profileMenuAvatar').textContent=initial;document.getElementById('profileMenuAvatar').style.background=background;document.getElementById('profileMenuName').textContent=name;document.getElementById('profileMenuRole').textContent=role;accountPreview.textContent=initial;closeAccountSettings();pop('个人信息已保存');
+  };
+  function setReadingTheme(theme,notify=false){
+    const light=theme==='light';document.getElementById('app').classList.toggle('light-theme',light);document.getElementById('readingDarkMode').classList.toggle('active',!light);document.getElementById('readingLightMode').classList.toggle('active',light);
+    try{localStorage.setItem('reelay-reading-theme',theme)}catch(error){}
+    if(notify)pop(light?'已切换为浅色阅读模式':'已切换为深色阅读模式');
+  }
+  document.querySelectorAll('[data-reading-theme]').forEach(btn=>btn.addEventListener('click',event=>{event.stopPropagation();setReadingTheme(btn.dataset.readingTheme,true)}));
+  let initialReadingTheme='dark';try{initialReadingTheme=localStorage.getItem('reelay-reading-theme')||'dark'}catch(error){}setReadingTheme(initialReadingTheme);
+  document.getElementById('profileHelpCenter').addEventListener('click',()=>{
+    profileMenu.classList.remove('show');profileButton.classList.remove('active');profileButton.setAttribute('aria-expanded','false');
+    const faq=document.querySelector('.faq-section')||document.getElementById('faqSection');
+    if(typeof showHomePage==='function')showHomePage();
+    setTimeout(()=>{if(faq)faq.scrollIntoView({behavior:'smooth',block:'start'});else pop('帮助中心将在正式产品中打开')},80);
+  });
+  document.getElementById('profileLogout').addEventListener('click',()=>{
+    document.getElementById('logoutConfirmMask').classList.add('show');
+  });
+  document.getElementById('logoutConfirmCancel').addEventListener('click',()=>document.getElementById('logoutConfirmMask').classList.remove('show'));
+  document.getElementById('logoutConfirmSubmit').addEventListener('click',()=>{
+    document.getElementById('logoutConfirmMask').classList.remove('show');
+    profileMenu.classList.remove('show');profileButton.classList.remove('active');profileButton.setAttribute('aria-expanded','false');
+    isAuthenticated=false;pendingAuthDestination=null;
+    if(typeof showHomePage==='function')showHomePage();
+    pop('已安全退出登录');
+  });
+  document.getElementById('logoutConfirmMask').addEventListener('mousedown',event=>{if(event.target.id==='logoutConfirmMask')event.currentTarget.classList.remove('show')});
+  document.addEventListener('keydown',event=>{if(event.key==='Escape'){document.getElementById('logoutConfirmMask').classList.remove('show');closeAccountSettings()}});
+  document.addEventListener('click',(event)=>{
+    if(!event.target.closest('.topbar-profile-wrap')){
+      profileMenu.classList.remove('show');profileButton.classList.remove('active');profileButton.setAttribute('aria-expanded','false');
+    }
+    if(!event.target.closest('.logo-wrap')){logoMenu.classList.remove('show');logoButton.setAttribute('aria-expanded','false')}
+  });
+  window.addEventListener('resize',()=>{if(msgPanel.classList.contains('show'))positionMessagePanel()});
+})();
+</script>
+<script>
+/* AI 短剧 Skill 库：一键生成完整画布 */
+(() => {
+ const skillBtn=document.getElementById('skillBtn'),panel=document.getElementById('skillPanel'),grid=document.getElementById('skillGrid'),detail=document.getElementById('skillDetail'),search=document.getElementById('skillSearch');
+ if(!skillBtn||!panel)return;
+ const skills=[
+  {id:'sweet',icon:'♡',name:'都市甜宠',desc:'高糖相遇、误会拉扯、情感升温',color:'#f0a8c2',nodes:[['image','男女主角色设定','都市甜宠短剧男女主角色设定，时尚、年轻、人物一致性'],['image','核心场景','高级公寓与都市咖啡馆场景，暖色电影光'],['video','心动相遇','男女主意外相遇，中近景，细腻眼神互动'],['video','误会冲突','情感误会爆发，快节奏对话与反应镜头'],['video','甜蜜反转','误会解除，浪漫拥抱，柔和逆光'],['audio','对白与主题音乐','自然年轻对白，轻甜浪漫主题音乐']]},
+  {id:'suspense',icon:'◐',name:'悬疑反转',desc:'线索铺设、危机升级、结尾翻盘',color:'#9ca8cf',nodes:[['image','侦探角色设定','冷峻侦探与神秘嫌疑人角色设定，黑色电影质感'],['image','案发现场','雨夜旧宅案发现场，低照度，高反差光影'],['video','发现线索','主角发现隐藏线索，微距特写，缓慢推镜'],['video','追逐危机','狭窄走廊追逐，手持镜头，紧张节奏'],['video','真相反转','关键证据揭示真正凶手，强烈反应镜头'],['audio','悬疑声场','低频悬疑配乐、环境音与紧张旁白']]},
+  {id:'xianxia',icon:'◇',name:'修仙逆袭',desc:'废柴开局、秘境突破、热血反击',color:'#9cbbff',nodes:[['image','仙侠角色设定','东方修仙主角与宗门角色设定，飘逸古装'],['image','宗门秘境','云海仙山、古老宗门与发光秘境'],['video','受辱立誓','主角被轻视后立誓逆袭，戏剧化近景'],['video','秘境突破','灵力爆发、法阵旋转、角色境界突破'],['video','热血反击','御剑战斗，快速运镜，能量特效'],['audio','仙侠配乐','国风管弦、战斗音效与热血旁白']]},
+  {id:'scifi',icon:'⌁',name:'科幻末日',desc:'异常降临、生存抉择、希望重启',color:'#82d4e8',nodes:[['image','未来角色设定','末日幸存者与智能机器人角色设定'],['image','废墟城市','未来都市废墟、巨型设施、冷蓝雾气'],['video','异常降临','城市能源失控，天空出现巨大异常'],['video','逃亡抉择','幸存者穿越废墟，面临关键选择'],['video','系统重启','核心装置启动，城市灯光逐层恢复'],['audio','科幻声场','电子氛围音乐、机械音效与末日广播']]},
+  {id:'ancient',icon:'⌘',name:'古风权谋',desc:'身份谜局、朝堂交锋、布局翻盘',color:'#d7b58a',nodes:[['image','古风角色设定','古代谋士、女主与权臣角色设定，精致服饰'],['image','宫廷场景','深宫长廊与朝堂，烛火、雨幕、东方构图'],['video','秘密入局','密信出现，主角被卷入权力局势'],['video','朝堂交锋','多方言语博弈，克制表情与压迫构图'],['video','布局翻盘','隐藏身份揭晓，主角完成局势逆转'],['audio','古风配乐','古琴、鼓点、宫廷环境音与沉稳旁白']]},
+  {id:'workplace',icon:'▦',name:'职场爽剧',desc:'遭遇打压、能力证明、强势翻盘',color:'#9bd5b0',nodes:[['image','职场角色设定','年轻职场主角、强势上司与竞争对手'],['image','办公场景','现代总部办公室、会议室与发布会舞台'],['video','职场打压','会议中方案被否定，人物关系快速建立'],['video','关键破局','主角发现数据问题并提出解决方案'],['video','高光翻盘','发布会成功，主角获得认可与晋升'],['audio','职场节奏','现代节奏配乐、办公室环境音与自信旁白']]}
+ ];
+ const skillElements={
+  sweet:[['image','女主角色','都市甜宠女主，全身立绘、正侧面、表情组，时尚年轻，保持角色一致性'],['image','男主角色','都市甜宠男主，全身立绘、正侧面、表情组，精英气质，保持角色一致性'],['image','咖啡馆场景','都市精品咖啡馆，日景与夜景，暖色电影光'],['image','公寓场景','现代高级公寓客厅与门厅，多机位场景设定'],['image','关键道具','透明雨伞、咖啡杯、手机与定情项链，道具设定图']],
+  suspense:[['image','侦探角色','冷峻侦探，全身设定、表情组与调查装备'],['image','嫌疑人角色','神秘嫌疑人，多状态表情与服装设定'],['image','旧宅现场','雨夜旧宅外景、走廊与案发房间，多角度'],['image','审讯室场景','低照度审讯室，单向玻璃与压迫构图'],['image','关键证物','密信、旧钥匙、怀表、照片与血迹证物']],
+  xianxia:[['image','主角设定','东方修仙主角，凡人期与突破后双形态'],['image','宗门人物','师尊、宿敌与宗门弟子角色组'],['image','宗门场景','云海仙山、演武场与宗门大殿'],['image','秘境场景','发光洞府、上古法阵与灵泉'],['image','仙侠道具','灵剑、玉佩、丹药、秘籍与储物戒']],
+  scifi:[['image','幸存者角色','末日幸存者，防护服、装备与表情组'],['image','机器人角色','智能机器人，多角度机械结构与状态灯'],['image','废墟城市','未来都市废墟、街道与地下避难所'],['image','核心设施','能源核心、控制室与重启装置'],['image','科幻道具','通讯器、能量电池、武器与数据芯片']],
+  ancient:[['image','谋士角色','古代谋士，全身服饰、表情与身份变化'],['image','权臣与女主','权臣、女主与侍卫角色组设定'],['image','宫廷场景','深宫长廊、朝堂与御书房'],['image','密室场景','地下密室、烛火与机关墙'],['image','权谋道具','密信、玉玺、令牌、毒酒与案卷']],
+  workplace:[['image','主角设定','年轻职场主角，通勤、会议与发布会造型'],['image','职场人物组','上司、竞争对手、客户与团队成员'],['image','办公场景','总部办公区、会议室与电梯厅'],['image','发布会场景','品牌发布会舞台、后台与观众席'],['image','职场道具','笔记本电脑、数据报告、工牌与产品样机']]
+ };
+ function getSkillCanvasNodes(skill){return[...(skillElements[skill.id]||[]),...skill.nodes.slice(2)]}
+ let selected=skills[0];
+ function renderSkills(){const q=search.value.trim().toLowerCase(),list=skills.filter(s=>(s.name+s.desc).toLowerCase().includes(q));grid.innerHTML=list.map(s=>`<button class="skill-card ${s.id===selected.id?'active':''}" data-skill-id="${s.id}"><span class="skill-card-icon" style="color:${s.color};background:${s.color}18">${s.icon}</span><b>${s.name}</b><span>${s.desc}</span></button>`).join('')||'<div class="skill-detail-empty" style="grid-column:1/-1">没有匹配的短剧 Skill</div>';grid.querySelectorAll('[data-skill-id]').forEach(card=>card.onclick=()=>{selected=skills.find(s=>s.id===card.dataset.skillId);renderSkills();renderDetail()})}
+ function renderDetail(){const complete=getSkillCanvasNodes(selected),elementCount=complete.filter(n=>n[0]==='image').length,videoCount=complete.filter(n=>n[0]==='video').length;detail.innerHTML=`<h4>${selected.name} · 完整画布</h4><p>将生成全部出场元素：${elementCount} 组角色/场景/道具、${videoCount} 段视频镜头及完整声音节点。</p><div class="skill-flow">${complete.map(n=>`<span>${n[0]==='image'?'元素':n[0]==='video'?'视频':'声音'} · ${n[1]}</span>`).join('')}</div><button class="skill-generate-btn" id="generateSkillCanvas">✦ 一键生成全部元素与视频</button>`;document.getElementById('generateSkillCanvas').onclick=generateSkillCanvas}
+ function generateSkillCanvas(){
+  const complete=getSkillCanvasNodes(selected),vr=viewport.getBoundingClientRect(),baseX=(vr.width*.5-panX)/scale-670,baseY=(vr.height*.34-panY)/scale-190,created=[];
+  nodes.forEach(n=>n.el.classList.remove('selected'));
+  complete.forEach((item,index)=>{const col=index%4,row=Math.floor(index/4),n=createNode(item[0],baseX+col*345,baseY+row*405);n.el.querySelector('.node-name').value=item[1];n.el.querySelector('.prompt').value=item[2];syncNode(n);n.el.classList.add('selected');created.push(n)});
+  const elements=created.filter(n=>n.type==='image'),videos=created.filter(n=>n.type==='video'),audio=created.find(n=>n.type==='audio');
+  if(videos.length){elements.forEach(n=>links.push({from:n.id,to:videos[0].id}));for(let i=1;i<videos.length;i++)links.push({from:videos[i-1].id,to:videos[i].id});if(audio)videos.forEach(v=>links.push({from:audio.id,to:v.id}))}refresh();
+  if(typeof createGroup==='function'){createGroup();const group=groups[groups.length-1];if(group){group.name=selected.name+'完整画布';const input=group.el.querySelector('.node-group-name');if(input)input.value=group.name}}
+  panel.classList.remove('show');skillBtn.classList.remove('active');if(created[0])locateNode(created[0].id);pop(`已生成「${selected.name}」全部元素与视频`);
+ }
+ skillBtn.onclick=e=>{e.stopPropagation();const open=!panel.classList.contains('show');panel.classList.toggle('show',open);skillBtn.classList.toggle('active',open);if(open){renderSkills();renderDetail()}};
+ document.getElementById('closeSkillPanel').onclick=()=>{panel.classList.remove('show');skillBtn.classList.remove('active')};search.oninput=renderSkills;renderSkills();renderDetail();
+})();
+</script>
+<script>
+/* 画布版本：通用版 / 短剧版 */
+(() => {
+ const app=document.getElementById('app'),workspace=document.getElementById('workspace'),switcher=document.getElementById('canvasVersionSwitch'),note=document.getElementById('canvasVersionNote'),resourceTitle=document.getElementById('resourceGroupTitle');
+ if(!workspace||!switcher)return;
+ function closeDramaTools(){
+  document.getElementById('skillPanel')?.classList.remove('show');document.getElementById('skillBtn')?.classList.remove('active');
+  document.getElementById('aiWorkflowPanel')?.classList.remove('show');['filmAnalysisBtn','smartReplaceBtn','globalLaunchBtn'].forEach(id=>document.getElementById(id)?.classList.remove('active'));
+ }
+ function setCanvasVersion(version,announce=false){
+  const general=version==='general';workspace.dataset.canvasVersion=general?'general':'drama';app.dataset.canvasVersion=workspace.dataset.canvasVersion;
+  switcher.querySelectorAll('[data-canvas-version]').forEach(button=>button.classList.toggle('active',button.dataset.canvasVersion===workspace.dataset.canvasVersion));
+  resourceTitle.textContent='项目与资源';
+  if(general)closeDramaTools();
+  try{localStorage.setItem('reelay-canvas-version',workspace.dataset.canvasVersion)}catch(error){}
+  if(announce&&typeof pop==='function')pop(general?'已切换到通用版 · 保留核心画布工具':'已切换到短剧版 · 完整工具已恢复');
+ }
+ window.setReelayCanvasVersion=setCanvasVersion;
+ switcher.addEventListener('click',event=>{const button=event.target.closest('[data-canvas-version]');if(button)setCanvasVersion(button.dataset.canvasVersion,true)});
+ document.getElementById('enterGeneralCanvas')?.addEventListener('click',()=>{setCanvasVersion('general',false);showWorkspace()});
+ document.getElementById('enterDramaCanvas')?.addEventListener('click',()=>{setCanvasVersion('drama',false);showWorkspace()});
+ let saved='drama';try{saved=localStorage.getItem('reelay-canvas-version')||'drama'}catch(error){}setCanvasVersion(saved,false);
+})();
+</script>
+<script>
+window.addEventListener('load',async()=>{
+ if(typeof window.loadWorkspaceFromDatabase==='function')await window.loadWorkspaceFromDatabase();
+ window.setInterval(()=>{if(typeof window.syncWorkspaceToDatabase==='function')window.syncWorkspaceToDatabase()},5000);
+});
+</script>
+</body>
+</html>
