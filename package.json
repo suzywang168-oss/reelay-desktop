@@ -1,0 +1,28 @@
+{
+  "name": "suzy-portal-desktop",
+  "version": "1.0.0",
+  "description": "Desktop clients for Suzy Laboratory products",
+  "main": "main.cjs",
+  "author": "Suzy Wang",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron .",
+    "dist:mac": "electron-builder --mac dmg --x64 --arm64 --publish never",
+    "dist:win": "electron-builder --win nsis --x64 --publish never"
+  },
+  "devDependencies": {
+    "electron": "^39.2.7",
+    "electron-builder": "^26.0.12"
+  },
+  "build": {
+    "appId": "studio.suzy.portal",
+    "productName": "Suzy Portal",
+    "artifactName": "suzy-portal-${version}-${os}-${arch}.${ext}",
+    "files": ["main.cjs", "portal-config.json", "assets/**/*"],
+    "directories": {"output": "dist"},
+    "mac": {"category": "public.app-category.productivity","target": ["dmg"]},
+    "dmg": {"sign": false},
+    "win": {"target": ["nsis"]},
+    "nsis": {"oneClick": false,"allowToChangeInstallationDirectory": true}
+  }
+}
