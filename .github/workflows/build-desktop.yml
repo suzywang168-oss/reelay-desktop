@@ -19,7 +19,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        product: [jetsen-partner, jetsen-admin, reelay]
+        product: [dip-production, dip-admin, painter]
         os: [macos-14, windows-2022]
     runs-on: ${{ matrix.os }}
     name: ${{ matrix.product }} / ${{ matrix.os }}
@@ -59,7 +59,7 @@ jobs:
           tag_name: desktop-latest
           name: Suzy Laboratory Desktop Apps
           body: |
-            Latest desktop installers for Jetsen Partner Portal, Jetsen Admin Portal, and Reelay Workspace.
+            Latest desktop installers for Dip Production Portal, Dip Admin Portal, and Painter Workspace.
 
             macOS includes Intel and Apple Silicon DMG files. Windows includes x64 EXE installers.
           files: release/*
