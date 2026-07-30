@@ -1,0 +1,71 @@
+name: Build desktop installers
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "package.json"
+      - "main.cjs"
+      - "portal-config.json"
+      - "scripts/**"
+      - ".github/workflows/build-desktop.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        product: [jetsen-partner, jetsen-admin, reelay]
+        include:
+          - os: macos-14
+            target: mac
+          - os: windows-2022
+            target: win
+    runs-on: ${{ matrix.os }}
+    name: ${{ matrix.product }} / ${{ matrix.target }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm install
+      - run: node scripts/configure.mjs ${{ matrix.product }}
+      - name: Build macOS DMG
+        if: matrix.target == 'mac'
+        run: npm run dist:mac
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: "false"
+      - name: Build Windows EXE
+        if: matrix.target == 'win'
+        run: npm run dist:win
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.product }}-${{ matrix.target }}
+          path: |
+            dist/*.dmg
+            dist/*.exe
+          if-no-files-found: error
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: release
+          merge-multiple: true
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: desktop-latest
+          name: Suzy Laboratory Desktop Apps
+          body: |
+            Latest desktop installers for Jetsen Partner Portal, Jetsen Admin Portal, and Reelay Workspace.
+
+            macOS includes Intel and Apple Silicon DMG files. Windows includes x64 EXE installers.
+          files: release/*
+          make_latest: true
