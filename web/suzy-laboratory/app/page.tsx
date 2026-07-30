@@ -59,11 +59,25 @@ export default function Home() {
     document.documentElement.dataset.theme = scene;
   }, [scene]);
 
+  useEffect(() => {
+    const move = (event: PointerEvent) => {
+      document.documentElement.style.setProperty("--mouse-x", `${event.clientX}px`);
+      document.documentElement.style.setProperty("--mouse-y", `${event.clientY}px`);
+      document.documentElement.classList.add("pointer-seen");
+    };
+    window.addEventListener("pointermove", move, { passive: true });
+    return () => window.removeEventListener("pointermove", move);
+  }, []);
+
   const activeScene = scenes.find(item => item.id === scene) ?? scenes[0];
   const jump = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
 
   return (
     <main>
+      <div className="cursor-companion" aria-hidden="true"><i /><span>✦</span></div>
+      <div className="scene-particles" aria-hidden="true">
+        {Array.from({ length: 12 }, (_, index) => <i key={index} style={{ "--particle": index } as React.CSSProperties} />)}
+      </div>
       <header className="topbar">
         <button className="wordmark" onClick={() => jump("home")}><b>SUZY</b><span>LABORATORY</span></button>
         <nav>
