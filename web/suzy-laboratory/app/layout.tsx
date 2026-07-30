@@ -14,8 +14,17 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Suzy Laboratory — 动漫 · 影视 · AI 产品",
-  description: "Suzy 的个人作品实验室，探索动漫影视、AI 内容创作与数字产品。",
+  metadataBase: new URL("https://suzy-laboratory.suzywang168.chatgpt.site"),
+  title: "Suzy Laboratory — Anime, Film & Product Design",
+  description: "Independent product and visual laboratory by Suzy Wang, exploring anime, AI filmmaking, creative technology and complex digital products.",
+  keywords: ["Suzy Wang", "Suzy Laboratory", "anime product design", "AI filmmaking", "Reelay", "Jetsen", "creative technology"],
+  robots: { index: true, follow: true },
+  openGraph: {
+    title: "Suzy Laboratory — Anime, Film & Product Design",
+    description: "Selected work across anime, AI filmmaking, creative technology and digital product systems.",
+    type: "website",
+    url: "/",
+  },
   other: {
     "codex-preview": "development",
   },
