@@ -1,0 +1,1500 @@
+  content:"";position:absolute;left:16px;bottom:-8px;border:8px solid transparent;border-top-color:#fff;border-bottom:0
+}
+.comment-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px}
+.comment-author{font-size:10px;font-weight:700}
+.comment-time{font-size:8px;color:#8b8b91}
+.comment-text{font-size:10px;line-height:1.5;white-space:pre-wrap;word-break:break-word}
+.comment-actions{display:flex;gap:8px;margin-top:8px}
+.comment-actions button{border:0;background:transparent;color:#666;font-size:8px;padding:0;cursor:pointer}
+.comment-actions button:hover{color:#111}
+.comment-thread{margin-top:8px;padding-top:8px;border-top:1px solid #ececef;display:flex;flex-direction:column;gap:7px}
+.reply-item{font-size:9px;line-height:1.45;color:#333}
+.reply-item b{font-size:8px}
+.reply-editor,.comment-editor{margin-top:8px;display:none}
+.reply-editor.show,.comment-editor.show{display:block}
+.reply-editor textarea,.comment-editor textarea{
+  width:100%;height:54px;resize:none;border:1px solid #d8d8dc;border-radius:9px;padding:7px 8px;
+  font-size:9px;outline:none;color:#111;background:#fff
+}
+.reply-row{display:flex;justify-content:flex-end;gap:6px;margin-top:6px}
+.reply-row button{height:26px;border:1px solid #d7d7db;background:#f6f6f7;color:#333;border-radius:8px;padding:0 9px;font-size:8px;cursor:pointer}
+.reply-row button.primary{background:#111;color:#fff;border-color:#111}
+.comment-pin{
+  position:absolute;width:24px;height:24px;border-radius:50%;background:#fff;color:#111;border:1px solid #d8d8dc;
+  display:grid;place-items:center;font-size:10px;box-shadow:0 8px 18px rgba(0,0,0,.22);z-index:47;cursor:pointer
+}
+.comment-pin.active{background:#111;color:#fff;border-color:#111}
+.comment-compose{
+  position:absolute;width:250px;background:#171719;border:1px solid #303034;border-radius:14px;padding:10px;z-index:85;
+  box-shadow:0 18px 50px rgba(0,0,0,.42);display:none
+}
+.comment-compose.show{display:block}
+.comment-compose textarea{
+  width:100%;height:70px;resize:none;background:#202023;color:#fff;border:1px solid #35353a;border-radius:10px;
+  padding:8px;font-size:10px;outline:none
+}
+.comment-compose .reply-row button{background:#202023;color:#ccc;border-color:#35353a}
+.comment-compose .reply-row button.primary{background:#fff;color:#111;border-color:#fff}
+.comment-mode-tip{
+  position:absolute;left:78px;bottom:16px;z-index:36;background:rgba(18,18,20,.88);border:1px solid #2b2b2f;
+  border-radius:10px;padding:7px 9px;font-size:9px;color:#aaa;display:none
+}
+.comment-mode-tip.show{display:block}
+
+
+.asset-panel{
+  position:absolute;left:78px;top:64px;bottom:14px;width:330px;background:rgba(18,18,20,.97);
+  backdrop-filter:blur(16px);border:1px solid #2b2b2f;border-radius:16px;z-index:62;
+  box-shadow:0 20px 60px rgba(0,0,0,.42);display:none;overflow:hidden
+}
+.asset-panel.show{display:flex;flex-direction:column}
+.asset-head{padding:13px 14px;border-bottom:1px solid #29292d;display:flex;align-items:center;justify-content:space-between}
+.asset-head h3{margin:0;font-size:12px}.asset-head span{font-size:9px;color:#777}
+.asset-search{padding:10px 12px;border-bottom:1px solid #29292d}
+.asset-search input{width:100%;height:32px;border:1px solid #303035;background:#1d1d20;color:#fff;border-radius:9px;padding:0 10px;font-size:10px;outline:none}
+.asset-tabs{display:flex;gap:6px;padding:9px 12px 5px}
+.asset-tab{border:1px solid #303035;background:#1c1c1f;color:#8f8f95;border-radius:999px;padding:5px 8px;font-size:9px;cursor:pointer}
+.asset-tab.active{background:#f1f1f2;color:#111}
+.asset-grid{padding:8px;overflow:auto;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.asset-card{border:1px solid #2d2d31;background:#19191c;border-radius:12px;overflow:hidden;cursor:pointer}
+.asset-card:hover{border-color:#4a4a50;background:#202023}
+.asset-cover{height:92px;display:grid;place-items:center;position:relative;background:linear-gradient(145deg,#292932,#121214);font-size:26px}
+.asset-cover.portrait{background:linear-gradient(145deg,#35324d,#17151e)}
+.asset-cover.scene{background:linear-gradient(145deg,#31463c,#141b17)}
+.asset-cover.video{background:linear-gradient(145deg,#4a352e,#1d1512)}
+.asset-type{position:absolute;left:7px;top:7px;padding:3px 6px;border-radius:999px;background:rgba(10,10,12,.72);font-size:8px;color:#ddd}
+.asset-play{position:absolute;width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.88);color:#111;display:grid;place-items:center;font-size:10px}
+.asset-info{padding:8px}.asset-name{font-size:10px;color:#eee;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.asset-desc{font-size:8px;color:#777;line-height:1.4;height:23px;overflow:hidden;margin-top:3px}
+.asset-actions{display:flex;gap:5px;margin-top:7px}
+.asset-actions button{flex:1;height:26px;border:1px solid #333338;background:#232327;color:#bbb;border-radius:8px;font-size:8px;cursor:pointer}
+.asset-actions button.primary{background:#f1f1f2;color:#111;border-color:#f1f1f2}
+.asset-empty{grid-column:1/-1;padding:34px 10px;text-align:center;color:#666;font-size:10px}
+.asset-source{
+  position:absolute;left:10px;top:10px;padding:5px 8px;border-radius:8px;background:rgba(15,15,17,.78);
+  border:1px solid rgba(255,255,255,.08);font-size:9px;color:#ddd;z-index:2
+}
+
+
+.asset-cover img{width:100%;height:100%;object-fit:cover;display:block}
+.asset-card-menu{position:absolute;right:7px;top:7px;z-index:3}
+.asset-card-menu button{
+  width:25px;height:25px;border:1px solid rgba(255,255,255,.18);border-radius:8px;
+  background:rgba(12,12,14,.72);color:#fff;font-size:11px;cursor:pointer
+}
+.asset-add-card{
+  border:1px dashed #3b3b41;background:#151517;border-radius:12px;min-height:160px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;cursor:pointer;color:#888
+}
+.asset-add-card:hover{border-color:#666;color:#fff;background:#1b1b1e}
+.asset-add-card .plus{width:34px;height:34px;border-radius:50%;border:1px solid #444;display:grid;place-items:center;font-size:17px}
+.asset-add-card span{font-size:9px}
+
+.asset-modal-mask{
+  position:absolute;inset:0;background:rgba(0,0,0,.48);z-index:95;display:none;align-items:center;justify-content:center
+}
+.asset-modal-mask.show{display:flex}
+.asset-modal{
+  width:430px;background:#161618;border:1px solid #303034;border-radius:17px;box-shadow:0 26px 80px rgba(0,0,0,.5);overflow:hidden
+}
+.asset-modal-head{height:48px;padding:0 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #29292d}
+.asset-modal-head h3{font-size:12px;margin:0}.asset-modal-head button{border:0;background:transparent;color:#888;font-size:17px;cursor:pointer}
+.asset-modal-body{padding:14px}
+.asset-form-grid{display:grid;grid-template-columns:140px 1fr;gap:12px}
+.asset-upload-preview{
+  height:150px;border:1px dashed #404047;border-radius:12px;background:#101012;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;position:relative
+}
+.asset-upload-preview img{width:100%;height:100%;object-fit:cover;display:none}
+.asset-upload-placeholder{text-align:center;color:#777;font-size:9px;line-height:1.6}
+.asset-upload-preview input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.asset-form .field:first-child{margin-top:0}
+.asset-modal-foot{padding:11px 14px;border-top:1px solid #29292d;display:flex;justify-content:flex-end;gap:7px}
+.asset-modal-foot button{height:31px;border:1px solid #343439;background:#222226;color:#ccc;border-radius:9px;padding:0 12px;font-size:9px;cursor:pointer}
+.asset-modal-foot button.primary{background:#fff;color:#111;border-color:#fff}
+
+
+.project-panel{
+position:absolute;left:78px;top:64px;bottom:14px;width:300px;background:rgba(18,18,20,.97);
+border:1px solid #2b2b2f;border-radius:16px;display:none;flex-direction:column;z-index:63;
+backdrop-filter:blur(16px);box-shadow:0 20px 60px rgba(0,0,0,.4)}
+.project-panel.show{display:flex}
+.project-head{padding:14px;border-bottom:1px solid #29292d}
+.project-head input,.canvas-item input{
+width:100%;background:#202023;border:1px solid #34343a;color:#fff;border-radius:9px;
+padding:8px;font-size:10px;outline:none}
+.project-tools{display:flex;gap:6px;margin-top:8px}
+.project-tools button,.canvas-item button{
+border:1px solid #34343a;background:#232327;color:#ddd;border-radius:8px;
+padding:6px 8px;font-size:9px;cursor:pointer}
+.canvas-list{padding:10px;overflow:auto;display:flex;flex-direction:column;gap:8px}
+.canvas-item{border:1px solid #2d2d31;background:#19191c;border-radius:10px;padding:9px}
+.canvas-title{display:flex;gap:6px;align-items:center}
+.canvas-meta{font-size:8px;color:#777;margin-top:5px}
+
+.role-lock{font-size:8px;color:#f0d18a;background:rgba(240,209,138,.1);padding:4px 6px;border-radius:999px}
+.canvas-private{font-size:8px;color:#8dd0ff;background:rgba(141,208,255,.12);padding:3px 6px;border-radius:999px}
+
+.home-overlay{
+position:absolute;inset:0;background:#0b0b0c;z-index:120;display:none;overflow:auto}
+.home-overlay.show{display:block;animation:pageIn .25s ease}
+.hero{
+height:78vh;display:flex;align-items:center;justify-content:space-between;padding:70px 80px;
+background:radial-gradient(circle at top right,#2f3f8a 0,#111 45%,#0b0b0c 100%)}
+.hero h1{font-size:54px;line-height:1.1;margin:0 0 18px}
+.hero p{font-size:16px;color:#b9b9bf;max-width:520px;line-height:1.8}
+.cta{margin-top:28px;display:flex;gap:12px}
+.cta button{height:42px;padding:0 18px;border-radius:12px;border:0;cursor:pointer}
+.primary{background:#fff;color:#111}
+.secondary{background:#232327;color:#ddd;border:1px solid #333}
+.video-card{
+width:620px;height:350px;border-radius:20px;background:linear-gradient(135deg,#242c66,#1b1b1f);
+display:grid;place-items:center;font-size:64px;box-shadow:0 30px 80px rgba(0,0,0,.45)}
+.features{padding:70px 80px}
+.feature-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.feature{background:#171719;border:1px solid #2d2d31;border-radius:16px;padding:20px}
+.feature h3{margin:12px 0 8px;font-size:18px}
+.feature p{font-size:13px;color:#9a9aa1;line-height:1.7}
+.home-top{position:fixed;left:0;right:0;top:0;height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 28px;background:rgba(10,10,12,.7);backdrop-filter:blur(12px)}
+
+.icon{width:18px;height:18px;display:inline-block;vertical-align:middle;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.logo{font-size:0!important}
+.logo::before{content:"";display:block;width:22px;height:22px;margin:7px auto;border:2px solid #111;border-radius:8px;
+background:
+radial-gradient(circle at 35% 40%,#111 1.6px,transparent 2px),
+radial-gradient(circle at 65% 40%,#111 1.6px,transparent 2px),
+linear-gradient(#111,#111) center 68%/8px 2px no-repeat;
+}
+
+/* Reelay homepage layout v19 */
+.home-overlay{
+  position:absolute;inset:0;background:#0b0b0c;z-index:120;display:none;overflow:auto;
+  scroll-behavior:smooth
+}
+.home-overlay.show{display:block;animation:pageIn .25s ease}
+.home-top{
+  position:sticky;top:0;z-index:10;height:64px;display:flex;align-items:center;justify-content:space-between;
+  padding:0 36px;background:rgba(10,10,12,.82);backdrop-filter:blur(16px);border-bottom:1px solid rgba(255,255,255,.06)
+}
+.home-brand{display:flex;align-items:center;gap:10px;font-weight:700}
+.home-brand-mark{
+  width:30px;height:30px;border:1px solid #3a3a40;border-radius:10px;display:grid;place-items:center;background:#171719
+}
+.home-nav{display:flex;align-items:center;gap:22px;font-size:12px;color:#9a9aa1}
+.home-nav a{color:inherit;text-decoration:none}
+.home-nav a:hover{color:#fff}
+.hero{
+  min-height:720px;padding:110px 72px 90px;display:grid;grid-template-columns:minmax(460px,1fr) minmax(520px,1fr);
+  gap:44px;align-items:center;background:
+  radial-gradient(circle at 85% 10%,rgba(89,111,255,.28),transparent 34%),
+  linear-gradient(180deg,#101016 0,#0b0b0c 100%)
+}
+.hero-copy{max-width:620px}
+.hero-copy h1{font-size:58px;line-height:1.08;margin:18px 0 22px;letter-spacing:-1.8px}
+.hero-copy p{font-size:16px;color:#b3b3ba;line-height:1.85;max-width:600px}
+.eyebrow{
+  display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;
+  background:rgba(127,168,255,.11);color:#a8c5ff;font-size:12px;border:1px solid rgba(127,168,255,.16)
+}
+.hero-actions{display:flex;gap:12px;margin-top:28px}
+.hero-actions button{height:44px;padding:0 18px;border-radius:12px;cursor:pointer;font-size:12px}
+.hero-actions .primary{border:0;background:#fff;color:#111}
+.hero-actions .secondary{border:1px solid #34343a;background:#1c1c20;color:#ddd}
+.hero-visual{display:flex;flex-direction:column;gap:16px}
+.hero-video{
+  height:360px;border-radius:24px;border:1px solid rgba(255,255,255,.08);
+  background:linear-gradient(145deg,#2e3974,#171820 68%);display:grid;place-items:center;
+  box-shadow:0 28px 80px rgba(0,0,0,.42);position:relative;overflow:hidden
+}
+.hero-video::before{
+  content:"";position:absolute;inset:0;background:
+  radial-gradient(circle at 35% 35%,rgba(116,143,255,.35),transparent 30%),
+  linear-gradient(135deg,transparent 0 50%,rgba(255,255,255,.03) 50% 100%)
+}
+.hero-video .play{
+  width:74px;height:74px;border-radius:50%;display:grid;place-items:center;
+  background:rgba(255,255,255,.92);color:#111;position:relative;z-index:1
+}
+.hero-video-caption{position:absolute;left:22px;bottom:20px;z-index:1}
+.hero-video-caption b{display:block;font-size:15px}.hero-video-caption span{font-size:10px;color:#b8b8c0}
+.hero-mini-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.hero-mini-card{
+  border:1px solid #2d2d31;background:#151517;border-radius:18px;overflow:hidden
+}
+.hero-mini-card img{width:100%;height:150px;object-fit:cover;display:block}
+.hero-mini-card .copy{padding:14px}.hero-mini-card h3{font-size:14px;margin:0 0 6px}.hero-mini-card p{font-size:10px;color:#8f8f96;line-height:1.6;margin:0}
+
+.section{padding:56px 72px;border-top:1px solid rgba(255,255,255,.06)
+}
+.section-head{max-width:760px;margin-bottom:24px}
+.section-kicker{font-size:11px;color:#8fb5ff;text-transform:uppercase;letter-spacing:.12em}
+.section h2{font-size:38px;line-height:1.2;margin:10px 0 12px}
+.section-head p{font-size:14px;color:#9d9da4;line-height:1.8;margin:0}
+
+.video-section{background:#0e0e11}
+.product-film{
+  display:grid;grid-template-columns:1.15fr .85fr;gap:28px;align-items:stretch
+}
+.film-frame{
+  min-height:500px;border-radius:24px;background:linear-gradient(145deg,#27305e,#131419);
+  border:1px solid #303038;display:grid;place-items:center;position:relative;overflow:hidden
+}
+.film-frame img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.68}
+.film-frame .play{position:relative;z-index:1;width:82px;height:82px;border-radius:50%;display:grid;place-items:center;background:#fff;color:#111}
+.film-copy{display:flex;flex-direction:column;gap:16px}
+.film-point{padding:22px;border:1px solid #2d2d31;background:#171719;border-radius:18px}
+.film-point h3{font-size:16px;margin:0 0 8px}.film-point p{font-size:11px;line-height:1.75;color:#999;margin:0}
+
+.feature-section{background:#0b0b0c}
+.feature-row{
+  display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:center;margin-bottom:40px
+}
+.feature-row.reverse .feature-image{order:2}
+.feature-image{
+  height:360px;border-radius:22px;overflow:hidden;border:1px solid #2d2d31;background:#171719
+}
+.feature-image img{width:100%;height:100%;object-fit:cover;display:block}
+.feature-copy h3{font-size:28px;margin:0 0 14px}.feature-copy p{font-size:13px;line-height:1.85;color:#999}
+.feature-list{display:flex;flex-direction:column;gap:10px;margin-top:20px}
+.feature-list div{display:flex;align-items:center;gap:10px;font-size:11px;color:#c7c7cc}
+.feature-list span{width:20px;height:20px;border-radius:7px;background:#1d2230;color:#9ebcff;display:grid;place-items:center;font-size:10px}
+
+.capability-section{background:#101012}
+.capability-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.capability-card{padding:24px;border:1px solid #2d2d31;background:#171719;border-radius:18px}
+.capability-card .cap-icon{width:38px;height:38px;border-radius:11px;background:#202025;display:grid;place-items:center;margin-bottom:18px}
+.capability-card h3{font-size:16px;margin:0 0 10px}.capability-card p{font-size:11px;line-height:1.75;color:#929299;margin:0}
+
+.home-footer{padding:48px 72px;border-top:1px solid rgba(255,255,255,.06);display:flex;justify-content:space-between;color:#777;font-size:10px}
+@media(max-width:1100px){
+  .hero{grid-template-columns:1fr;padding:100px 36px 70px}
+  .product-film,.feature-row{grid-template-columns:1fr}
+  .feature-row.reverse .feature-image{order:0}
+  .capability-grid{grid-template-columns:1fr}
+}
+
+
+/* Project management page */
+.project-page{
+  position:absolute;inset:0;background:#0b0b0c;z-index:121;display:none;overflow:auto
+}
+.project-page.show{display:block;animation:pageIn .25s ease}
+.project-page-top{
+  position:sticky;top:0;z-index:12;height:64px;display:flex;align-items:center;justify-content:space-between;
+  padding:0 36px;background:rgba(10,10,12,.86);backdrop-filter:blur(16px);border-bottom:1px solid rgba(255,255,255,.06)
+}
+.project-page-brand{display:flex;align-items:center;gap:10px;font-weight:700}
+.project-page-actions{display:flex;gap:10px}
+.project-page-actions button{
+  height:36px;padding:0 14px;border-radius:10px;border:1px solid #34343a;background:#1c1c20;color:#ddd;cursor:pointer;font-size:11px
+}
+.project-page-actions button.primary{background:#fff;color:#111;border-color:#fff}
+.project-shell{padding:44px 56px 72px;max-width:1500px;margin:0 auto}
+.project-hero{
+  display:flex;align-items:flex-end;justify-content:space-between;gap:30px;margin-bottom:34px
+}
+.project-hero h1{font-size:38px;margin:0 0 10px}
+.project-hero p{font-size:13px;color:#96969d;margin:0;line-height:1.7}
+.project-create{
+  height:40px;padding:0 16px;border-radius:11px;border:0;background:#fff;color:#111;cursor:pointer;font-size:11px;font-weight:700
+}
+.project-toolbar{
+  display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:20px
+}
+.project-tabs{display:flex;gap:8px}
+.project-tab{
+  border:1px solid #303035;background:#171719;color:#8f8f95;border-radius:999px;padding:7px 11px;font-size:10px;cursor:pointer
+}
+.project-tab.active{background:#f2f2f3;color:#111;border-color:#f2f2f3}
+.project-search{
+  width:280px;height:36px;border:1px solid #303035;background:#171719;color:#fff;border-radius:10px;padding:0 11px;font-size:10px;outline:none
+}
+.project-grid{
+  display:grid;grid-template-columns:repeat(3,minmax(260px,1fr));gap:18px
+}
+.project-card{
+  background:#151517;border:1px solid #2d2d31;border-radius:16px;overflow:hidden;transition:.18s
+}
+.project-card:hover{transform:translateY(-2px);border-color:#46464d}
+.project-cover{
+  height:170px;padding:18px;display:flex;align-items:flex-end;position:relative;overflow:hidden
+}
+.project-cover::before{
+  content:"";position:absolute;inset:0;background:
+  radial-gradient(circle at 20% 20%,rgba(117,140,255,.4),transparent 30%),
+  linear-gradient(140deg,#29336b,#14151b 72%)
+}
+.project-card:nth-child(2) .project-cover::before{background:radial-gradient(circle at 75% 25%,rgba(255,159,116,.36),transparent 30%),linear-gradient(140deg,#503127,#171419 72%)}
+.project-card:nth-child(3) .project-cover::before{background:radial-gradient(circle at 30% 25%,rgba(107,214,166,.33),transparent 30%),linear-gradient(140deg,#24493d,#141918 72%)}
+.project-cover-content{position:relative;z-index:1}
+.project-cover-content span{font-size:9px;color:#c4c4ca}
+.project-cover-content h3{font-size:20px;margin:6px 0 0}
+.project-info{padding:15px}
+.project-meta{display:flex;justify-content:space-between;color:#85858b;font-size:9px}
+.project-members{display:flex;margin-top:12px}
+.project-avatar{
+  width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-size:9px;color:#111;
+  border:2px solid #151517;margin-left:-5px
+}
+.project-avatar:first-child{margin-left:0}
+.project-actions-row{display:flex;gap:7px;margin-top:14px}
+.project-actions-row button{
+  flex:1;height:32px;border:1px solid #34343a;background:#202023;color:#ccc;border-radius:9px;font-size:9px;cursor:pointer
+}
+.project-actions-row button.primary{background:#fff;color:#111;border-color:#fff}
+.project-detail{
+  margin-top:34px;padding-top:30px;border-top:1px solid rgba(255,255,255,.06)
+}
+.project-detail h2{font-size:22px;margin:0 0 18px}
+.canvas-grid{display:grid;grid-template-columns:repeat(4,minmax(200px,1fr));gap:14px}
+.canvas-card{
+  background:#151517;border:1px solid #2d2d31;border-radius:14px;padding:14px
+}
+.canvas-thumb{
+  height:110px;border-radius:10px;background-image:url('https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=900&q=80');background-size:cover;background-position:center;border:1px solid #2b2b31;margin-bottom:12px
+}
+.canvas-card h4{font-size:12px;margin:0 0 5px}.canvas-card p{font-size:9px;color:#7f7f86;margin:0}
+.canvas-card button{
+  width:100%;height:30px;margin-top:12px;border-radius:8px;border:1px solid #34343a;background:#202023;color:#ddd;font-size:9px;cursor:pointer
+}
+@media(max-width:1100px){
+  .project-grid{grid-template-columns:1fr 1fr}.canvas-grid{grid-template-columns:1fr 1fr}
+}
+
+
+.project-modal-mask{
+  position:absolute;inset:0;z-index:140;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;
+}
+.project-modal-mask.show{display:flex}
+.project-modal{
+  width:520px;background:#161618;border:1px solid #303034;border-radius:18px;overflow:hidden;
+  box-shadow:0 30px 90px rgba(0,0,0,.55)
+}
+.project-modal-head{
+  height:52px;padding:0 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #29292d
+}
+.project-modal-head h3{margin:0;font-size:13px}
+.project-modal-head button{border:0;background:transparent;color:#888;font-size:18px;cursor:pointer}
+.project-modal-body{padding:16px}
+.project-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.project-form-grid .full{grid-column:1/-1}
+.project-field label{display:block;font-size:9px;color:#85858b;margin-bottom:5px}
+.project-field input,.project-field textarea,.project-field select{
+  width:100%;border:1px solid #34343a;background:#202023;color:#fff;border-radius:10px;padding:8px;
+  font-size:10px;outline:none
+}
+.project-field textarea{height:76px;resize:none}
+.project-modal-foot{
+  padding:12px 16px;border-top:1px solid #29292d;display:flex;justify-content:flex-end;gap:8px
+}
+.project-modal-foot button{
+  height:34px;padding:0 13px;border-radius:9px;border:1px solid #34343a;background:#222226;color:#ccc;font-size:9px;cursor:pointer
+}
+.project-modal-foot button.primary{background:#fff;color:#111;border-color:#fff}
+
+.project-detail-page-unused{
+  position:absolute;inset:0;background:#0b0b0c;z-index:122;display:none;overflow:auto
+}
+.project-detail-page-unused.show{display:block;animation:pageIn .25s ease}
+.project-detail-top{
+  position:sticky;top:0;z-index:12;height:64px;display:flex;align-items:center;justify-content:space-between;
+  padding:0 36px;background:rgba(10,10,12,.86);backdrop-filter:blur(16px);border-bottom:1px solid rgba(255,255,255,.06)
+}
+.project-detail-shell{max-width:1400px;margin:0 auto;padding:42px 56px 70px}
+.project-detail-hero{
+  padding:28px;border:1px solid #2d2d31;border-radius:20px;background:
+  radial-gradient(circle at 85% 20%,rgba(116,143,255,.26),transparent 28%),
+  linear-gradient(145deg,#1c1f33,#111216);
+  display:flex;justify-content:space-between;gap:28px;align-items:flex-end
+}
+.project-detail-hero h1{font-size:34px;margin:0 0 10px}
+.project-detail-hero p{font-size:12px;color:#aaa;line-height:1.7;max-width:700px}
+.project-detail-actions{display:flex;gap:8px}
+.project-detail-actions button{
+  height:36px;padding:0 13px;border-radius:10px;border:1px solid #34343a;background:#202023;color:#ddd;font-size:10px;cursor:pointer
+}
+.project-detail-actions button.primary{background:#fff;color:#111;border-color:#fff}
+.project-stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:22px}
+.project-stat{padding:16px;border:1px solid #2d2d31;background:#151517;border-radius:14px}
+.project-stat b{display:block;font-size:22px}.project-stat span{font-size:9px;color:#777}
+
+
+/* ===== High Fidelity Layer v22 ===== */
+:root{
+  --hf-bg:#090a0d;
+  --hf-panel:rgba(18,20,26,.88);
+  --hf-panel-solid:#14171d;
+  --hf-border:rgba(255,255,255,.08);
+  --hf-text:#f7f8fb;
+  --hf-muted:#8f96a3;
+  --hf-brand:#7c8cff;
+  --hf-brand2:#5ea1ff;
+  --hf-success:#5ed39a;
+  --hf-shadow:0 22px 70px rgba(0,0,0,.42);
+}
+body{background:var(--hf-bg)}
+.sidebar{
+  width:68px!important;background:rgba(14,15,19,.92)!important;backdrop-filter:blur(18px);
+  border-right:1px solid var(--hf-border)!important;padding-top:16px!important
+}
+.logo{
+  width:40px!important;height:40px!important;border-radius:13px!important;background:linear-gradient(145deg,#fff,#dfe4ff)!important;
+  box-shadow:0 8px 24px rgba(124,140,255,.22)
+}
+.sidebtn{
+  width:44px!important;height:44px!important;border-radius:13px!important;border-color:var(--hf-border)!important;
+  background:rgba(255,255,255,.035)!important;transition:.18s ease
+}
+.sidebtn:hover,.sidebtn.active{transform:translateY(-1px);background:rgba(255,255,255,.08)!important}
+.workspace{
+  background-color:#0a0b0f!important;
+  background-image:
+    radial-gradient(circle at 1px 1px,rgba(255,255,255,.08) 1px,transparent 0)!important;
+  background-size:20px 20px!important
+}
+.topbar .pill{
+  background:rgba(18,20,26,.78)!important;border:1px solid var(--hf-border)!important;
+  box-shadow:0 10px 30px rgba(0,0,0,.2);backdrop-filter:blur(18px)
+}
+.node{
+  background:rgba(21,24,30,.96)!important;border:1px solid rgba(255,255,255,.08)!important;
+  box-shadow:var(--hf-shadow)!important;border-radius:18px!important
+}
+.node.selected{border-color:rgba(124,140,255,.7)!important;box-shadow:0 0 0 3px rgba(124,140,255,.14),var(--hf-shadow)!important}
+.node-head{background:linear-gradient(180deg,rgba(255,255,255,.025),transparent)}
+.media{background:#0c0e13!important;border-color:rgba(255,255,255,.07)!important}
+.params,.footer{border-color:rgba(255,255,255,.07)!important}
+.generate-btn{background:linear-gradient(135deg,#fff,#e5e9ff)!important;box-shadow:0 8px 22px rgba(124,140,255,.16)}
+.element-panel,.asset-panel,.share-panel,.project-panel{
+  background:rgba(17,19,24,.94)!important;border:1px solid var(--hf-border)!important;
+  box-shadow:var(--hf-shadow)!important;backdrop-filter:blur(22px)!important
+}
+.home-overlay,.project-page,.project-detail-page-unused{background:#0a0b0f!important}
+.home-top,.project-page-top,.project-detail-top{
+  background:rgba(10,11,15,.8)!important;border-bottom:1px solid var(--hf-border)!important;backdrop-filter:blur(20px)!important
+}
+.hero{
+  background:
+    radial-gradient(circle at 80% 10%,rgba(92,108,255,.28),transparent 34%),
+    radial-gradient(circle at 20% 0%,rgba(94,161,255,.12),transparent 28%),
+    linear-gradient(180deg,#10131f 0,#0a0b0f 100%)!important
+}
+.hero-video,.film-frame,.feature-image{
+  border-color:var(--hf-border)!important;box-shadow:var(--hf-shadow)!important
+}
+.project-card,.canvas-card,.capability-card,.film-point,.hero-mini-card{
+  background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.018))!important;
+  border:1px solid var(--hf-border)!important;box-shadow:0 14px 40px rgba(0,0,0,.18)
+}
+.project-card:hover,.canvas-card:hover,.capability-card:hover{
+  transform:translateY(-3px);border-color:rgba(124,140,255,.4)!important
+}
+.project-create,.primary{
+  background:linear-gradient(135deg,#fff,#e8ebff)!important;color:#111!important;
+  box-shadow:0 8px 24px rgba(124,140,255,.18)
+}
+.secondary{background:rgba(255,255,255,.05)!important;border-color:var(--hf-border)!important}
+.project-cover::before{
+  background:
+    radial-gradient(circle at 25% 20%,rgba(124,140,255,.46),transparent 28%),
+    linear-gradient(140deg,#252e66,#12151c 72%)!important
+}
+.comment-bubble{box-shadow:0 18px 55px rgba(0,0,0,.35)!important}
+.asset-card{transition:.18s ease}
+.asset-card:hover{transform:translateY(-2px);box-shadow:0 14px 34px rgba(0,0,0,.28)}
+.home-footer{background:#090a0d}
+.hf-demo-badge{
+  position:fixed;right:18px;bottom:18px;z-index:200;padding:8px 11px;border-radius:999px;
+  background:rgba(17,19,24,.88);border:1px solid var(--hf-border);color:#aeb5c2;font-size:9px;backdrop-filter:blur(16px)
+}
+
+
+.project-card .edit-project-btn,
+.canvas-card .edit-canvas-btn{
+  position:absolute;right:10px;top:10px;width:28px;height:28px;border-radius:9px;
+  border:1px solid rgba(255,255,255,.12);background:rgba(12,13,17,.72);color:#ddd;
+  display:grid;place-items:center;cursor:pointer;font-size:11px;z-index:3
+}
+.project-card{position:relative}
+.canvas-card{position:relative}
+.inline-edit{
+  width:100%;background:#202023;border:1px solid #3b3b42;color:#fff;border-radius:8px;
+  padding:7px 8px;font-size:10px;outline:none
+}
+.inline-edit-row{display:flex;gap:6px;margin-top:8px}
+.inline-edit-row button{
+  flex:1;height:28px;border-radius:8px;border:1px solid #34343a;background:#222226;color:#ccc;font-size:9px;cursor:pointer
+}
+.inline-edit-row button.primary{background:#fff;color:#111;border-color:#fff}
+.latest-badge{
+  display:inline-flex;align-items:center;padding:4px 7px;border-radius:999px;background:rgba(124,140,255,.13);
+  color:#aeb8ff;font-size:8px;margin-left:8px
+}
+
+
+.project-card .delete-project-btn{
+  position:absolute;right:44px;top:10px;width:28px;height:28px;border-radius:9px;
+  border:1px solid rgba(255,95,115,.22);background:rgba(78,25,34,.58);color:#ff9bab;
+  display:grid;place-items:center;cursor:pointer;font-size:11px;z-index:3
+}
+.canvas-card .delete-canvas-btn{
+  position:absolute;right:44px;top:10px;width:28px;height:28px;border-radius:9px;
+  border:1px solid rgba(255,95,115,.22);background:rgba(78,25,34,.58);color:#ff9bab;
+  display:grid;place-items:center;cursor:pointer;font-size:11px;z-index:3
+}
+.add-canvas-card{
+  min-height:188px;border:1px dashed #3c3c43;background:#141417;border-radius:14px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;
+  cursor:pointer;color:#888
+}
+.add-canvas-card:hover{border-color:#65656e;color:#fff;background:#1a1a1e}
+.add-canvas-card .add-circle{
+  width:38px;height:38px;border-radius:50%;border:1px solid #45454c;display:grid;place-items:center;font-size:18px
+}
+.confirm-mask{
+  position:absolute;inset:0;z-index:160;background:rgba(0,0,0,.52);display:none;align-items:center;justify-content:center
+}
+.confirm-mask.show{display:flex}
+.confirm-box{
+  width:390px;background:#161618;border:1px solid #303034;border-radius:16px;padding:18px;
+  box-shadow:0 28px 80px rgba(0,0,0,.52)
+}
+.confirm-box h3{font-size:14px;margin:0 0 8px}
+.confirm-box p{font-size:10px;color:#999;line-height:1.7;margin:0}
+.confirm-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:18px}
+.confirm-actions button{
+  height:32px;padding:0 12px;border-radius:9px;border:1px solid #34343a;background:#222226;color:#ccc;font-size:9px;cursor:pointer
+}
+.confirm-actions button.danger{background:#48212a;color:#ffb1be;border-color:#6b2b39}
+
+
+/* ===== Points & Message Center ===== */
+.points-panel,.message-panel{
+  position:absolute;right:18px;top:64px;width:340px;max-height:calc(100vh - 82px);
+  background:rgba(17,19,24,.96);border:1px solid rgba(255,255,255,.08);border-radius:16px;
+  box-shadow:0 24px 70px rgba(0,0,0,.45);backdrop-filter:blur(20px);z-index:66;display:none;overflow:hidden
+}
+.points-panel.show,.message-panel.show{display:flex;flex-direction:column}
+.panel-head{
+  height:50px;padding:0 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.07)
+}
+.panel-head h3{margin:0;font-size:12px}
+.panel-head .close-panel{border:0;background:transparent;color:#888;font-size:17px;cursor:pointer}
+.points-summary{padding:14px;border-bottom:1px solid rgba(255,255,255,.07)}
+.points-total{
+  border-radius:14px;padding:18px;background:
+  radial-gradient(circle at 80% 20%,rgba(124,140,255,.32),transparent 30%),
+  linear-gradient(145deg,#20274c,#151821);
+  border:1px solid rgba(255,255,255,.08)
+}
+.points-total span{font-size:9px;color:#aab0bd}
+.points-total b{display:block;font-size:30px;margin:6px 0 10px}
+.points-meta{display:flex;justify-content:space-between;font-size:9px;color:#aeb5c2}
+.points-actions{display:flex;gap:7px;margin-top:10px}
+.points-actions button{
+  flex:1;height:32px;border-radius:9px;border:1px solid #34343a;background:#222226;color:#ddd;font-size:9px;cursor:pointer
+}
+.points-actions button.primary{background:#fff;color:#111;border-color:#fff}
+.points-list,.message-list{overflow:auto;padding:8px;display:flex;flex-direction:column;gap:6px}
+.points-item,.message-item{
+  border:1px solid transparent;border-radius:11px;padding:10px;background:#181a20
+}
+.points-item{display:grid;grid-template-columns:1fr auto;gap:8px}
+.points-item:hover,.message-item:hover{border-color:#32353d;background:#1d2027}
+.points-title,.message-title{font-size:10px;color:#eee}
+.points-desc,.message-desc{font-size:8px;color:#7f8693;margin-top:3px;line-height:1.5}
+.points-value{font-size:10px;font-weight:700}
+.points-value.negative{color:#ff9caa}.points-value.positive{color:#70d6a1}
+.report-filter{
+  display:grid;grid-template-columns:1fr 1fr;gap:7px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.07)
+}
+.report-filter select,.report-filter input{
+  height:30px;border:1px solid #34343a;background:#1d2026;color:#ddd;border-radius:8px;padding:0 8px;font-size:9px;outline:none
+}
+.message-tabs{display:flex;gap:6px;padding:10px 12px 4px}
+.message-tab{
+  border:1px solid #303035;background:#1c1c1f;color:#8f8f95;border-radius:999px;padding:5px 8px;font-size:9px;cursor:pointer
+}
+.message-tab.active{background:#f1f1f2;color:#111}
+.message-item{position:relative;cursor:pointer}
+.message-item.unread::before{
+  content:"";position:absolute;left:7px;top:14px;width:6px;height:6px;border-radius:50%;background:#7c8cff
+}
+.message-item.unread{padding-left:20px}
+.message-time{font-size:8px;color:#6f7580;margin-top:5px}
+.message-badge{
+  position:absolute;right:8px;top:8px;min-width:16px;height:16px;padding:0 4px;border-radius:999px;
+  background:#ff5f73;color:#fff;font-size:8px;display:grid;place-items:center
+}
+.sidebar-notify-dot{
+  position:absolute;width:7px;height:7px;border-radius:50%;background:#ff5f73;right:4px;top:4px;border:2px solid #101011
+}
+.sidebtn-wrap{position:relative}
+
+
+.daily-report-card{
+  margin:0 14px 12px;padding:12px;border-radius:12px;border:1px solid rgba(124,140,255,.18);
+  background:linear-gradient(145deg,rgba(124,140,255,.12),rgba(255,255,255,.025))
+}
+.daily-report-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.daily-report-head b{font-size:10px}.daily-report-head span{font-size:8px;color:#9ea6b4}
+.daily-report-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.daily-stat{padding:8px;border-radius:9px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.05)}
+.daily-stat b{display:block;font-size:14px}.daily-stat span{font-size:8px;color:#7f8794}
+.daily-report-actions{display:flex;gap:6px;margin-top:9px}
+.daily-report-actions button{
+  flex:1;height:28px;border-radius:8px;border:1px solid #34343a;background:#222226;color:#ddd;font-size:8px;cursor:pointer
+}
+.daily-report-actions button.primary{background:#fff;color:#111;border-color:#fff}
+.auto-report-note{
+  padding:9px 14px;border-bottom:1px solid rgba(255,255,255,.07);font-size:8px;color:#8f96a3;line-height:1.55
+}
+
+
+/* ===== Homepage extensions v29 ===== */
+.capability-card{overflow:hidden;padding:0!important}
+.capability-card img{width:100%;height:170px;object-fit:cover;display:block}
+.capability-card .cap-body{padding:20px}
+.capability-card .cap-icon{margin-bottom:14px}
+
+.case-section{background:#0d0e12;overflow:hidden}
+.case-track-wrap{overflow:hidden;position:relative}
+.case-track{
+  display:flex;gap:18px;width:max-content;animation:caseFlow 32s linear infinite;
+}
+.case-track:hover{animation-play-state:paused}
+.case-card{
+  width:320px;flex:none;border:1px solid rgba(255,255,255,.08);border-radius:18px;
+  overflow:hidden;background:#16181e;box-shadow:0 16px 42px rgba(0,0,0,.24)
+}
+.case-thumb{height:190px;position:relative;overflow:hidden}
+.case-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.case-thumb::after{
+  content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.45),transparent 55%)
+}
+.case-play{
+  position:absolute;left:16px;bottom:14px;z-index:2;width:34px;height:34px;border-radius:50%;
+  display:grid;place-items:center;background:rgba(255,255,255,.9);color:#111
+}
+.case-info{padding:14px}
+.case-info h3{font-size:13px;margin:0 0 6px}.case-info p{font-size:9px;color:#8f96a3;line-height:1.6;margin:0}
+@keyframes caseFlow{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+.faq-section{background:#0a0b0f}
+.faq-list{display:flex;flex-direction:column;gap:10px;max-width:980px}
+.faq-item{
+  border:1px solid rgba(255,255,255,.08);background:#15171c;border-radius:14px;overflow:hidden
+}
+.faq-question{
+  width:100%;height:54px;padding:0 16px;display:flex;align-items:center;justify-content:space-between;
+  border:0;background:transparent;color:#f4f5f8;text-align:left;font-size:12px;cursor:pointer
+}
+.faq-question span:last-child{font-size:18px;color:#7f8794}
+.faq-answer{display:none;padding:0 16px 16px;color:#9299a5;font-size:10px;line-height:1.8}
+.faq-item.open .faq-answer{display:block}
+.faq-item.open .faq-question span:last-child{transform:rotate(45deg)}
+
+.link-footer{
+  padding:40px 72px 28px;background:#090a0d;border-top:1px solid rgba(255,255,255,.06)
+}
+.link-grid{display:grid;grid-template-columns:1.4fr repeat(3,1fr);gap:24px}
+.link-brand h3{font-size:18px;margin:0 0 10px}.link-brand p{font-size:10px;color:#7f8794;line-height:1.7;max-width:320px}
+.link-col h4{font-size:11px;margin:0 0 12px;color:#d8dbe2}
+.link-col a{display:block;color:#7f8794;text-decoration:none;font-size:10px;margin:8px 0}
+.link-col a:hover{color:#fff}
+.footer-bottom{
+  margin-top:34px;padding-top:18px;border-top:1px solid rgba(255,255,255,.06);
+  display:flex;justify-content:space-between;color:#666d78;font-size:9px
+}
+@media(max-width:1100px){
+  .link-grid{grid-template-columns:1fr 1fr}
+}
+
+
+/* ===== Permission Management ===== */
+.permission-panel{
+  position:absolute;left:78px;top:64px;bottom:14px;width:420px;background:rgba(17,19,24,.97);
+  border:1px solid rgba(255,255,255,.08);border-radius:16px;z-index:68;display:none;
+  flex-direction:column;box-shadow:0 24px 70px rgba(0,0,0,.45);backdrop-filter:blur(22px);overflow:hidden
+}
+.permission-panel.show{display:flex}
+.permission-head{
+  height:52px;padding:0 14px;display:flex;align-items:center;justify-content:space-between;
+  border-bottom:1px solid rgba(255,255,255,.07)
+}
+.permission-head h3{font-size:12px;margin:0}.permission-head button{border:0;background:transparent;color:#888;font-size:17px;cursor:pointer}
+.permission-role{
+  margin:10px 12px 0;padding:10px;border:1px solid rgba(124,140,255,.18);
+  background:rgba(124,140,255,.08);border-radius:11px;font-size:9px;color:#aeb8ff
+}
+.permission-tabs{display:flex;gap:6px;padding:10px 12px 5px}
+.permission-tab{
+  border:1px solid #303035;background:#1c1c1f;color:#8f8f95;border-radius:999px;
+  padding:6px 9px;font-size:9px;cursor:pointer
+}
+.permission-tab.active{background:#f1f1f2;color:#111}
+.permission-toolbar{display:flex;gap:7px;padding:8px 12px;border-bottom:1px solid rgba(255,255,255,.07)}
+.permission-toolbar input{
+  flex:1;height:32px;border:1px solid #34343a;background:#1d2026;color:#ddd;border-radius:9px;
+  padding:0 9px;font-size:9px;outline:none
+}
+.permission-toolbar button{
+  height:32px;border:1px solid #34343a;background:#232327;color:#ddd;border-radius:9px;
+  padding:0 10px;font-size:9px;cursor:pointer
+}
+.permission-list{padding:8px;overflow:auto;display:flex;flex-direction:column;gap:7px}
+.permission-card{
+  border:1px solid #2d3037;background:#181a20;border-radius:12px;padding:10px
+}
+.permission-card:hover{border-color:#3a3e47}
+.permission-card-head{display:grid;grid-template-columns:30px 1fr auto;gap:9px;align-items:center}
+.permission-avatar{
+  width:30px;height:30px;border-radius:9px;display:grid;place-items:center;color:#111;font-size:10px;font-weight:700
+}
+.permission-name{font-size:10px;color:#eee}.permission-meta{font-size:8px;color:#777;margin-top:3px}
+.permission-badge{font-size:8px;padding:4px 7px;border-radius:999px;background:rgba(124,140,255,.12);color:#aeb8ff}
+.permission-options{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin-top:10px}
+.permission-option{
+  display:flex;align-items:center;gap:6px;padding:7px 8px;border:1px solid #30333a;
+  background:#1e2026;border-radius:9px;font-size:8px;color:#aab0bb
+}
+.permission-option input{accent-color:#7c8cff}
+.permission-select{
+  width:100%;height:30px;border:1px solid #34343a;background:#202329;color:#ddd;
+  border-radius:8px;padding:0 7px;font-size:8px;margin-top:9px
+}
+.permission-save{
+  width:100%;height:30px;margin-top:9px;border:0;border-radius:8px;background:#fff;color:#111;font-size:9px;cursor:pointer
+}
+.permission-section-title{font-size:9px;color:#777;padding:8px 10px 2px}
+.permission-empty{padding:28px 10px;text-align:center;color:#666;font-size:9px}
+
+
+.permission-member-actions{display:flex;gap:6px;margin-top:9px}
+.permission-member-actions button{
+  flex:1;height:29px;border-radius:8px;border:1px solid #34343a;background:#222226;color:#ccc;font-size:8px;cursor:pointer
+}
+.permission-member-actions button.danger{background:#3a2027;color:#ffacb8;border-color:#5d2934}
+.add-member-form{
+  padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.07);display:grid;grid-template-columns:1fr 110px auto;gap:7px
+}
+.add-member-form input,.add-member-form select{
+  height:31px;border:1px solid #34343a;background:#1d2026;color:#ddd;border-radius:8px;padding:0 8px;font-size:9px;outline:none
+}
+.add-member-form button{
+  height:31px;border:0;border-radius:8px;background:#fff;color:#111;padding:0 10px;font-size:9px;cursor:pointer
+}
+
+
+.permission-member-actions{
+  display:grid!important;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  align-items:stretch;
+}
+.permission-member-actions button{
+  height:30px!important;
+  font-size:8px!important;
+  line-height:1!important;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.permission-member-actions .danger{
+  background:#47232c!important;
+  color:#ffb4bf!important;
+}
+.permission-confirm-mask{
+ position:absolute;inset:0;background:rgba(0,0,0,.45);
+ display:none;align-items:center;justify-content:center;z-index:220;
+}
+.permission-confirm-mask.show{display:flex}
+.permission-confirm{
+ width:320px;background:#17191f;border:1px solid rgba(255,255,255,.08);
+ border-radius:14px;padding:18px;
+}
+.permission-confirm h4{margin:0 0 8px;font-size:12px}
+.permission-confirm p{margin:0;color:#8f96a3;font-size:9px;line-height:1.7}
+.permission-confirm-actions{
+ display:flex;justify-content:flex-end;gap:8px;margin-top:16px;
+}
+.permission-confirm-actions button{
+ height:30px;padding:0 12px;border-radius:8px;font-size:8px;
+ border:1px solid #34343a;background:#23252b;color:#ddd;cursor:pointer;
+}
+.permission-confirm-actions .danger{
+ background:#47232c;color:#ffb4bf;border-color:#6a3340;
+}
+
+
+/* ===== Hierarchical Sidebar v32 ===== */
+#app{grid-template-columns:176px 1fr!important}
+.sidebar{
+  width:176px!important;padding:14px 10px 12px!important;align-items:stretch!important;
+  display:flex!important;flex-direction:column!important;gap:0!important;transition:width .2s ease;
+  overflow:visible!important
+}
+.sidebar.collapsed{width:66px!important}
+#app:has(.sidebar.collapsed){grid-template-columns:66px 1fr!important}
+.sidebar-top{display:flex;justify-content:center;margin-bottom:12px}
+.sidebar .logo{margin:0!important;flex:none}
+.nav-group{display:flex;flex-direction:column;gap:5px}
+.nav-group-title{
+  padding:6px 9px 3px;font-size:8px;color:#606671;letter-spacing:.12em;text-transform:uppercase;
+  transition:opacity .15s
+}
+.nav-separator{height:1px;background:rgba(255,255,255,.06);margin:9px 6px}
+.nav-item{
+  position:relative;width:100%!important;height:38px!important;border-radius:10px!important;
+  display:flex!important;align-items:center!important;justify-content:flex-start!important;gap:10px!important;
+  padding:0 10px!important;color:#8f96a3!important
+}
+.nav-item:hover{color:#fff!important;background:rgba(255,255,255,.07)!important}
+.nav-item.active{
+  color:#fff!important;background:linear-gradient(90deg,rgba(124,140,255,.18),rgba(124,140,255,.06))!important;
+  border-color:rgba(124,140,255,.28)!important
+}
+.nav-icon{width:20px;display:grid;place-items:center;font-size:14px;flex:none}
+.nav-label{font-size:10px;white-space:nowrap;overflow:hidden;transition:opacity .15s,width .15s}
+.nav-spacer{flex:1}
+.nav-group-bottom{margin-top:8px}
+.danger-nav:hover{color:#ff9eae!important;background:rgba(255,95,115,.08)!important}
+.sidebar-collapse{
+  position:absolute;right:-12px;top:50%;transform:translateY(-50%);
+  width:24px;height:42px;border-radius:0 10px 10px 0;border:1px solid rgba(255,255,255,.08);
+  background:#17191f;color:#8f96a3;cursor:pointer;z-index:90;font-size:16px
+}
+.sidebar.collapsed .nav-label,
+.sidebar.collapsed .nav-group-title{opacity:0;width:0;padding-left:0;padding-right:0}
+.sidebar.collapsed .nav-item{justify-content:center!important;padding:0!important}
+.sidebar.collapsed .nav-icon{width:auto}
+.sidebar.collapsed .sidebar-collapse{transform:translateY(-50%) rotate(180deg)}
+.sidebar.collapsed .nav-separator{margin-left:8px;margin-right:8px}
+.sidebar.collapsed .nav-item::after{
+  content:attr(title);position:absolute;left:54px;top:50%;transform:translateY(-50%);
+  background:#17191f;border:1px solid rgba(255,255,255,.08);color:#ddd;border-radius:8px;
+  padding:6px 8px;font-size:9px;white-space:nowrap;opacity:0;pointer-events:none;
+  box-shadow:0 10px 24px rgba(0,0,0,.35);transition:.15s;z-index:100
+}
+.sidebar.collapsed .nav-item:hover::after{opacity:1}
+.notify-item .sidebar-notify-dot{
+  right:8px!important;top:8px!important;border-color:#14161b!important
+}
+.sidebar.collapsed .notify-item .sidebar-notify-dot{right:9px!important}
+
+
+/* ===== Comment interaction v33 ===== */
+.workspace.comment-placement-mode{cursor:none}
+.comment-cursor-dot{
+  position:absolute;width:12px;height:12px;border-radius:50%;background:#fff;
+  border:2px solid rgba(17,18,22,.75);box-shadow:0 0 0 4px rgba(255,255,255,.16),0 4px 14px rgba(0,0,0,.35);
+  pointer-events:none;z-index:115;display:none;transform:translate(-50%,-50%)
+}
+.workspace.comment-placement-mode .comment-cursor-dot{display:block}
+.comment-pin{
+  width:18px!important;height:18px!important;border-radius:50%!important;
+  background:#fff!important;border:2px solid #202127!important;color:transparent!important;
+  box-shadow:0 0 0 4px rgba(255,255,255,.14),0 5px 14px rgba(0,0,0,.35)!important;
+  cursor:pointer!important
+}
+.comment-pin:hover,.comment-pin.active{
+  transform:scale(1.12);background:#fff!important;border-color:#7788ff!important;
+  box-shadow:0 0 0 5px rgba(119,136,255,.2),0 7px 18px rgba(0,0,0,.4)!important
+}
+.comment-compose{
+  border:1px solid rgba(255,255,255,.1)!important;
+  box-shadow:0 20px 55px rgba(0,0,0,.4)!important
+}
+.comment-delete-mask{
+  position:absolute;inset:0;z-index:230;background:rgba(0,0,0,.48);
+  display:none;align-items:center;justify-content:center
+}
+.comment-delete-mask.show{display:flex}
+.comment-delete-dialog{
+  width:320px;padding:18px;background:#17191f;border:1px solid rgba(255,255,255,.09);
+  border-radius:14px;box-shadow:0 22px 65px rgba(0,0,0,.48)
+}
+.comment-delete-dialog h4{margin:0 0 8px;font-size:12px;color:#f1f2f5}
+.comment-delete-dialog p{margin:0;font-size:9px;line-height:1.7;color:#8e96a3}
+.comment-delete-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}
+.comment-delete-actions button{
+  height:30px;padding:0 12px;border-radius:8px;border:1px solid #363941;
+  background:#24262d;color:#ddd;font-size:8px;cursor:pointer
+}
+.comment-delete-actions .danger{
+  background:#49242d;border-color:#67323e;color:#ffb4bf
+}
+
+</style>
+</head>
+<body>
+<div id="app">
+<div class="home-overlay" id="homeOverlay">
+ <div class="home-top">
+   <div style="font-weight:700"><svg class="icon" viewBox="0 0 24 24"><rect x="5" y="6" width="14" height="12" rx="3"/><path d="M12 3v3"/><circle cx="9" cy="11" r="1"/><circle cx="15" cy="11" r="1"/><path d="M9 15h6"/></svg> Reelay</div>
+   <button id="enterStudio" class="primary" style="height:38px;padding:0 16px;border-radius:10px;border:0;cursor:pointer">进入工作台</button>
+ </div>
+ 
+<section class="hero">
+  <div style="max-width:620px">
+    <div style="display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;background:rgba(127,168,255,.12);color:#9ec2ff;font-size:13px;margin-bottom:18px">
+      <svg class="icon" viewBox="0 0 24 24"><rect x="5" y="6" width="14" height="12" rx="3"/><path d="M12 3v3"/><circle cx="9" cy="11" r="1"/><circle cx="15" cy="11" r="1"/><path d="M9 15h6"/></svg> Reelay AI Creative Studio
+    </div>
+    <h1>让图片、视频、角色与故事，<br>在一个画布里自然连接。</h1>
+    <p>
+      Reelay 是一款面向 AI 图片、AI 视频和动画创作者的节点式创作平台。
+      从角色设定、场景设计、镜头生成，到多人协作、资产管理、版本管理，
+      所有创作流程都可以在一张无限画布中完成。
+    </p>
+    <div class="cta">
+      <button class="primary"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M10 8l6 4-6 4z"/></svg> 观看产品宣传片</button>
+      <button class="secondary" id="scrollFeature">探索产品能力</button>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:36px">
+      <div style="background:#171719;border:1px solid #2d2d31;border-radius:14px;padding:16px">
+        <div style="font-size:28px"><svg class="icon" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14" rx="2"/><path d="M7 15l3-3 3 3 3-4 2 3"/></svg></div>
+        <b><svg class="icon" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14" rx="2"/></svg> AI Image</b>
+        <p style="font-size:12px;color:#999">图片工作流、角色一致性、场景生成。</p>
+      </div>
+      <div style="background:#171719;border:1px solid #2d2d31;border-radius:14px;padding:16px">
+        <div style="font-size:28px"><svg class="icon" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14" rx="2"/><path d="M10 9l5 3-5 3z"/></svg></div>
+        <b><svg class="icon" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14" rx="2"/><path d="M10 9l5 3-5 3z"/></svg> AI Video</b>
+        <p style="font-size:12px;color:#999">视频节点、镜头衔接、视频资产调用。</p>
+      </div>
+      <div style="background:#171719;border:1px solid #2d2d31;border-radius:14px;padding:16px">
+        <div style="font-size:28px"><svg class="icon" viewBox="0 0 24 24"><path d="M8 18a4 4 0 1 1 0-8 4 4 0 0 1 0 8z"/><path d="M17 17a3 3 0 1 0-2-5"/><path d="M2 21c1-2 3-3 6-3s5 1 6 3"/><path d="M15 19c1-.8 2-1 4-1 1.5 0 2.7.4 3.5 1"/></svg></div>
+        <b><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg> Realtime</b>
+        <p style="font-size:12px;color:#999">多人实时协同、评论、权限管理。</p>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:18px;width:640px">
+    <div class="video-card"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M10 8l6 4-6 4z"/></svg></div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+      <div style="background:#171719;border:1px solid #2d2d31;border-radius:16px;overflow:hidden">
+        <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=900&q=80"
+             style="width:100%;height:160px;object-fit:cover">
+        <div style="padding:14px">
+          <h3 style="margin:0 0 8px">节点式 AI 工作流</h3>
+          <p style="margin:0;color:#999;font-size:13px;line-height:1.7">
+            图片、视频、资产、角色、评论全部融合在同一画布。
+          </p>
+        </div>
+      </div>
+
+      <div style="background:#171719;border:1px solid #2d2d31;border-radius:16px;overflow:hidden">
+        <img src="https://images.unsplash.com/photo-1522542550221-31fd19575a2d?auto=format&fit=crop&w=900&q=80"
+             style="width:100%;height:160px;object-fit:cover">
+        <div style="padding:14px">
+          <h3 style="margin:0 0 8px">团队协同创作</h3>
+          <p style="margin:0;color:#999;font-size:13px;line-height:1.7">
+            项目、画布、资产库、权限全部支持多人实时协同。
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+ 
+<section class="features" id="featureSection">
+<h2 style="font-size:34px;margin-bottom:12px">为什么选择 Reelay？</h2>
+<p style="color:#9b9ba2;max-width:820px;line-height:1.8;margin-bottom:40px">
+不仅是一款 AI 图片或视频工具，而是一套完整的 AI 内容生产系统。
+</p>
+
+<div style="display:flex;flex-direction:column;gap:28px">
+
+<div style="display:grid;grid-template-columns:420px 1fr;gap:26px;align-items:center">
+<img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1200&q=80"
+style="width:100%;height:260px;border-radius:18px;object-fit:cover">
+<div>
+<h3>无限画布 · 节点式创作</h3>
+<p>通过图片节点、视频节点、资产节点自由搭建 AI 工作流，每一个节点都可以引用前置结果，实现复杂创作。</p>
+</div>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr 420px;gap:26px;align-items:center">
+<div>
+<h3>公共资产库 + 项目资产库</h3>
+<p>角色、场景、视频模板统一管理，支持公共复用与项目沉淀，保持角色一致性和团队创作效率。</p>
+</div>
+<img src="https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=1200&q=80"
+style="width:100%;height:260px;border-radius:18px;object-fit:cover">
+</div>
+
+<div style="display:grid;grid-template-columns:420px 1fr;gap:26px;align-items:center">
+<img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1200&q=80"
+style="width:100%;height:260px;border-radius:18px;object-fit:cover">
+<div>
+<h3>企业级协同</h3>
+<p>项目、画布、评论、权限、实时协作全部内置，支持大型动画、漫画和短剧团队共同创作。</p>
+</div>
+</div>
+
+</div>
+</section>
+
+</div>
+
+
+<div class="project-page" id="projectPage">
+  <header class="project-page-top">
+    <div class="project-page-brand">
+      <div class="home-brand-mark"><svg class="icon" viewBox="0 0 24 24"><rect x="5" y="6" width="14" height="12" rx="3"/><path d="M12 3v3"/><circle cx="9" cy="11" r="1"/><circle cx="15" cy="11" r="1"/><path d="M9 15h6"/></svg></div>
+      <span>Reelay Projects</span>
+    </div>
+    <div class="project-page-actions">
+      <button id="projectBackHome">返回首页</button>
+      <button id="projectEnterStudio" class="primary">进入工作台</button>
+    </div>
+  </header>
+
+  <main class="project-shell">
+    <section class="project-hero">
+      <div>
+        <h1>项目管理</h1>
+        <p>管理项目、画布、成员和资产。每个项目可以包含多张独立画布。</p>
+      </div>
+      <button class="project-create">＋ 新建项目</button>
+    </section>
+
+    <div class="project-toolbar">
+      <div class="project-tabs">
+        <button class="project-tab active">全部项目</button>
+        <button class="project-tab">我创建的</button>
+        <button class="project-tab">与我共享</button>
+      </div>
+      <input class="project-search" placeholder="搜索项目">
+    </div>
+
+    <section class="project-grid" id="projectGrid"></section>
+
+<section class="project-detail" id="inlineProjectDetail" style="display:block;margin-top:36px">
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:12px"><h2 id="inlineProjectTitle">项目画布</h2><button id="addCanvasTop" class="project-create" title="新建画布并进入画布" style="height:34px;padding:0 13px">＋ 新建画布</button></div>
+  <p id="inlineProjectDesc" style="color:#999;font-size:12px;margin-top:-8px;margin-bottom:18px"></p>
+  <div class="canvas-grid" id="inlineCanvasGrid"></div>
+</section>
+
+    
+  </main>
+</div>
+
+
+<div class="project-modal-mask" id="projectModalMask">
+  <div class="project-modal">
+    <div class="project-modal-head">
+      <h3 id="projectModalTitle">新建项目</h3>
+      <button id="closeProjectModal">×</button>
+    </div>
+    <div class="project-modal-body">
+      <div class="project-form-grid">
+        <div class="project-field full"><label>项目名称</label><input id="newProjectName" placeholder="例如：星海漫游"></div>
+        <div class="project-field"><label>项目类型</label>
+          <select id="newProjectType"><option>AI 动画项目</option><option>AI 短剧项目</option><option>视觉概念项目</option><option>广告创意项目</option></select>
+        </div>
+        <div class="project-field"><label>默认画布名称</label><input id="newCanvasName" value="主画布"></div>
+        <div class="project-field full"><label>项目简介</label><textarea id="newProjectDesc" placeholder="简单描述项目目标、内容方向或协作范围"></textarea></div>
+      </div>
+    </div>
+    <div class="project-modal-foot">
+      <button id="cancelProjectModal">取消</button>
+      <button class="primary" id="saveNewProject">保存项目</button>
+    </div>
+  </div>
+</div>
+
+<section class="canvas-editor-page" id="canvasEditorPage">
+  <div class="canvas-create-dialog">
+    <div class="canvas-create-head"><div><b>新建画布</b><span id="canvasEditorProjectName">当前项目</span></div><button id="canvasEditorClose">×</button></div>
+    <div class="canvas-create-body"><label>画布名称</label><input id="canvasEditorName" placeholder="请输入画布名称" maxlength="30"><label style="margin-top:14px">画布风格</label><select id="canvasEditorStyle"><option>电影写实</option><option>国风水墨</option><option>日系动漫</option><option>3D 卡通</option><option>赛博朋克</option><option>复古胶片</option><option>极简商业</option></select><p>该画布内新建及自动生成的所有节点都会默认继承所选风格。</p></div>
+    <div class="canvas-create-actions"><button id="canvasEditorCancel">取消</button><button id="canvasEditorSave">保存画布</button><button class="primary" id="canvasEditorSaveEnter">进入画布</button></div>
+  </div>
+</section>
+
+<div class="project-detail-page-unused" id="projectDetailPage">
+  <header class="project-detail-top">
+    <div class="project-page-brand">
+      <div class="home-brand-mark"><svg class="icon" viewBox="0 0 24 24"><rect x="5" y="6" width="14" height="12" rx="3"/><path d="M12 3v3"/><circle cx="9" cy="11" r="1"/><circle cx="15" cy="11" r="1"/><path d="M9 15h6"/></svg></div>
+      <span>Reelay Project</span>
+    </div>
+    <div class="project-page-actions">
+      <button id="backToProjectList">返回项目列表</button>
+      <button id="detailEnterStudio" class="primary">进入工作台</button>
+    </div>
+  </header>
+
+  <main class="project-detail-shell">
+    <section class="project-detail-hero">
+      <div>
+        <div id="detailProjectType" style="font-size:10px;color:#9ebcff;margin-bottom:8px">AI 动画项目</div>
+        <h1 id="detailProjectName">星海漫游</h1>
+        <p id="detailProjectDesc">围绕角色、场景、分镜与视频生成搭建完整 AI 动画创作流程。</p>
+      </div>
+      <div class="project-detail-actions">
+        <button id="editCurrentProject">编辑项目</button>
+        <button class="primary" id="openCurrentCanvas">打开主画布</button>
+      </div>
+    </section>
+
+    <div class="project-stat-grid">
+      <div class="project-stat"><b id="detailCanvasCount">6</b><span>画布数量</span></div>
+      <div class="project-stat"><b>24</b><span>项目资产</span></div>
+      <div class="project-stat"><b>4</b><span>协作成员</span></div>
+      <div class="project-stat"><b>38</b><span>评论与回复</span></div>
+    </div>
+
+    <section class="project-detail" style="margin-top:34px">
+      <h2>项目画布</h2>
+      <div class="canvas-grid" id="detailCanvasGrid"></div>
+    </section>
+  </main>
+</div>
+
+<style>
+/* 资产卡最终布局覆盖：保持全部类型等高并露出调用按钮 */
+.asset-grid{grid-auto-rows:260px;align-content:start;padding:10px 10px 20px;gap:10px}.asset-card,.asset-add-card{height:260px;min-height:260px}.asset-card{display:grid;grid-template-rows:104px minmax(0,1fr);cursor:default}.asset-card .asset-cover,.asset-card.character-card .asset-cover{height:104px!important;border-bottom:1px solid rgba(255,255,255,.045)}.asset-card.character-card .asset-cover::after{content:none!important;display:none!important}.asset-card .asset-info{position:relative;z-index:2;min-height:0;padding:9px;display:flex;flex-direction:column;overflow:visible;background:#19191c}.asset-card.character-card .asset-info{background:#17181d}.asset-card .asset-name{height:15px;line-height:15px;font-size:10px;font-weight:700}.asset-card .asset-desc{height:24px;min-height:24px;margin-top:3px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}.asset-unified-meta{height:25px;min-height:25px;margin-top:7px;padding:0 7px;display:flex;align-items:center;justify-content:space-between;border-radius:7px;background:#22242a;color:#858b96;font-size:7px}.asset-unified-meta b{font-weight:600;color:#c3c7d0}.asset-card[data-asset-type="portrait"] .asset-unified-meta{background:rgba(124,140,255,.09)}.asset-card[data-asset-type="portrait"] .asset-unified-meta b{color:#aeb8ff}.asset-card[data-asset-type="scene"] .asset-unified-meta{background:rgba(88,177,124,.09)}.asset-card[data-asset-type="scene"] .asset-unified-meta b{color:#9bd8b0}.asset-card[data-asset-type="video"] .asset-unified-meta{background:rgba(255,173,137,.09)}.asset-card[data-asset-type="video"] .asset-unified-meta b{color:#ffc1a7}.asset-card[data-asset-type="audio"] .asset-unified-meta{background:rgba(125,215,255,.09)}.asset-card[data-asset-type="audio"] .asset-unified-meta b{color:#a9e2ff}.asset-card .asset-actions{position:relative;z-index:6;flex:0 0 38px;min-height:38px;margin-top:auto;padding-top:8px;background:inherit}.asset-card .asset-actions button,.asset-card.character-card .asset-actions button,.asset-card[data-asset-type="audio"] .asset-actions button{position:relative;z-index:7;display:block;width:100%;height:30px!important;border:1px solid #eceef2!important;border-radius:8px;background:#eceef2!important;color:#111!important;font-size:8px;font-weight:700;visibility:visible;opacity:1;cursor:pointer}.asset-card .asset-actions button:hover{background:#fff!important}.asset-add-card{border-radius:12px;background:linear-gradient(145deg,#18191d,#131417)}
+/* 内层画布明确跨越父网格，替代已删除的错误文本占位 */
+#app>#app{grid-column:1/-1;grid-row:1;width:100%;height:100%;min-width:0}
+/* 首页页脚标题层级优化 */
+.link-footer .link-brand h3{font-size:24px!important;line-height:1.2;font-weight:750;letter-spacing:.2px;margin-bottom:12px}.link-footer .link-col h4{font-size:14px!important;line-height:1.3;font-weight:700;letter-spacing:.15px;margin-bottom:14px}.link-footer .link-col a{font-size:11px;line-height:1.5;margin:9px 0}
+.register-mask{position:fixed;inset:0;z-index:520;display:none;align-items:center;justify-content:center;padding:24px;background:rgba(5,6,9,.74);backdrop-filter:blur(10px)}.register-mask.show{display:flex}.register-dialog{width:min(430px,94vw);border:1px solid #343944;border-radius:20px;background:#17191f;box-shadow:0 30px 90px rgba(0,0,0,.58);overflow:hidden}.register-head{display:flex;align-items:flex-start;justify-content:space-between;padding:22px 24px 16px}.register-head h3{margin:0;color:#f2f3f5;font-size:18px}.register-head p{margin:6px 0 0;color:#777f8c;font-size:9px}.register-close{width:30px;height:30px;border:0;border-radius:8px;background:#24272e;color:#9ea5b1;font-size:17px;cursor:pointer}.register-body{padding:0 24px 24px}.register-tabs{display:grid;grid-template-columns:1fr 1fr;gap:5px;padding:4px;border-radius:10px;background:#20232a}.register-tabs button{height:32px;border:0;border-radius:7px;background:transparent;color:#858d9a;font-size:9px;cursor:pointer}.register-tabs button.active{background:#353b4c;color:#f1f3ff;box-shadow:0 3px 10px rgba(0,0,0,.2)}.register-field{margin-top:14px}.register-field label{display:block;margin-bottom:7px;color:#9ca3af;font-size:8px}.register-field input{width:100%;height:40px;border:1px solid #343944;border-radius:10px;background:#20232a;color:#edf0f4;padding:0 11px;font-size:10px;outline:none}.register-field input:focus{border-color:#7582d4;box-shadow:0 0 0 3px rgba(117,130,212,.1)}.register-code-row{display:grid;grid-template-columns:1fr 108px;gap:7px}.register-code-row button{border:1px solid #424859;border-radius:10px;background:#292e3c;color:#cfd5ff;font-size:8px;cursor:pointer}.register-code-row button:disabled{opacity:.5;cursor:not-allowed}.register-agreement{display:flex;align-items:flex-start;gap:8px;margin-top:14px;color:#777f8c;font-size:8px;line-height:1.55}.register-agreement input{margin-top:1px;accent-color:#7c8cff}.register-agreement a{color:#aeb8ff;text-decoration:none}.register-submit{width:100%;height:40px;margin-top:16px;border:0;border-radius:10px;background:linear-gradient(135deg,#f5f6ff,#dfe4ff);color:#111522;font-size:10px;font-weight:750;cursor:pointer}.register-submit:hover{filter:brightness(1.04)}.register-login-tip{margin-top:12px;text-align:center;color:#707885;font-size:8px}.register-login-tip button{border:0;background:transparent;color:#aeb8ff;font-size:8px;cursor:pointer}.register-success{display:none;padding:24px;text-align:center}.register-success.show{display:block}.register-form.hidden{display:none}.register-success-icon{width:58px;height:58px;margin:5px auto 16px;display:grid;place-items:center;border-radius:50%;background:rgba(112,214,161,.13);color:#70d6a1;font-size:25px}.register-success h3{margin:0 0 8px;font-size:17px}.register-success p{margin:0;color:#7e8693;font-size:9px;line-height:1.7}.register-success button{width:100%;height:40px;margin-top:20px;border:0;border-radius:10px;background:#f2f3f5;color:#111;font-size:9px;font-weight:700;cursor:pointer}.register-error{min-height:16px;margin-top:7px;color:#ff96a6;font-size:8px}.footer-policy-links{display:flex;gap:18px}.footer-policy-links a{color:#8b929e;text-decoration:none}.footer-policy-links a:hover{color:#d8dce5}.policy-dialog{width:min(620px,94vw)}.policy-content{max-height:58vh;overflow:auto;padding:0 24px 24px;color:#a5acb7;font-size:10px;line-height:1.9}.policy-content h4{margin:15px 0 5px;color:#e8eaf0;font-size:11px}.policy-content p{margin:0 0 9px}
+</style>
+<style>.login-options{display:flex;align-items:center;justify-content:space-between;margin-top:13px;color:#7b8390;font-size:8px}.login-options label{display:flex;align-items:center;gap:6px}.login-options input{accent-color:#7c8cff}.login-options button{border:0;background:transparent;color:#aeb8ff;font-size:8px;cursor:pointer}.login-account-tip{margin-top:12px;text-align:center;color:#707885;font-size:8px}.login-account-tip button{border:0;background:transparent;color:#aeb8ff;font-size:8px;cursor:pointer}</style>
+
+<div class="register-mask" id="registerMask">
+  <div class="register-dialog">
+    <div class="register-form" id="registerForm">
+      <div class="register-head"><div><h3>创建 Reelay 账号</h3><p>注册后即可创建项目、保存资产并与团队协作</p></div><button class="register-close" id="closeRegister">×</button></div>
+      <div class="register-body">
+        <div class="register-tabs"><button class="active" data-register-type="phone">手机号注册</button><button data-register-type="email">邮箱注册</button></div>
+        <div class="register-field"><label id="registerContactLabel">手机号码</label><input id="registerContact" autocomplete="tel" placeholder="请输入 11 位手机号码"></div>
+        <div class="register-field"><label>验证码</label><div class="register-code-row"><input id="registerCode" inputmode="numeric" maxlength="6" placeholder="输入 6 位验证码"><button id="sendRegisterCode">发送验证码</button></div></div>
+        <div class="register-field"><label>设置密码</label><input id="registerPassword" type="password" autocomplete="new-password" placeholder="至少 8 位，包含字母和数字"></div>
+        <label class="register-agreement"><input id="registerAgreement" type="checkbox" required><span>我已阅读并同意 <a href="javascript:void(0)" data-policy="user">《用户协议》</a> 和 <a href="javascript:void(0)" data-policy="privacy">《隐私政策》</a></span></label>
+        <div class="register-error" id="registerError"></div>
+        <button class="register-submit" id="submitRegister">注册并创建账号</button>
+        <div class="register-login-tip">已有账号？<button id="registerLoginLink">直接登录</button></div>
+      </div>
+    </div>
+    <div class="register-success" id="registerSuccess"><div class="register-success-icon">✓</div><h3>注册成功</h3><p id="registerSuccessText">账号已创建，欢迎加入 Reelay。</p><button id="registerEnterStudio">进入工作台</button></div>
+  </div>
+</div>
+
+<div class="register-mask" id="loginMask">
+  <div class="register-dialog">
+    <div class="register-form" id="loginForm">
+      <div class="register-head"><div><h3>登录 Reelay</h3><p>继续访问你的项目、画布和团队资产</p></div><button class="register-close" id="closeLogin">×</button></div>
+      <div class="register-body">
+        <div class="register-field" style="margin-top:0"><label>手机号或邮箱</label><input id="loginAccount" autocomplete="username" placeholder="请输入手机号或邮箱"></div>
+        <div class="register-field"><label>登录密码</label><input id="loginPassword" type="password" autocomplete="current-password" placeholder="请输入登录密码"></div>
+        <div class="login-options"><label><input id="rememberLogin" type="checkbox" checked> 记住登录状态</label><button id="forgotPassword">忘记密码？</button></div>
+        <div class="register-error" id="loginError"></div>
+        <button class="register-submit" id="submitLogin">登录</button>
+        <div class="login-account-tip">还没有账号？<button id="loginRegisterLink">立即注册</button></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="register-mask" id="policyMask">
+  <div class="register-dialog policy-dialog" role="dialog" aria-modal="true" aria-labelledby="policyTitle">
+    <div class="register-head"><div><h3 id="policyTitle">用户协议</h3><p id="policySubtitle">请阅读 Reelay 平台相关规则</p></div><button class="register-close" id="closePolicy" aria-label="关闭">×</button></div>
+    <div class="policy-content" id="policyContent"></div>
+  </div>
+</div>
+  
+<aside class="sidebar" id="mainSidebar">
+  <div class="sidebar-top">
+    <div class="logo-wrap">
+      <button class="logo" id="workspaceLogo" title="打开导航菜单" aria-label="打开导航菜单" aria-expanded="false"></button>
+      <div class="logo-dropdown" id="logoDropdown">
+        <button id="logoGoProjects"><span>▤</span><div><b>回到项目管理</b><small>查看和管理全部项目</small></div></button>
+        <button id="logoGoHome"><span>⌂</span><div><b>回到首页</b><small>返回 Reelay 产品首页</small></div></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-title" id="resourceGroupTitle">项目与资源</div>
+    <button class="sidebtn nav-item" id="projectBtn" title="项目管理">
+      <span class="nav-icon">▤</span><span class="nav-label">项目管理</span>
+    </button>
+    <button class="sidebtn nav-item" id="assetBtn" title="资产库">
+      <span class="nav-icon">▦</span><span class="nav-label">资产库</span>
+    </button>
+    <button class="sidebtn nav-item" id="skillBtn" title="Skill 库" data-drama-tool>
+      <span class="nav-icon">✦</span><span class="nav-label">Skill 库</span>
+    </button>
+  </div>
+
+  <div class="nav-separator"></div>
+
+  <div class="nav-group">
+    <div class="nav-group-title">画布创作</div>
+    <button class="sidebtn nav-item" id="addBtn" title="新建节点">
+      <span class="nav-icon">＋</span><span class="nav-label">新建节点</span>
+    </button>
+    <button class="sidebtn nav-item" id="commentBtn" title="评论">
+      <span class="nav-icon">□</span><span class="nav-label">评论</span>
+    </button>
+    <button class="sidebtn nav-item" id="elementsBtn" title="画布元素">
+      <span class="nav-icon">☷</span><span class="nav-label">画布元素</span>
+    </button>
+    <button class="sidebtn nav-item" id="directorBtn" title="导演台">
+      <span class="nav-icon">▰</span><span class="nav-label">导演台</span>
+    </button>
+  </div>
+
+  <div class="nav-separator" id="smartToolsSeparator"></div>
+
+  <div class="nav-group" id="smartToolsNavGroup">
+    <div class="nav-group-title">智能工具</div>
+    <button class="sidebtn nav-item" id="filmAnalysisBtn" title="一键拉片"><span class="nav-icon">◫</span><span class="nav-label">一键拉片</span></button>
+    <button class="sidebtn nav-item" id="smartReplaceBtn" title="一键替换"><span class="nav-icon">⇄</span><span class="nav-label">一键替换</span></button>
+    <button class="sidebtn nav-item" id="globalLaunchBtn" title="一键出海"><span class="nav-icon">◎</span><span class="nav-label">一键出海</span></button>
+  </div>
+
+  <div class="nav-separator"></div>
+
+  <div class="nav-group">
+    <div class="nav-group-title">管理</div>
+    <button class="sidebtn nav-item" id="permissionBtn" title="权限管理">
+      <span class="nav-icon">◇</span><span class="nav-label">权限管理</span>
+    </button>
+    <button class="sidebtn nav-item" id="pointsBtn" title="积分中心">
+      <span class="nav-icon">◈</span><span class="nav-label">积分中心</span>
+    </button>
+  </div>
+
+  <div class="nav-spacer"></div>
+
+  <button class="sidebar-collapse" id="sidebarCollapse" title="收起侧边栏">‹</button>
+</aside>
+
+
+  <main class="workspace" id="workspace">
+    <div class="topbar"><div class="canvas-version-wrap"><div class="canvas-version-switch" id="canvasVersionSwitch" role="group" aria-label="画布版本切换"><button type="button" data-canvas-version="general">通用版</button><button type="button" class="active" data-canvas-version="drama">短剧版</button></div></div>
+      <div class="topbar-group">
+        <div class="canvas-style-pill" id="canvasStylePill" title="当前画布风格"><b id="canvasStylePillValue">电影写实</b></div>
+        <div class="pill share-btn" id="shareBtn"><span class="share-dot"></span><span>共享模式</span></div>
+        <button class="topbar-message-btn" id="messageBtn" title="消息中心" aria-label="消息中心">
+          <svg viewBox="0 0 24 24"><path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 8h18c0-1-3-1-3-8"/><path d="M10 20h4"/></svg>
+          <span class="sidebar-notify-dot" id="messageDot"></span>
+        </button>
+        <div class="topbar-profile-wrap">
+          <button class="topbar-profile-btn" id="profileBtn" title="个人菜单" aria-label="打开个人菜单" aria-expanded="false">S</button>
+          <div class="profile-dropdown" id="profileDropdown">
+            <div class="profile-dropdown-head"><span class="profile-dropdown-avatar" id="profileMenuAvatar">S</span><div><b id="profileMenuName">Suzy</b><small id="profileMenuRole">项目管理员</small></div></div>
+            <button class="profile-points-card" id="profilePointsCard">
+              <span class="profile-points-icon">◈</span><div><small>可用积分</small><b id="profilePointsBalance">12,860</b><em>团队账户 · 查看明细 ›</em></div>
+            </button>
+            <button id="profileAccountSettings"><span>⚙</span><div><b>账号设置</b><small>账户安全、绑定与偏好设置</small></div></button>
+            <div class="profile-reading-mode">
+              <div class="profile-reading-label"><span>◐</span><div><b>阅读模式</b><small>切换界面明暗效果</small></div></div>
+              <div class="reading-mode-switch" role="group" aria-label="阅读模式"><button id="readingDarkMode" class="active" data-reading-theme="dark">深色</button><button id="readingLightMode" data-reading-theme="light">浅色</button></div>
+            </div>
+            <button id="profileHelpCenter"><span>?</span><div><b>帮助中心</b><small>使用指南与常见问题</small></div></button>
+            <button id="profileLogout" class="profile-logout"><span>↪</span><div><b>退出登录</b><small>安全退出当前账户</small></div></button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="viewport"><div id="stage"><svg id="lines"></svg></div></div>
+    <div class="marquee-selection" id="marqueeSelection"></div>
+    <button type="button" class="selection-batch-action" id="selectionBatchDownload" title="将圈选节点批量导出为 ZIP"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v10"/><path d="M8 10l4 4 4-4"/><path d="M5 18h14"/></svg><span>批量下载</span><span class="selection-count" id="selectionBatchCount">0</span></button>
+
+    <div class="canvas-quick-tools" aria-label="画布快捷工具">
+      <button id="panModeBtn" class="canvas-mode-btn active" title="拖动画布">拖动</button>
+      <button id="marqueeModeBtn" class="canvas-mode-btn" title="框选节点">框选</button>
+      <span class="quick-divider"></span>
+      <button id="groupNodesBtn" title="将选中的节点分组">⊞</button>
+      <button id="ungroupNodesBtn" title="解散选中节点所在分组">⊟</button>
+      <span class="quick-divider"></span>
+      <button id="layoutBtn" title="自动排列">⌁</button>
+      <button id="clearBtn" class="danger" title="清除连线">⌫</button>
+      <button id="batchDownloadNodesBtn" title="批量下载选中节点；多个节点将导出 ZIP" aria-label="批量下载选中节点">⇩</button>
+      <span class="quick-divider"></span>
+      <button id="minus" title="缩小画布">−</button>
+      <span id="zoom" class="quick-zoom">100%</span>
+      <button id="plus" title="放大画布">＋</button>
+    </div>
+
+    <section class="ai-workflow-panel" id="aiWorkflowPanel" aria-label="智能工具">
+      <div class="ai-workflow-head"><div><div class="ai-workflow-kicker">AI WORKFLOW</div><h3 id="aiWorkflowTitle">一键拉片</h3><p id="aiWorkflowSubtitle">自动拆解视频并生成完整节点画布</p></div><button type="button" id="closeAiWorkflow" aria-label="关闭">×</button></div>
+      <div class="ai-workflow-body" id="aiWorkflowBody"></div>
+    </section>
+
+    <div class="node-picker" id="picker">
+      <div class="picker-title">创建节点</div>
+      <button data-type="image"><span><svg class="icon" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14" rx="2"/><path d="M7 15l3-3 3 3 3-4 2 3"/></svg>　图片节点</span><span class="picker-meta">Image</span></button>
+      <button data-type="video"><span><svg class="icon" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14" rx="2"/><path d="M10 9l5 3-5 3z"/></svg>　视频节点</span><span class="picker-meta">Video</span></button>
+      <button data-type="audio"><span><svg class="icon" viewBox="0 0 24 24"><path d="M5 10v4M9 7v10M13 5v14M17 8v8M21 10v4"/></svg>　音频节点</span><span class="picker-meta">Audio</span></button>
+    </div>
+
+
+    
+<aside class="project-panel" id="projectPanel">
+<div class="project-head">
+<div class="panel-title-row"><div style="font-size:12px;font-weight:700">项目管理</div><button class="panel-x" id="closeProjectPanel" title="关闭">×</button></div>
+<input id="projectName" value="AI短剧项目" placeholder="项目名称">
+<div class="project-tools">
+<button id="addCanvasBtn">＋ 新建画布</button>
+<button id="renameProjectBtn">保存项目</button>
+</div>
+</div>
+<div class="canvas-list" id="canvasList"></div>
+</aside>
+
+<aside class="asset-panel" id="assetPanel">
+      <div class="asset-head"><h3>资产库</h3><div class="panel-head-actions"><span id="assetCount">0 项资产</span><button class="panel-x" id="closeAssetPanel" title="关闭">×</button></div></div>
+      
+<div style="padding:10px 12px 0;display:flex;gap:6px">
+  <button class="asset-tab active" data-scope="public">公共库</button>
+  <button class="asset-tab" data-scope="project">项目库</button>
+</div>
+<div class="asset-search">
+<input id="assetSearch" placeholder="搜索资产名称或标签"></div>
+      <div class="asset-tabs">
+        <button class="asset-tab active" data-asset-filter="all">全部</button>
+        <button class="asset-tab" data-asset-filter="portrait">角色卡</button>
+        <button class="asset-tab" data-asset-filter="scene">场景卡</button>
+        <button class="asset-tab" data-asset-filter="video">视频</button>
+        <button class="asset-tab" data-asset-filter="audio">音频</button>
+      </div>
+      <div class="asset-grid" id="assetGrid"></div>
+    </aside>
+
+
+
+
+<div class="permission-confirm-mask" id="permissionConfirmMask">
+  <div class="permission-confirm">
+    <h4>确认删除成员</h4>
+    <p id="permissionConfirmText">删除后，该成员将失去当前权限。</p>
+    <div class="permission-confirm-actions">
+      <button id="permissionCancelDelete">取消</button>
+      <button class="danger" id="permissionConfirmDelete">确认删除</button>
+    </div>
+  </div>
+</div>
+
+<aside class="permission-panel" id="permissionPanel">
+  <div class="permission-head"><h3>权限管理</h3><button id="closePermissionPanel">×</button></div>
+  <div class="permission-role" id="permissionRoleNote">当前身份：组织管理员</div>
+  <div class="permission-tabs">
+    <button class="permission-tab active" data-permission-tab="org">组织权限</button>
+    <button class="permission-tab" data-permission-tab="points">积分权限</button>
+    <button class="permission-tab" data-permission-tab="project">项目权限</button>
+  </div>
+  <div class="permission-toolbar">
+    <input id="permissionSearch" placeholder="搜索成员或项目">
+    <button id="switchRoleBtn">切换角色</button>
+  </div>
+  <div class="add-member-form">
+    <input id="permissionMemberInput" placeholder="姓名或邮箱">
+    <select id="permissionMemberRole"></select>
+    <button id="addPermissionMember">添加</button>
+  </div>
+  <div class="permission-list" id="permissionList"></div>
+</aside>
+
+<style>
+.points-panel{width:min(760px,calc(100vw - 36px));height:calc(100vh - 82px);max-height:none}.points-center-head{height:58px;padding:0 18px}.points-center-title{display:flex;align-items:center;gap:10px}.points-center-icon{width:32px;height:32px;display:grid;place-items:center;border:1px solid rgba(154,165,255,.25);border-radius:10px;background:rgba(124,140,255,.12);color:#aeb8ff}.points-center-title h3{font-size:13px}.points-center-title p{margin:3px 0 0;color:#737a87;font-size:8px}.points-nav{display:flex;gap:5px;padding:10px 16px 0;border-bottom:1px solid rgba(255,255,255,.07)}.points-nav button{height:34px;padding:0 14px;border:0;border-bottom:2px solid transparent;background:transparent;color:#777f8d;font-size:9px;cursor:pointer}.points-nav button.active{border-bottom-color:#9da8ff;color:#f2f3f5}.points-view{display:none;min-height:0;overflow:auto;padding:14px 16px 18px}.points-view.active{display:block}.points-kpis{display:grid;grid-template-columns:1.4fr repeat(3,1fr);gap:10px}.points-kpi{min-height:104px;padding:14px;border:1px solid #2b2f38;border-radius:13px;background:#191c22}.points-kpi.balance{background:radial-gradient(circle at 86% 18%,rgba(124,140,255,.3),transparent 34%),linear-gradient(145deg,#22294b,#171a24)}.points-kpi span{color:#858c99;font-size:8px}.points-kpi b{display:block;margin:9px 0 4px;color:#eef0f4;font-size:22px}.points-kpi small{color:#68707d;font-size:7px}.points-kpi .up{color:#70d6a1}.points-kpi .down{color:#ff9caa}.points-dashboard-grid{display:grid;grid-template-columns:1.25fr .75fr;gap:10px;margin-top:10px}.points-chart-card{padding:14px;border:1px solid #2b2f38;border-radius:13px;background:#181b21}.points-card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}.points-card-head b{font-size:10px}.points-card-head span{color:#707785;font-size:8px}.points-bars{height:126px;display:flex;align-items:flex-end;gap:10px;padding-top:8px;border-bottom:1px solid #30343d}.points-bar-col{height:100%;flex:1;display:flex;align-items:center;justify-content:flex-end;flex-direction:column;gap:5px}.points-bar-stack{height:100%;display:flex;align-items:flex-end;gap:3px}.points-bar{width:8px;min-height:4px;border-radius:4px 4px 1px 1px}.points-bar.income{background:#73d5a2}.points-bar.expense{background:#7c8cff}.points-bar-col small{color:#656d79;font-size:7px}.points-legend{display:flex;gap:12px;margin-top:10px;color:#777f8c;font-size:7px}.points-legend i{display:inline-block;width:6px;height:6px;margin-right:4px;border-radius:50%}.points-category-list{display:flex;flex-direction:column;gap:11px}.points-category-row{display:grid;grid-template-columns:76px 1fr 34px;align-items:center;gap:7px;color:#8c939f;font-size:8px}.points-category-track{height:6px;border-radius:9px;background:#252932;overflow:hidden}.points-category-fill{height:100%;border-radius:9px;background:linear-gradient(90deg,#7383ff,#a5afff)}.points-category-row b{text-align:right;color:#c9cdd5;font-size:8px}.points-alloc-layout{display:grid;grid-template-columns:1fr 1fr;gap:12px}.points-alloc-card{padding:16px;border:1px solid #2b2f38;border-radius:14px;background:#181b21}.points-alloc-card h4{margin:0 0 5px;font-size:11px}.points-alloc-card>p{margin:0 0 15px;color:#737a87;font-size:8px;line-height:1.5}.points-form-field{margin-top:11px}.points-form-field label{display:block;margin-bottom:6px;color:#8c939e;font-size:8px}.points-form-field select,.points-form-field input{width:100%;height:36px;border:1px solid #343944;border-radius:9px;background:#20242b;color:#e5e7eb;padding:0 10px;font-size:9px;outline:none}.points-form-field input:focus,.points-form-field select:focus{border-color:#7785dd}.points-quick-values{display:flex;gap:6px;margin-top:7px}.points-quick-values button{flex:1;height:26px;border:1px solid #323742;border-radius:7px;background:#22262d;color:#959ca8;font-size:8px;cursor:pointer}.points-quick-values button:hover{border-color:#6571bb;color:#dfe2ff}.points-alloc-submit{width:100%;height:36px;margin-top:14px;border:0;border-radius:9px;background:#f1f2f4;color:#111;font-size:9px;font-weight:700;cursor:pointer}.points-alloc-tip{margin-top:9px;color:#69717e;font-size:7px;text-align:center}.allocation-list{display:flex;flex-direction:column;gap:7px}.allocation-item{display:grid;grid-template-columns:30px 1fr auto;align-items:center;gap:9px;padding:9px;border-radius:10px;background:#20232a}.allocation-avatar{width:30px;height:30px;display:grid;place-items:center;border-radius:9px;background:#30364a;color:#cbd1ff;font-size:9px}.allocation-item b{display:block;font-size:9px}.allocation-item span{color:#727a87;font-size:7px}.allocation-value{color:#ffabbb!important;font-size:9px!important;font-weight:700}.points-ledger-tools{display:flex;justify-content:space-between;gap:8px;margin-bottom:10px;align-items:flex-start}.points-ledger-tools .report-filter{flex:1;padding:0;border:0;display:grid;grid-template-columns:repeat(5,minmax(105px,1fr));gap:7px}.points-ledger-tools .report-filter select,.points-ledger-tools .report-filter input{width:100%;height:32px;border:1px solid #343944;border-radius:8px;background:#20242b;color:#dfe2e8;padding:0 8px;font-size:8px;outline:none}.points-ledger-tools .points-actions{margin:0}.points-ledger-tools .points-actions button{width:auto;flex:none;padding:0 12px}.points-ledger-list{display:flex;flex-direction:column;gap:6px}.points-ledger-list .points-item{grid-template-columns:32px 1fr auto;align-items:center}.points-record-icon{width:30px;height:30px;display:grid;place-items:center;border-radius:9px;background:#242932;color:#98a4ff;font-size:11px}.points-record-icon.income{background:rgba(112,214,161,.1);color:#70d6a1}.points-empty{padding:50px;text-align:center;color:#747c89;font-size:9px}.points-pagination{display:flex;align-items:center;justify-content:center;gap:5px;margin-top:12px}.points-pagination button{min-width:30px;height:28px;padding:0 8px;border:1px solid #343944;border-radius:7px;background:#20242b;color:#9ca4b1;font-size:8px;cursor:pointer}.points-pagination button.active{border-color:#7c8cff;background:#7c8cff;color:#fff}.points-pagination button:disabled{opacity:.35;cursor:not-allowed}.points-pagination span{margin:0 5px;color:#737b87;font-size:8px}@media(max-width:700px){.points-kpis{grid-template-columns:1fr 1fr}.points-dashboard-grid,.points-alloc-layout{grid-template-columns:1fr}.points-ledger-tools{flex-direction:column}.points-ledger-tools .report-filter{grid-template-columns:1fr 1fr}}
+.points-head-actions{display:flex;align-items:center;gap:7px}.buy-points-entry{height:30px;padding:0 11px;border:1px solid rgba(151,163,255,.42);border-radius:8px;background:rgba(124,140,255,.15);color:#cbd2ff;font-size:8px;cursor:pointer}.buy-points-entry:hover{background:rgba(124,140,255,.25);color:#fff}.points-purchase-mask{position:fixed;inset:0;z-index:360;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(5,6,9,.68);backdrop-filter:blur(8px)}.points-purchase-mask.show{display:flex}.points-purchase-dialog{width:min(560px,94vw);overflow:hidden;border:1px solid #343a45;border-radius:18px;background:#171a20;box-shadow:0 30px 90px rgba(0,0,0,.58)}.points-purchase-head{height:62px;padding:0 18px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.07)}.points-purchase-head h3{margin:0;font-size:13px}.points-purchase-head p{margin:4px 0 0;color:#747c88;font-size:8px}.points-purchase-head button{width:28px;height:28px;border:0;border-radius:8px;background:transparent;color:#858d99;font-size:17px;cursor:pointer}.points-purchase-body{padding:17px 18px 18px}.points-package-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.points-package{padding:13px 10px;border:1px solid #303641;border-radius:11px;background:#1d2128;color:#c4c9d2;text-align:left;cursor:pointer}.points-package.active{border-color:#8190ea;background:linear-gradient(145deg,rgba(124,140,255,.2),#202532);box-shadow:0 0 0 2px rgba(124,140,255,.08)}.points-package b{display:block;color:#f1f3f7;font-size:14px}.points-package span{display:block;margin-top:5px;color:#7e8795;font-size:8px}.points-package em{display:block;margin-top:9px;color:#b9c2ff;font-size:10px;font-style:normal}.payment-methods{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:8px}.payment-method{height:38px;border:1px solid #333943;border-radius:9px;background:#20242b;color:#aeb5c0;font-size:8px;cursor:pointer}.payment-method.active{border-color:#8290e7;background:#2a3045;color:#eef0ff}.purchase-summary{display:flex;align-items:center;justify-content:space-between;margin-top:15px;padding:12px;border-radius:10px;background:#20242b;color:#8f97a4;font-size:8px}.purchase-summary b{color:#f3f4f7;font-size:12px}.confirm-points-purchase{width:100%;height:39px;margin-top:12px;border:0;border-radius:10px;background:linear-gradient(135deg,#eef0ff,#dce2ff);color:#151927;font-size:9px;font-weight:750;cursor:pointer}.confirm-points-purchase:disabled{opacity:.55;cursor:wait}@media(max-width:560px){.points-package-grid,.payment-methods{grid-template-columns:1fr}.points-purchase-dialog{max-height:90vh;overflow:auto}}
+.points-record-params{display:flex;flex-wrap:wrap;gap:4px;margin-top:7px}.points-record-params span{padding:3px 6px;border:1px solid #313743;border-radius:6px;background:#242831;color:#aeb5c1;font-size:7px}.points-record-params span:first-child{border-color:rgba(124,140,255,.24);background:rgba(124,140,255,.09);color:#b9c1ff}
+.node-save-asset{width:100%;height:32px;margin-top:7px;border:1px solid #363a43;border-radius:9px;background:#22252b;color:#aeb4c0;font-size:9px;cursor:pointer}.node-save-asset:hover:not(:disabled){border-color:#6974bd;background:#292e3e;color:#e3e6ff}.node-save-asset:disabled{opacity:.38;cursor:not-allowed}
+.floating-list-panel{min-width:260px!important;min-height:220px!important;max-width:calc(100% - 16px)!important;max-height:calc(100% - 16px)!important}.floating-list-panel>.asset-head,.floating-list-panel>.element-head,.floating-list-panel>.share-head,.floating-list-panel>.permission-head,.floating-list-panel>.panel-head,.floating-list-panel>.director-head,.floating-list-panel>.project-head .panel-title-row{cursor:move;user-select:none}.floating-panel-resize{position:absolute;right:3px;bottom:3px;z-index:30;width:17px;height:17px;cursor:nwse-resize;border-right:2px solid rgba(174,184,255,.72);border-bottom:2px solid rgba(174,184,255,.72);border-radius:0 0 8px 0;opacity:.62}.floating-panel-resize:hover{opacity:1}.floating-list-panel.is-moving,.floating-list-panel.is-resizing{transition:none!important;box-shadow:0 26px 80px rgba(0,0,0,.58)!important}.floating-list-panel.is-moving>.asset-head,.floating-list-panel.is-moving>.element-head,.floating-list-panel.is-moving>.share-head,.floating-list-panel.is-moving>.permission-head,.floating-list-panel.is-moving>.panel-head,.floating-list-panel.is-moving>.director-head{cursor:grabbing}.director-panel.floating-list-panel{min-width:480px!important;min-height:260px!important}.director-panel>.floating-panel-resize{border-color:rgba(157,139,255,.86);width:20px;height:20px}
+.points-daily-card{margin-bottom:12px;padding:14px;border:1px solid rgba(124,140,255,.2);border-radius:13px;background:linear-gradient(145deg,rgba(124,140,255,.12),rgba(25,28,35,.96))}.points-daily-card .daily-report-head{margin-bottom:11px}.points-daily-card .daily-report-head b{font-size:10px}.points-daily-card .daily-report-head span{color:#9098a6;font-size:8px}.points-daily-card .daily-report-grid{grid-template-columns:repeat(3,1fr)}.points-daily-card .daily-stat{padding:10px;border-radius:9px;background:rgba(12,14,18,.35);text-align:left}.points-daily-card .daily-stat b{font-size:15px}.points-daily-card .daily-stat span{display:block;margin-top:4px;color:#79818e;font-size:7px}.points-daily-note{display:flex;justify-content:space-between;margin-top:10px;color:#747c89;font-size:7px}.allocation-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:11px}.allocation-summary>div{padding:12px;border:1px solid #2b2f38;border-radius:11px;background:#191c22}.allocation-summary span{color:#79818e;font-size:7px}.allocation-summary b{display:block;margin-top:6px;font-size:16px}.allocation-records{display:flex;flex-direction:column;gap:7px}.allocation-record{display:grid;grid-template-columns:34px 1fr 120px 80px;align-items:center;gap:10px;padding:11px;border:1px solid transparent;border-radius:11px;background:#1c1f25}.allocation-record:hover{border-color:#343943}.allocation-record .allocation-avatar{width:34px;height:34px}.allocation-record-main b{display:block;font-size:9px}.allocation-record-main span,.allocation-record-meta span{display:block;margin-top:3px;color:#737b88;font-size:7px}.allocation-record-meta b{font-size:8px;color:#aab0bb}.allocation-record-value{text-align:right;color:#ffadba;font-size:10px;font-weight:700}@media(max-width:680px){.allocation-record{grid-template-columns:34px 1fr auto}.allocation-record-meta{display:none}}
+</style>
+<style>.floating-list-panel.panel-collapsed{height:52px!important;min-height:52px!important;overflow:hidden!important}.floating-list-panel.panel-collapsed>.floating-panel-resize{display:none}.floating-list-panel.panel-collapsed>:not(.project-head):not(.asset-head):not(.permission-head):not(.panel-head):not(.element-head):not(.share-head):not(.floating-panel-resize){display:none!important}.floating-list-panel.panel-collapsed>.project-head>:not(.panel-title-row){display:none!important}.floating-list-panel.panel-collapsed>.project-head{padding-bottom:0!important}.floating-list-panel.panel-collapsed>.asset-head,.floating-list-panel.panel-collapsed>.permission-head,.floating-list-panel.panel-collapsed>.panel-head,.floating-list-panel.panel-collapsed>.element-head,.floating-list-panel.panel-collapsed>.share-head{height:50px!important;border-bottom:0!important}.floating-list-panel.panel-collapsed .panel-title-row{height:50px}.node-picker{width:280px!important}.schedule-setting{margin-top:10px;padding:9px;border:1px solid rgba(126,139,240,.24);border-radius:10px;background:rgba(126,139,240,.07)}.schedule-head{display:flex;align-items:center;justify-content:space-between;color:#dfe3ff;font-size:9px}.schedule-switch{display:flex;align-items:center;gap:5px;color:#9da5b4}.schedule-switch input{width:auto!important;accent-color:#8792ef}.schedule-fields{display:none}.schedule-setting.enabled .schedule-fields{display:block}.schedule-save{width:100%;height:30px;margin-top:8px;border:1px solid #465078;border-radius:8px;background:#303a61;color:#e7eaff;font-size:8px;cursor:pointer}.schedule-status{margin-top:6px;color:#8993a5;font-size:7px;line-height:1.5}.schedule-setting.enabled .schedule-status{color:#aeb8ff}.canvas-item.current-canvas{border-color:#7885dd!important;background:rgba(120,133,221,.1)!important}.canvas-current-badge{display:inline-flex;padding:2px 6px;border-radius:999px;background:#7885dd;color:#fff;font-size:7px}</style>
+<style>
+.allocation-filter-tools{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px}.allocation-filter-group{display:grid;grid-template-columns:repeat(3,minmax(120px,1fr));gap:7px;flex:1}.allocation-filter-group input,.allocation-filter-group select{height:32px;border:1px solid #343944;border-radius:8px;background:#20242b;color:#dfe2e8;padding:0 8px;font-size:8px;outline:none}.allocation-export-btn{height:32px;padding:0 12px;border:1px solid #e6e8ee;border-radius:8px;background:#eef0f4;color:#16191e;font-size:8px;font-weight:700;cursor:pointer}.allocation-filter-summary{margin:-5px 0 10px;color:#737b87;font-size:8px}@media(max-width:700px){.allocation-filter-tools{align-items:stretch;flex-direction:column}.allocation-filter-group{grid-template-columns:1fr 1fr}.allocation-export-btn{width:100%}}
+.director-panel{position:absolute;right:18px;bottom:18px;z-index:185;width:min(760px,calc(100% - 36px));height:330px;display:none;flex-direction:column;border:1px solid #30343c;border-radius:17px;background:rgba(17,19,23,.97);box-shadow:0 24px 70px rgba(0,0,0,.48);backdrop-filter:blur(18px);overflow:hidden}.director-panel.show{display:flex}.director-head{height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 15px;border-bottom:1px solid #2b2f36}.director-title{display:flex;align-items:center;gap:9px}.director-title-icon{width:29px;height:29px;display:grid;place-items:center;border-radius:9px;background:linear-gradient(135deg,#737ee8,#9d7ce5);color:#fff;font-size:13px}.director-title h3{margin:0;font-size:12px}.director-title p{margin:3px 0 0;color:#737b88;font-size:8px}.director-actions{display:flex;gap:6px}.director-actions button,.director-toolbar button{height:30px;border:1px solid #353a44;border-radius:8px;background:#242830;color:#bcc2cc;padding:0 10px;font-size:8px;cursor:pointer}.director-actions button:hover,.director-toolbar button:hover{background:#303540;color:#fff}.director-actions .director-primary{background:#eef0f5;color:#17191e;border-color:#eef0f5;font-weight:700}.director-close{width:30px;padding:0!important;font-size:15px!important}.director-body{min-height:0;display:grid;grid-template-columns:210px 1fr;flex:1}.director-monitor{padding:13px;border-right:1px solid #292d34}.director-preview{height:125px;display:grid;place-items:center;border:1px solid #30343c;border-radius:11px;background:radial-gradient(circle at 50% 30%,#292d36,#111318);color:#77808e;text-align:center;font-size:9px;line-height:1.7}.director-preview b{display:block;color:#eef0f4;font-size:12px}.director-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px}.director-stat{padding:8px 5px;border-radius:8px;background:#20242b;text-align:center}.director-stat b{display:block;font-size:11px}.director-stat span{display:block;margin-top:2px;color:#727a86;font-size:7px}.director-sequence{min-width:0;display:flex;flex-direction:column}.director-toolbar{height:45px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;border-bottom:1px solid #292d34}.director-play-group{display:flex;align-items:center;gap:6px}.director-progress{color:#7d8591;font-size:8px}.director-shot-list{padding:9px 10px;display:flex;gap:8px;overflow-x:auto;flex:1;align-items:stretch}.director-shot{position:relative;min-width:142px;width:142px;padding:9px;border:1px solid #30353e;border-radius:11px;background:#20242b;cursor:pointer}.director-shot.active{border-color:#8792ef;box-shadow:0 0 0 2px rgba(126,139,240,.13)}.director-shot-index{color:#858ff0;font-size:8px;font-weight:700}.director-shot-name{margin-top:7px;color:#e6e9ed;font-size:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.director-shot-meta{margin-top:5px;color:#737b87;font-size:7px}.director-shot-controls{position:absolute;left:8px;right:8px;bottom:8px;display:flex;align-items:center;gap:4px}.director-shot-controls button{width:23px;height:23px;border:1px solid #363b45;border-radius:6px;background:#292e37;color:#aab0ba;cursor:pointer}.director-shot-controls input{width:42px;height:23px;border:1px solid #363b45;border-radius:6px;background:#171a20;color:#d9dce2;text-align:center;font-size:7px}.director-empty{width:100%;display:grid;place-items:center;color:#737b87;font-size:9px;text-align:center;line-height:1.8}
+#app.light-theme .director-panel{background:rgba(255,255,255,.98);border-color:#d8dde5;color:#20242b;box-shadow:0 22px 60px rgba(35,46,61,.16)}#app.light-theme .director-head,#app.light-theme .director-toolbar{border-color:#e1e5ea}#app.light-theme .director-monitor{border-color:#e1e5ea}#app.light-theme .director-preview{background:linear-gradient(145deg,#f4f6f9,#fff);border-color:#dbe0e7;color:#727a86}#app.light-theme .director-preview b{color:#252a31}#app.light-theme .director-stat,#app.light-theme .director-shot{background:#f5f7f9;border-color:#dce1e7}#app.light-theme .director-shot.active{border-color:#7c88e6}#app.light-theme .director-shot-name{color:#252a31}#app.light-theme .director-actions button,#app.light-theme .director-toolbar button,#app.light-theme .director-shot-controls button{background:#f1f3f6;border-color:#d8dde5;color:#505865}#app.light-theme .director-actions .director-primary{background:#252a31;color:#fff;border-color:#252a31}#app.light-theme .director-shot-controls input{background:#fff;border-color:#d8dde5;color:#252a31}
+</style>
+<aside class="director-panel" id="directorPanel">
+  <div class="director-head"><div class="director-title"><span class="director-title-icon">▰</span><div><h3>导演台</h3><p>编排画布节点，形成可播放的镜头序列</p></div></div><div class="director-actions"><button id="directorSync">同步画布节点</button><button class="director-primary" id="directorExport">导出分镜</button><button class="director-close" id="directorClose" title="关闭">×</button></div></div>
+  <div class="director-body"><div class="director-monitor"><div class="director-preview" id="directorPreview"><div><b>尚未选择镜头</b>点击镜头卡片进行预览</div></div><div class="director-stats"><div class="director-stat"><b id="directorShotCount">0</b><span>镜头</span></div><div class="director-stat"><b id="directorDuration">0s</b><span>总时长</span></div><div class="director-stat"><b id="directorReady">0%</b><span>完成度</span></div></div></div><div class="director-sequence"><div class="director-toolbar"><div class="director-play-group"><button id="directorPlay">▶ 播放</button><button id="directorStop">■ 停止</button></div><span class="director-progress" id="directorProgress">等待编排</span></div><div class="director-shot-list" id="directorShotList"></div></div></div>
+</aside>
+<aside class="skill-panel" id="skillPanel">
+  <div class="skill-panel-head">
+    <div><span class="skill-kicker">AI SHORT DRAMA</span><h3>Skill 库</h3><p>选择短剧类型，一键生成完整节点画布</p></div>
+    <button id="closeSkillPanel" title="关闭 Skill 库">×</button>
+  </div>
+  <div class="skill-search"><input id="skillSearch" placeholder="搜索短剧类型或风格"></div>
+  <div class="skill-grid" id="skillGrid"></div>
+  <div class="skill-detail" id="skillDetail">
+    <div class="skill-detail-empty">选择一个 Skill 查看完整画布结构</div>
+  </div>
+</aside>
+<aside class="points-panel" id="pointsPanel">
+  <div class="panel-head points-center-head"><div class="points-center-title"><div class="points-center-icon">◈</div><div><h3>积分中心</h3><p>查看、购买、管理并分配团队创作积分</p></div></div><div class="points-head-actions"><button class="buy-points-entry" id="buyPointsEntry">＋ 购买积分</button><button class="close-panel" data-close="points">×</button></div></div>
+  <div class="points-nav"><button class="active" data-points-view="dashboard">数据看板</button><button data-points-view="allocate">积分分配</button><button data-points-view="allocationRecords">分配记录</button><button data-points-view="ledger">积分明细</button></div>
+  <section class="points-view active" data-points-section="dashboard">
+    <div class="points-kpis"><div class="points-kpi balance"><span>可用积分</span><b id="pointsBalance">12,860</b><small>团队账户 · 实时余额</small></div><div class="points-kpi"><span>本月获得</span><b class="up">+4,260</b><small>较上月 +18.6%</small></div><div class="points-kpi"><span>本月消耗</span><b class="down">2,140</b><small>较上月 -6.2%</small></div><div class="points-kpi"><span>本月净变化</span><b>+2,120</b><small>收入覆盖率 199%</small></div></div>
+    <div class="points-dashboard-grid"><div class="points-chart-card"><div class="points-card-head"><b>近 7 日积分趋势</b><span>获得 / 消耗</span></div><div class="points-bars" id="pointsTrendChart"></div><div class="points-legend"><span><i style="background:#73d5a2"></i>积分获得</span><span><i style="background:#7c8cff"></i>积分消耗</span></div></div><div class="points-chart-card"><div class="points-card-head"><b>积分消耗构成</b><span>本月</span></div><div class="points-category-list" id="pointsCategoryChart"></div></div></div>
+  </section>
+  <section class="points-view" data-points-section="allocate"><div class="points-alloc-layout"><div class="points-alloc-card"><h4>分配团队积分</h4><p>从团队账户向成员分配创作积分，提交后即时生效。</p><div class="points-form-field"><label>接收成员</label><select id="pointsAllocateMember"><option value="Mia">Mia · 项目管理员</option><option value="Nora">Nora · 编辑者</option><option value="Leo">Leo · 编辑者</option><option value="Yuki">Yuki · 观察者</option></select></div><div class="points-form-field"><label>分配积分</label><input id="pointsAllocateAmount" type="number" min="1" max="12860" placeholder="输入积分数量"><div class="points-quick-values"><button data-points-amount="100">100</button><button data-points-amount="500">500</button><button data-points-amount="1000">1,000</button></div></div><div class="points-form-field"><label>分配用途</label><input id="pointsAllocateNote" maxlength="40" placeholder="例如：角色设定图生成"></div><button class="points-alloc-submit" id="confirmPointsAllocation">确认分配</button><div class="points-alloc-tip">当前可分配：<span id="allocatablePoints">12,860</span> 积分</div></div><div class="points-alloc-card"><div class="points-card-head"><div><h4>最近分配</h4><p style="margin:4px 0 0;color:#737a87;font-size:8px">团队积分流向</p></div><span>最近 30 天</span></div><div class="allocation-list" id="pointsAllocationList"></div></div></div></section>
+  <section class="points-view" data-points-section="allocationRecords"><div class="allocation-summary"><div><span>累计分配</span><b id="allocationTotal">1,900</b></div><div><span>已分配成员</span><b id="allocationMemberCount">3</b></div><div><span>筛选结果</span><b id="allocationRecordCount">3</b></div></div><div class="points-card-head"><b>分配记录</b><span>由新到旧</span></div><div class="allocation-filter-tools"><div class="allocation-filter-group"><input id="allocationDateStart" type="date" title="开始日期"><input id="allocationDateEnd" type="date" title="结束日期"><select id="allocationMemberFilter"><option value="all">全部人员</option><option value="Mia">Mia</option><option value="Nora">Nora</option><option value="Leo">Leo</option><option value="Yuki">Yuki</option></select></div><button class="allocation-export-btn" id="exportAllocationRecords">导出记录</button></div><div class="allocation-filter-summary" id="allocationFilterSummary">当前显示全部分配记录</div><div class="allocation-records" id="pointsAllocationRecords"></div></section>
+  <section class="points-view" data-points-section="ledger"><div class="points-ledger-tools"><div class="report-filter"><select id="pointsRange" title="统计周期"><option value="all">全部日期</option><option value="day">今日</option><option value="month" selected>本月</option><option value="quarter">本季度</option><option value="year">本年度</option></select><input id="pointsDateStart" type="date" title="开始日期"><input id="pointsDateEnd" type="date" title="结束日期"><select id="pointsMember" title="人员"><option value="all">全部人员</option><option value="系统">系统</option><option value="Suzy">Suzy</option><option value="Mia">Mia</option><option value="Nora">Nora</option><option value="Leo">Leo</option></select><select id="pointsType" title="积分类型"><option value="all">全部记录</option><option value="income">积分获得</option><option value="expense">积分消耗</option></select></div><div class="points-actions"><button id="pointsRulesBtn">积分规则</button><button id="downloadPointsReport" class="primary">导出明细</button></div></div><div class="points-daily-card" id="dailyReportCard"><div class="daily-report-head"><b>今日积分日报</b><span id="dailyReportDate"></span></div><div class="daily-report-grid"><div class="daily-stat"><b id="dailyIncome">+0</b><span>今日获得</span></div><div class="daily-stat"><b id="dailyExpense">-0</b><span>今日消耗</span></div><div class="daily-stat"><b id="dailyNet">0</b><span>净变化</span></div></div><div class="points-daily-note"><span>每日 00:05 自动归档前一日报</span><span>数据来自积分明细</span></div></div><div class="points-ledger-list" id="pointsList"></div><div class="points-pagination" id="pointsPagination"></div></section>
+</aside>
+
+<div class="points-purchase-mask" id="pointsPurchaseMask" role="dialog" aria-modal="true" aria-labelledby="pointsPurchaseTitle">
+  <div class="points-purchase-dialog"><div class="points-purchase-head"><div><h3 id="pointsPurchaseTitle">购买积分</h3><p>积分支付成功后将立即充值至团队账户</p></div><button id="closePointsPurchase" aria-label="关闭">×</button></div><div class="points-purchase-body"><div class="points-package-grid"><button class="points-package active" data-buy-points="1000" data-buy-price="99"><b>1,000</b><span>创作积分</span><em>¥99</em></button><button class="points-package" data-buy-points="5300" data-buy-price="459"><b>5,000</b><span>赠送 300 积分</span><em>¥459</em></button><button class="points-package" data-buy-points="13500" data-buy-price="999"><b>12,000</b><span>赠送 1,500 积分</span><em>¥999</em></button></div><div class="points-form-field"><label>支付方式</label><div class="payment-methods"><button class="payment-method active" data-payment-method="微信支付">微信支付</button><button class="payment-method" data-payment-method="支付宝">支付宝</button><button class="payment-method" data-payment-method="企业账户">企业账户</button></div></div><div class="purchase-summary"><span id="purchaseSummaryPoints">到账 1,000 积分</span><b id="purchaseSummaryPrice">应付 ¥99</b></div><button class="confirm-points-purchase" id="confirmPointsPurchase">确认支付</button></div></div>
+</div>
+
+<aside class="message-panel" id="messagePanel">
+  <div class="panel-head"><h3>消息中心</h3><button class="close-panel" data-close="message">×</button></div>
+  <div class="message-tabs">
+    <button class="message-tab active" data-msg-filter="all">全部</button>
+    <button class="message-tab" data-msg-filter="system">系统</button>
+    <button class="message-tab" data-msg-filter="collab">协作</button>
+    <button class="message-tab" data-msg-filter="points">积分</button>
+    <button id="markAllRead" class="message-read-all">全部已读</button>
+  </div>
+  <div class="message-list" id="messageList"></div>
+</aside>
+
+    <aside class="element-panel" id="elementPanel">
+      <div class="element-head" title="双击收起或展开画布元素列表"><h3>画布元素</h3><div class="panel-head-actions"><span id="elementCount">0 个节点</span><button type="button" class="panel-x" id="closeElementPanel" title="关闭画布元素列表" aria-label="关闭画布元素列表">×</button></div></div>
+      <div class="element-search"><input id="elementSearch" placeholder="搜索节点或提示词"></div>
+      <div class="element-tabs">
+        <button class="tab active" data-filter="all">全部</button>
+        <button class="tab" data-filter="image">图片</button>
+        <button class="tab" data-filter="video">视频</button>
+        <button class="tab" data-filter="audio">音频</button>
+      </div>
+      <div class="element-list" id="elementList"></div>
+    </aside>
+
+    <aside class="share-panel" id="sharePanel">
+      <div class="share-head"><h3>共享画布</h3><span class="live-badge">LIVE</span></div>
+
+      <div class="share-section">
+        <div class="share-label">画布链接</div>
+        <div class="link-row">
+          <input id="shareLink" readonly value="https://canvas.demo/share/oiioii-7F2K9A">
+          <button class="small-btn" id="copyLinkBtn">复制</button>
+        </div>
+      </div>
+
+      <div class="share-section" id="inviteSection">
+        <div class="share-label">添加共享人</div>
+        <div class="invite-row">
+          <input id="inviteInput" placeholder="输入姓名或邮箱">
+          <button class="small-btn" id="inviteBtn">添加</button>
+        </div>
+      </div>
+
+      <div class="member-list" id="memberList"></div>
+      <div class="share-note">只有管理员可以添加、移除共享人，以及将普通成员调整为管理员。普通成员仅可浏览和协作。</div>
+    </aside>
+
+    
+<div class="comment-cursor-dot" id="commentCursorDot"></div>
+<div class="comment-delete-mask" id="commentDeleteMask">
